@@ -1,0 +1,676 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="poll和select实现功能差不多，但poll效率比select效率高。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="I/O Multiplexing & poll">
+<meta property="og:url" content="https://maoao530.github.io/2016/03/18/io-multiplexing-poll/index.html">
+<meta property="og:site_name" content="风中老狼的博客">
+<meta property="og:description" content="poll和select实现功能差不多，但poll效率比select效率高。">
+<meta property="og:image" content="https://maoao530.github.io/img/archives/io_mul.png">
+<meta property="og:image" content="https://maoao530.github.io/img/archives/poll-events-revents.png">
+<meta property="og:updated_time" content="2016-05-16T14:53:55.891Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="I/O Multiplexing & poll">
+<meta name="twitter:description" content="poll和select实现功能差不多，但poll效率比select效率高。">
+<meta name="twitter:image" content="https://maoao530.github.io/img/archives/io_mul.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> I/O Multiplexing & poll | 风中老狼的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">风中老狼的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">不积跬步，无以至千里；不积小流，无以成江海</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                I/O Multiplexing & poll
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-18T23:46:00+08:00" content="2016-03-18">
+              2016-03-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux开发/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux开发</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/18/io-multiplexing-poll/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/18/io-multiplexing-poll/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>poll和select实现功能差不多，但poll效率比select效率高。</p>
+<a id="more"></a>
+<h1 id="1-什么是I-O-Multiplexing"><a href="#1-什么是I-O-Multiplexing" class="headerlink" title="1. 什么是I/O Multiplexing"></a>1. 什么是I/O Multiplexing</h1><p> I / O多路转接(I/O multiplexing),其基本思想是:先构造一张有关描述符的表,然后调用一个函数,它要到这些描述符中的一个已准备好进行 I / O时才返回。<br>在返回时,它告诉进程哪一个描述符已准备好可以进行 I / O。<br>IO multiplexing就是我们说的select，poll，epoll，有些地方也称这种IO方式为event driven IO。其好处就在于单个process就可以同时处理多个网络连接的IO。</p>
+<p><img src="/img/archives/io_mul.png" alt="I/O 多路复用"></p>
+<p>poll的机制与select类似，与select在本质上没有多大差别，管理多个描述符也是进行轮询，根据描述符的状态进行处理，但是<strong>poll没有最大文件描述符数量的限制</strong>。poll和select同样存在一个缺点就是，包含大量文件描述符的数组被整体复制于用户态和内核的地址空间之间，而不论这些文件描述符是否就绪，它的开销随着文件描述符数量的增加而线性增大。</p>
+<h1 id="2-poll函数"><a href="#2-poll函数" class="headerlink" title="2. poll函数"></a>2. poll函数</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># include &lt;poll.h&gt;  </div><div class="line">int poll ( struct pollfd * fds, unsigned int nfds, int timeout);</div></pre></td></tr></table></figure>
+<ul>
+<li>timeout == INFTIM 永远等待(INFTIM 通常等于-1)</li>
+<li>timeout == 0 不等待</li>
+<li>timeout &gt; 0 等待ttimeout毫秒</li>
+</ul>
+<p>与select不同,poll不是为每个条件构造一个描述符集,而是构造一个pollfd结构数组,每个数组元素指定一个描述符编号以及对其所关心的条件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">struct pollfd &#123;  </div><div class="line">int fd ;                /* file descriptor to check, or &lt; 0 to ignore */  </div><div class="line">short events ;          /* events of interest on fd */  </div><div class="line">shortr events ;         /* events that occurred on fd */  </div><div class="line">&#125; ;</div></pre></td></tr></table></figure>
+<p>简单点儿说，fd对应要监视的文件描述符，events对应需要监视的事件，revents对应实际发生的事件。</p>
+<p><img src="/img/archives/poll-events-revents.png" alt="poll-events-revents"></p>
+<p>返回值和错误代码:</p>
+<ul>
+<li>成功时，poll()返回结构体中revents域不为0的文件描述符个数</li>
+<li>如果在超时前没有任何事件发生，poll()返回0；</li>
+<li>失败时，poll()返回-1，并设置errno为下列值之一：<ul>
+<li>EBADF　　       一个或多个结构体中指定的文件描述符无效。</li>
+<li>EFAULTfds　　 指针指向的地址超出进程的地址空间。</li>
+<li>EINTR　　　　  请求的事件之前产生一个信号，调用可以重新发起。</li>
+<li>EINVALnfds　　参数超出PLIMIT_NOFILE值。</li>
+</ul>
+</li>
+</ul>
+<h1 id="3-利用poll设计的web服务器"><a href="#3-利用poll设计的web服务器" class="headerlink" title="3. 利用poll设计的web服务器"></a>3. 利用poll设计的web服务器</h1><p>设计一个比较简单的web服务器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;errno.h&gt;</div><div class="line">#include &lt;string.h&gt;</div><div class="line">#include &lt;sys/types.h&gt;</div><div class="line">#include &lt;sys/socket.h&gt;</div><div class="line">#include &lt;netinet/in.h&gt;</div><div class="line">#include &lt;arpa/inet.h&gt;</div><div class="line">#include &lt;poll.h&gt;</div><div class="line"></div><div class="line">#define MYPORT 8008    // the port users will be connecting to</div><div class="line"></div><div class="line">#define BACKLOG 10     // how many pending connections queue will hold</div><div class="line"></div><div class="line">#define BUF_SIZE 200</div><div class="line"></div><div class="line">struct pollfd pollfds[BACKLOG + 1];</div><div class="line">int nfds = 0;</div><div class="line"></div><div class="line">void showclient()</div><div class="line">&#123;</div><div class="line">    int i;</div><div class="line">    printf(&quot;client count: %d\n&quot;, nfds -1);</div><div class="line">    for (i = 0; i &lt; BACKLOG + 1; i++) &#123;</div><div class="line">        printf(&quot;[%d]:%d  &quot;, i, pollfds[i].fd);</div><div class="line">    &#125;</div><div class="line">    printf(&quot;\n\n&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main(void)</div><div class="line">&#123;</div><div class="line">    int sock_fd, new_fd;  // listen on sock_fd, new connection on new_fd</div><div class="line">    struct sockaddr_in server_addr;    // server address information</div><div class="line">    struct sockaddr_in client_addr; // connector&apos;s address information</div><div class="line">    socklen_t sin_size;</div><div class="line">    int yes = 1;</div><div class="line">    char buf[BUF_SIZE];</div><div class="line">    int ret;</div><div class="line">    int i;</div><div class="line"></div><div class="line">    if ((sock_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) &#123;</div><div class="line">        perror(&quot;socket&quot;);</div><div class="line">        exit(1);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &amp;yes, sizeof(int)) == -1) &#123;</div><div class="line">        perror(&quot;setsockopt&quot;);</div><div class="line">        exit(1);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    server_addr.sin_family = AF_INET;         // host byte order</div><div class="line">    server_addr.sin_port = htons(MYPORT);     // short, network byte order</div><div class="line">    server_addr.sin_addr.s_addr = INADDR_ANY; // automatically fill with my IP</div><div class="line">    memset(server_addr.sin_zero, &apos;\0&apos;, sizeof(server_addr.sin_zero));</div><div class="line"></div><div class="line">    if (bind(sock_fd, (struct sockaddr *)&amp;server_addr, sizeof(server_addr)) == -1) &#123;</div><div class="line">        perror(&quot;bind&quot;);</div><div class="line">        exit(1);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if (listen(sock_fd, BACKLOG) == -1) &#123;</div><div class="line">        perror(&quot;listen&quot;);</div><div class="line">        exit(1);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    printf(&quot;listen port %d\n&quot;, MYPORT);</div><div class="line"></div><div class="line">    sin_size = sizeof(client_addr);</div><div class="line"></div><div class="line">    for (i = 1; i &lt; BACKLOG + 1; i++)</div><div class="line">    &#123;</div><div class="line">        pollfds[i].fd = -1;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    pollfds[0].fd = sock_fd;</div><div class="line">    pollfds[0].events = POLLIN;</div><div class="line">    nfds++;</div><div class="line"></div><div class="line">    while (1)</div><div class="line">    &#123;</div><div class="line">        ret = poll(pollfds, nfds, -1);</div><div class="line">        if (ret &lt; 0)</div><div class="line">        &#123;</div><div class="line">            perror(&quot;poll&quot;);</div><div class="line">            break;</div><div class="line">        &#125;</div><div class="line">        else if (ret == 0)</div><div class="line">        &#123;</div><div class="line">            printf(&quot;timeout.\n&quot;);</div><div class="line">            continue;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // add a new client</div><div class="line">        if (pollfds[0].revents &amp; POLLIN)</div><div class="line">        &#123;</div><div class="line">            new_fd = accept(sock_fd, (struct sockaddr *)&amp;client_addr, &amp;sin_size);</div><div class="line">            if (new_fd &lt;= 0) &#123;</div><div class="line">                perror(&quot;accept&quot;);</div><div class="line">                continue;</div><div class="line">            &#125;</div><div class="line">            for (i = 1; i &lt; BACKLOG + 1; i++)</div><div class="line">            &#123;</div><div class="line">                if (pollfds[i].fd == -1)</div><div class="line">                &#123;</div><div class="line">                    pollfds[i].fd = new_fd;</div><div class="line">                    pollfds[i].events = POLLIN;</div><div class="line">                    printf(&quot;add a new client: pollfds[%d] = %d \n&quot;,i,new_fd);</div><div class="line">                    nfds++;</div><div class="line">                    break;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        // check every client</div><div class="line">        for (i = 1; i &lt; nfds; i++)</div><div class="line">        &#123;</div><div class="line">            if (pollfds[i].revents &amp; POLLIN)</div><div class="line">            &#123;</div><div class="line">                ret = recv(pollfds[i].fd, buf, sizeof(buf), 0);</div><div class="line">                char str[] = &quot;Good,very nice!\n&quot;;</div><div class="line"></div><div class="line">                send(pollfds[i].fd, str, sizeof(str) + 1, 0);</div><div class="line">                if (ret &lt;= 0) &#123;        // client close</div><div class="line">                    printf(&quot;client[%d] close\n&quot;, i);</div><div class="line">                    close(pollfds[i].fd);</div><div class="line">                    pollfds[i].fd = -1;</div><div class="line">                    nfds--;</div><div class="line">                &#125; else &#123;        // receive data</div><div class="line">                    if (ret &lt; BUF_SIZE)</div><div class="line">                        memset(&amp;buf[ret], &apos;\0&apos;, 1);</div><div class="line">                    printf(&quot;client[%d] send:%s\n&quot;, i, buf);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">        showclient();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // close other connections</div><div class="line">    for (i = 0; i &lt; nfds; i++) &#123;</div><div class="line">        if (pollfds[i].fd != 0) &#123;</div><div class="line">            close(pollfds[i].fd);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    exit(0);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/17/io-multiplexing-select/" rel="next" title="I/O Multiplexing & select">
+                <i class="fa fa-chevron-left"></i> I/O Multiplexing & select
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/23/io-multiplexing-epoll/" rel="prev" title="io-multiplexing-epoll">
+                io-multiplexing-epoll <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/18/io-multiplexing-poll/"
+           data-title="I/O Multiplexing & poll" data-url="https://maoao530.github.io/2016/03/18/io-multiplexing-poll/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="风中老狼" />
+          <p class="site-author-name" itemprop="name">风中老狼</p>
+          <p class="site-description motion-element" itemprop="description">不积跬步，无以至千里；不积小流，无以成江海</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wang-zhao-shun-43" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/maoao530" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/shun_fzll" target="_blank" title="csdn">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-什么是I-O-Multiplexing"><span class="nav-number">1.</span> <span class="nav-text">1. 什么是I/O Multiplexing</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-poll函数"><span class="nav-number">2.</span> <span class="nav-text">2. poll函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-利用poll设计的web服务器"><span class="nav-number">3.</span> <span class="nav-text">3. 利用poll设计的web服务器</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">风中老狼</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"maoao-530"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

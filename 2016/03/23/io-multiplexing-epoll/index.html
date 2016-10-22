@@ -1,0 +1,701 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="什么是epoll？epoll是在2.6内核中提出的，是之前的select和poll的增强版本。它能显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="io-multiplexing-epoll">
+<meta property="og:url" content="https://maoao530.github.io/2016/03/23/io-multiplexing-epoll/index.html">
+<meta property="og:site_name" content="风中老狼的博客">
+<meta property="og:description" content="什么是epoll？epoll是在2.6内核中提出的，是之前的select和poll的增强版本。它能显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率。">
+<meta property="og:updated_time" content="2016-05-16T15:31:17.444Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="io-multiplexing-epoll">
+<meta name="twitter:description" content="什么是epoll？epoll是在2.6内核中提出的，是之前的select和poll的增强版本。它能显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> io-multiplexing-epoll | 风中老狼的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">风中老狼的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">不积跬步，无以至千里；不积小流，无以成江海</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                io-multiplexing-epoll
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-23T00:31:00+08:00" content="2016-03-23">
+              2016-03-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux开发/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux开发</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/23/io-multiplexing-epoll/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/23/io-multiplexing-epoll/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>什么是epoll？epoll是在2.6内核中提出的，是之前的select和poll的增强版本。它能显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率。</p>
+<a id="more"></a>
+<h1 id="1-epoll的优点？"><a href="#1-epoll的优点？" class="headerlink" title="1. epoll的优点？"></a>1. epoll的优点？</h1><p>相对于select和poll来说，epoll有如下优点：</p>
+<ul>
+<li><p><strong>支持一个进程打开大数目的socket描述符</strong><br>  select 最不能忍受的是一个进程所打开的FD是有一定限制的，由FD_SETSIZE设置，默认值是1024。对于那些需要支持的上万连接数目的IM服务器来说显然太少了。这时候你一是可以选择修改这个宏然后重新编译服务器代码，不过资料也同时指出这样会带来网络效率的下降。</p>
+</li>
+<li><p><strong>IO效率不随FD数目增加而线性下降</strong><br>  传统的select/poll另一个致命弱点就是当你拥有一个很大的socket集合，不过由于网络延时，任一时间只有部分的socket是“活跃”的，但是select/poll每次调用都会线性扫描全部的集合，导致效率呈现线性下降。但是epoll不存在这个问题，它只会对“活跃”的socket进行操作—这是因为在内核实现中epoll是根据每个fd上面的callback函数实现的。那么，只有“活跃”的socket才会主动的去调用 callback函数，其他idle状态socket则不会</p>
+</li>
+<li><p><strong>使用mmap加速内核与用户空间的消息传递</strong><br>  无论是select,poll还是epoll都需要内核把FD消息通知给用户空间，如何避免不必要的内存拷贝就很重要，在这点上，epoll是通过内核与用户空间mmap同一块内存实现的。</p>
+</li>
+</ul>
+<h1 id="2-epoll使用说明"><a href="#2-epoll使用说明" class="headerlink" title="2. epoll使用说明"></a>2. epoll使用说明</h1><p>先来看epoll的几个函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#include &lt;sys/epoll.h&gt;  </div><div class="line">int epoll_create(int size);  </div><div class="line">int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);  </div><div class="line">int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);</div></pre></td></tr></table></figure></p>
+<ul>
+<li><strong><code>int epoll_create(int size);</code></strong><br>创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大。这个参数不同于select()中的第一个参数，给出最大监听的fd+1的值。需要注意的是，当创建好epoll句柄后，它就是会占用一个fd值，在linux下如果查看/proc/进程id/fd/，是能够看到这个fd的，所以在使用完epoll后，必须调用close()关闭，否则可能导致fd被耗尽。</li>
+</ul>
+<ul>
+<li><strong><code>int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);</code></strong></li>
+</ul>
+<p>epoll的事件注册函数，它不同与select()是在监听事件时告诉内核要监听什么类型的事件，而是在这里先注册要监听的事件类型。</p>
+<ul>
+<li>第一个参数是epoll_create()的返回值</li>
+<li>第二个参数表示动作,用三个宏来表示:<ul>
+<li>EPOLL_CTL_ADD：注册新的fd到epfd中；</li>
+<li>EPOLL_CTL_MOD：修改已经注册的fd的监听事件；</li>
+<li>EPOLL_CTL_DEL：从epfd中删除一个fd；</li>
+</ul>
+</li>
+</ul>
+<p>第三个参数是需要监听的fd，第四个参数是告诉内核需要监听什么事。struct epoll_event结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">typedef union epoll_data &#123;  </div><div class="line">    void *ptr;  </div><div class="line">    int fd;  </div><div class="line">    __uint32_t u32;  </div><div class="line">    __uint64_t u64;  </div><div class="line">&#125; epoll_data_t;  </div><div class="line">  </div><div class="line">struct epoll_event &#123;  </div><div class="line">  __uint32_t events;  /* Epoll events */  </div><div class="line">  epoll_data_t data;  /* User data variable */  </div><div class="line">&#125;;  </div><div class="line">  </div><div class="line">//events可以是以下几个宏的集合：  </div><div class="line">EPOLLIN ：表示对应的文件描述符可以读（包括对端SOCKET正常关闭）；  </div><div class="line">EPOLLOUT：表示对应的文件描述符可以写；  </div><div class="line">EPOLLPRI：表示对应的文件描述符有紧急的数据可读（这里应该表示有带外数据到来）；  </div><div class="line">EPOLLERR：表示对应的文件描述符发生错误；  </div><div class="line">EPOLLHUP：表示对应的文件描述符被挂断；  </div><div class="line">EPOLLET： 将EPOLL设为边缘触发(Edge Triggered)模式，这是相对于水平触发(Level Triggered)来说的。  </div><div class="line">EPOLLONESHOT：只监听一次事件，当监听完这次事件之后，如果还需要继续监听这个socket的话，需要再次把这个socket加入到EPOLL队列里</div></pre></td></tr></table></figure>
+<ul>
+<li><strong><code>int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);</code></strong><br>　　<br>等待事件的产生，类似于select()调用。参数events用来从内核得到事件的集合，maxevents告之内核这个events有多大，这个maxevents的值不能大于创建epoll_create()时的size，参数timeout是超时时间（毫秒，0会立即返回，-1将不确定，也有说法说是永久阻塞）。该函数返回需要处理的事件数目，如返回0表示已超时。</li>
+</ul>
+<h1 id="3-epoll的两种模式LT和ET"><a href="#3-epoll的两种模式LT和ET" class="headerlink" title="3. epoll的两种模式LT和ET"></a>3. epoll的两种模式LT和ET</h1><p>二者的差异在于level-trigger模式下只要某个socket处于readable/writable状态，无论什么时候进行epoll_wait都会返回该socket；而edge-trigger模式下只有某个socket从unreadable变为readable或从unwritable变为writable时，epoll_wait才会返回该socket。<br>LT支持阻塞和非阻塞，ET只支持非阻塞，以避免由于一个文件句柄的阻塞读/阻塞写操作把处理多个文件描述符的任务饿死。</p>
+<p><strong>返回EAGAIN或者EWOULDBLOCK错误，这个错误表示资源暂时不够，能read时，读缓冲区没有数据，或者write时，写缓冲区满了。</strong></p>
+<p><strong>如果是阻塞socket，则会一直阻塞，直到能read或者能write。（当然如果你通过setsockopt设置了读写超时，超时时间到了还是会返回-1和EAGAIN，如果没有设置还是返回-1，则表示网络出错了）</strong></p>
+<p><strong>如果是非阻塞socket，则会直接返回-1， 同时errno设置为EAGAIN</strong></p>
+<p>所以，在epoll的ET模式下，正确的读写方式为:</p>
+<blockquote>
+<ul>
+<li>读：只要可读，就一直读，直到返回0，或者 errno = EAGAIN</li>
+<li>写:只要可写，就一直写，直到数据发送完，或者 errno = EAGAIN</li>
+</ul>
+</blockquote>
+<h1 id="4-epoll-ET模式的简单HTTP服务器代码"><a href="#4-epoll-ET模式的简单HTTP服务器代码" class="headerlink" title="4. epoll,ET模式的简单HTTP服务器代码"></a>4. epoll,ET模式的简单HTTP服务器代码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div></pre></td><td class="code"><pre><div class="line">#include &lt;sys/socket.h&gt;</div><div class="line">#include &lt;sys/wait.h&gt;</div><div class="line">#include &lt;netinet/in.h&gt;</div><div class="line">#include &lt;netinet/tcp.h&gt;</div><div class="line">#include &lt;sys/epoll.h&gt;</div><div class="line">#include &lt;sys/sendfile.h&gt;</div><div class="line">#include &lt;sys/stat.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line">#include &lt;string.h&gt;</div><div class="line">#include &lt;strings.h&gt;</div><div class="line">#include &lt;fcntl.h&gt;</div><div class="line">#include &lt;errno.h&gt; </div><div class="line"></div><div class="line">#define MAX_EVENTS 10</div><div class="line">#define PORT 8080</div><div class="line"></div><div class="line">//设置socket连接为非阻塞模式</div><div class="line">void setnonblocking(int sockfd) &#123;</div><div class="line">    int opts;</div><div class="line"></div><div class="line">    opts = fcntl(sockfd, F_GETFL);</div><div class="line">    if(opts &lt; 0) &#123;</div><div class="line">        perror(&quot;fcntl(F_GETFL)\n&quot;);</div><div class="line">        exit(1);</div><div class="line">    &#125;</div><div class="line">    opts = (opts | O_NONBLOCK);</div><div class="line">    if(fcntl(sockfd, F_SETFL, opts) &lt; 0) &#123;</div><div class="line">        perror(&quot;fcntl(F_SETFL)\n&quot;);</div><div class="line">        exit(1);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main()&#123;</div><div class="line">    struct epoll_event ev, events[MAX_EVENTS];</div><div class="line">    int addrlen, listenfd, conn_sock, nfds, epfd, fd, i, nread, n;</div><div class="line">    struct sockaddr_in local, remote;</div><div class="line">    char buf[BUFSIZ];</div><div class="line"></div><div class="line">    //创建listen socket</div><div class="line">    if( (listenfd = socket(AF_INET, SOCK_STREAM, 0)) &lt; 0) &#123;</div><div class="line">        perror(&quot;sockfd\n&quot;);</div><div class="line">        exit(1);</div><div class="line">    &#125;</div><div class="line">    setnonblocking(listenfd);</div><div class="line">    bzero(&amp;local, sizeof(local));</div><div class="line">    local.sin_family = AF_INET;</div><div class="line">    local.sin_addr.s_addr = htonl(INADDR_ANY);;</div><div class="line">    local.sin_port = htons(PORT);</div><div class="line">    if( bind(listenfd, (struct sockaddr *) &amp;local, sizeof(local)) &lt; 0) &#123;</div><div class="line">        perror(&quot;bind\n&quot;);</div><div class="line">        exit(1);</div><div class="line">    &#125;</div><div class="line">    listen(listenfd, 20);</div><div class="line"></div><div class="line">    epfd = epoll_create(MAX_EVENTS);</div><div class="line">    if (epfd == -1) &#123;</div><div class="line">        perror(&quot;epoll_create&quot;);</div><div class="line">        exit(EXIT_FAILURE);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ev.events = EPOLLIN;</div><div class="line">    ev.data.fd = listenfd;</div><div class="line">    if (epoll_ctl(epfd, EPOLL_CTL_ADD, listenfd, &amp;ev) == -1) &#123;</div><div class="line">        perror(&quot;epoll_ctl: listen_sock&quot;);</div><div class="line">        exit(EXIT_FAILURE);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    for (;;) &#123;</div><div class="line">        nfds = epoll_wait(epfd, events, MAX_EVENTS, -1);</div><div class="line">        if (nfds == -1) &#123;</div><div class="line">            perror(&quot;epoll_pwait&quot;);</div><div class="line">            exit(EXIT_FAILURE);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        for (i = 0; i &lt; nfds; ++i) &#123;</div><div class="line">            fd = events[i].data.fd;</div><div class="line">            if (fd == listenfd) &#123;</div><div class="line">                while ((conn_sock = accept(listenfd,(struct sockaddr *) &amp;remote, </div><div class="line">                                (size_t *)&amp;addrlen)) &gt; 0) &#123;</div><div class="line">                    setnonblocking(conn_sock);</div><div class="line">                    ev.events = EPOLLIN | EPOLLET;</div><div class="line">                    ev.data.fd = conn_sock;</div><div class="line">                    if (epoll_ctl(epfd, EPOLL_CTL_ADD, conn_sock,</div><div class="line">                                &amp;ev) == -1) &#123;</div><div class="line">                        perror(&quot;epoll_ctl: add&quot;);</div><div class="line">                        exit(EXIT_FAILURE);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                if (conn_sock == -1) &#123;</div><div class="line">                    if (errno != EAGAIN &amp;&amp; errno != ECONNABORTED </div><div class="line">                            &amp;&amp; errno != EPROTO &amp;&amp; errno != EINTR) </div><div class="line">                        perror(&quot;accept&quot;);</div><div class="line">                &#125;</div><div class="line">                continue;</div><div class="line">            &#125;  </div><div class="line">            if (events[i].events &amp; EPOLLIN) &#123;</div><div class="line">                n = 0;</div><div class="line">                while ((nread = read(fd, buf + n, BUFSIZ-1)) &gt; 0) &#123;</div><div class="line">                    n += nread;</div><div class="line">                &#125;</div><div class="line">                if (nread == -1 &amp;&amp; errno != EAGAIN) &#123;</div><div class="line">                    perror(&quot;read error&quot;);</div><div class="line">                &#125;</div><div class="line">                ev.data.fd = fd;</div><div class="line">                ev.events = events[i].events | EPOLLOUT;</div><div class="line">                if (epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &amp;ev) == -1) &#123;</div><div class="line">                    perror(&quot;epoll_ctl: mod&quot;);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            if (events[i].events &amp; EPOLLOUT) &#123;</div><div class="line">                sprintf(buf, &quot;HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\nHello World&quot;, 11);</div><div class="line">                int nwrite, data_size = strlen(buf);</div><div class="line">                n = data_size;</div><div class="line">                while (n &gt; 0) &#123;</div><div class="line">                    nwrite = write(fd, buf + data_size - n, n);</div><div class="line">                    if (nwrite &lt; n) &#123;</div><div class="line">                        if (nwrite == -1 &amp;&amp; errno != EAGAIN) &#123;</div><div class="line">                            perror(&quot;write error&quot;);</div><div class="line">                        &#125;</div><div class="line">                        break;</div><div class="line">                    &#125;</div><div class="line">                    n -= nwrite;</div><div class="line">                &#125;</div><div class="line">                close(fd);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="5-epoll-amp-LT-模式简单的服务器代码"><a href="#5-epoll-amp-LT-模式简单的服务器代码" class="headerlink" title="5. epoll &amp; LT 模式简单的服务器代码"></a>5. epoll &amp; LT 模式简单的服务器代码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line">#include &lt;string.h&gt;</div><div class="line">#include &lt;errno.h&gt;</div><div class="line"></div><div class="line">#include &lt;netinet/in.h&gt;</div><div class="line">#include &lt;sys/socket.h&gt;</div><div class="line">#include &lt;arpa/inet.h&gt;</div><div class="line">#include &lt;sys/epoll.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;sys/types.h&gt;</div><div class="line"></div><div class="line">#define IPADDRESS   &quot;127.0.0.1&quot;</div><div class="line">#define PORT        8787</div><div class="line">#define MAXSIZE     1024</div><div class="line">#define LISTENQ     5</div><div class="line">#define FDSIZE      1000</div><div class="line">#define EPOLLEVENTS 100</div><div class="line"></div><div class="line">//函数声明</div><div class="line">//创建套接字并进行绑定</div><div class="line">static int socket_bind(const char* ip,int port);</div><div class="line">//IO多路复用epoll</div><div class="line">static void do_epoll(int listenfd);</div><div class="line">//事件处理函数</div><div class="line">static void</div><div class="line">handle_events(int epollfd,struct epoll_event *events,int num,int listenfd,char *buf);</div><div class="line">//处理接收到的连接</div><div class="line">static void handle_accpet(int epollfd,int listenfd);</div><div class="line">//读处理</div><div class="line">static void do_read(int epollfd,int fd,char *buf);</div><div class="line">//写处理</div><div class="line">static void do_write(int epollfd,int fd,char *buf);</div><div class="line">//添加事件</div><div class="line">static void add_event(int epollfd,int fd,int state);</div><div class="line">//修改事件</div><div class="line">static void modify_event(int epollfd,int fd,int state);</div><div class="line">//删除事件</div><div class="line">static void delete_event(int epollfd,int fd,int state);</div><div class="line"></div><div class="line">int main(int argc,char *argv[])</div><div class="line">&#123;</div><div class="line">    int  listenfd;</div><div class="line">    listenfd = socket_bind(IPADDRESS,PORT);</div><div class="line">    listen(listenfd,LISTENQ);</div><div class="line">    do_epoll(listenfd);</div><div class="line">    return 0;</div><div class="line">&#125;</div><div class="line"></div><div class="line">static int socket_bind(const char* ip,int port)</div><div class="line">&#123;</div><div class="line">    int  listenfd;</div><div class="line">    struct sockaddr_in servaddr;</div><div class="line">    listenfd = socket(AF_INET,SOCK_STREAM,0);</div><div class="line">    if (listenfd == -1)</div><div class="line">    &#123;</div><div class="line">        perror(&quot;socket error:&quot;);</div><div class="line">        exit(1);</div><div class="line">    &#125;</div><div class="line">    bzero(&amp;servaddr,sizeof(servaddr));</div><div class="line">    servaddr.sin_family = AF_INET;</div><div class="line">    inet_pton(AF_INET,ip,&amp;servaddr.sin_addr);</div><div class="line">    servaddr.sin_port = htons(port);</div><div class="line">    if (bind(listenfd,(struct sockaddr*)&amp;servaddr,sizeof(servaddr)) == -1)</div><div class="line">    &#123;</div><div class="line">        perror(&quot;bind error: &quot;);</div><div class="line">        exit(1);</div><div class="line">    &#125;</div><div class="line">    return listenfd;</div><div class="line">&#125;</div><div class="line"></div><div class="line">static void do_epoll(int listenfd)</div><div class="line">&#123;</div><div class="line">    int epollfd;</div><div class="line">    struct epoll_event events[EPOLLEVENTS];</div><div class="line">    int ret;</div><div class="line">    char buf[MAXSIZE];</div><div class="line">    memset(buf,0,MAXSIZE);</div><div class="line">    //创建一个描述符</div><div class="line">    epollfd = epoll_create(FDSIZE);</div><div class="line">    //添加监听描述符事件</div><div class="line">    add_event(epollfd,listenfd,EPOLLIN);</div><div class="line">    for ( ; ; )</div><div class="line">    &#123;</div><div class="line">        //获取已经准备好的描述符事件</div><div class="line">        ret = epoll_wait(epollfd,events,EPOLLEVENTS,-1);</div><div class="line">        handle_events(epollfd,events,ret,listenfd,buf);</div><div class="line">    &#125;</div><div class="line">    close(epollfd);</div><div class="line">&#125;</div><div class="line"></div><div class="line">static void</div><div class="line">handle_events(int epollfd,struct epoll_event *events,int num,int listenfd,char *buf)</div><div class="line">&#123;</div><div class="line">    int i;</div><div class="line">    int fd;</div><div class="line">    //进行选好遍历</div><div class="line">    for (i = 0;i &lt; num;i++)</div><div class="line">    &#123;</div><div class="line">        fd = events[i].data.fd;</div><div class="line">        //根据描述符的类型和事件类型进行处理</div><div class="line">        if ((fd == listenfd) &amp;&amp;(events[i].events &amp; EPOLLIN))</div><div class="line">            handle_accpet(epollfd,listenfd);</div><div class="line">        else if (events[i].events &amp; EPOLLIN)</div><div class="line">            do_read(epollfd,fd,buf);</div><div class="line">        else if (events[i].events &amp; EPOLLOUT)</div><div class="line">            do_write(epollfd,fd,buf);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">static void handle_accpet(int epollfd,int listenfd)</div><div class="line">&#123;</div><div class="line">    int clifd;</div><div class="line">    struct sockaddr_in cliaddr;</div><div class="line">    socklen_t  cliaddrlen;</div><div class="line">    clifd = accept(listenfd,(struct sockaddr*)&amp;cliaddr,&amp;cliaddrlen);</div><div class="line">    if (clifd == -1)</div><div class="line">        perror(&quot;accpet error:&quot;);</div><div class="line">    else</div><div class="line">    &#123;</div><div class="line">        printf(&quot;accept a new client: %s:%d\n&quot;,inet_ntoa(cliaddr.sin_addr),cliaddr.sin_port);</div><div class="line">        //添加一个客户描述符和事件</div><div class="line">        add_event(epollfd,clifd,EPOLLIN);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">static void do_read(int epollfd,int fd,char *buf)</div><div class="line">&#123;</div><div class="line">    int nread;</div><div class="line">    nread = read(fd,buf,MAXSIZE);</div><div class="line">    if (nread == -1)</div><div class="line">    &#123;</div><div class="line">        perror(&quot;read error:&quot;);</div><div class="line">        close(fd);</div><div class="line">        delete_event(epollfd,fd,EPOLLIN);</div><div class="line">    &#125;</div><div class="line">    else if (nread == 0)</div><div class="line">    &#123;</div><div class="line">        fprintf(stderr,&quot;client close.\n&quot;);</div><div class="line">        close(fd);</div><div class="line">        delete_event(epollfd,fd,EPOLLIN);</div><div class="line">    &#125;</div><div class="line">    else</div><div class="line">    &#123;</div><div class="line">        printf(&quot;read message is : %s&quot;,buf);</div><div class="line">        //修改描述符对应的事件，由读改为写</div><div class="line">        modify_event(epollfd,fd,EPOLLOUT);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">static void do_write(int epollfd,int fd,char *buf)</div><div class="line">&#123;</div><div class="line">    int nwrite;</div><div class="line">    nwrite = write(fd,buf,strlen(buf));</div><div class="line">    if (nwrite == -1)</div><div class="line">    &#123;</div><div class="line">        perror(&quot;write error:&quot;);</div><div class="line">        close(fd);</div><div class="line">        delete_event(epollfd,fd,EPOLLOUT);</div><div class="line">    &#125;</div><div class="line">    else</div><div class="line">        modify_event(epollfd,fd,EPOLLIN);</div><div class="line">    memset(buf,0,MAXSIZE);</div><div class="line">&#125;</div><div class="line"></div><div class="line">static void add_event(int epollfd,int fd,int state)</div><div class="line">&#123;</div><div class="line">    struct epoll_event ev;</div><div class="line">    ev.events = state;</div><div class="line">    ev.data.fd = fd;</div><div class="line">    epoll_ctl(epollfd,EPOLL_CTL_ADD,fd,&amp;ev);</div><div class="line">&#125;</div><div class="line"></div><div class="line">static void delete_event(int epollfd,int fd,int state)</div><div class="line">&#123;</div><div class="line">    struct epoll_event ev;</div><div class="line">    ev.events = state;</div><div class="line">    ev.data.fd = fd;</div><div class="line">    epoll_ctl(epollfd,EPOLL_CTL_DEL,fd,&amp;ev);</div><div class="line">&#125;</div><div class="line"></div><div class="line">static void modify_event(int epollfd,int fd,int state)</div><div class="line">&#123;</div><div class="line">    struct epoll_event ev;</div><div class="line">    ev.events = state;</div><div class="line">    ev.data.fd = fd;</div><div class="line">    epoll_ctl(epollfd,EPOLL_CTL_MOD,fd,&amp;ev);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>至此，epoll的内容介绍完了。</p>
+<p>References：</p>
+<ul>
+<li><p><a href="http://www.ccvita.com/515.html" target="_blank" rel="external">Epoll在LT和ET模式下的读写方式</a></p>
+</li>
+<li><p><a href="http://www.cnblogs.com/Anker/p/3263780.html" target="_blank" rel="external">IO多路复用之epoll总结</a></p>
+</li>
+<li><p><a href="http://blog.csdn.net/ljx0305/article/details/4065058" target="_blank" rel="external">epoll使用详解</a></p>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/18/io-multiplexing-poll/" rel="next" title="I/O Multiplexing & poll">
+                <i class="fa fa-chevron-left"></i> I/O Multiplexing & poll
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/12/python-metaclass/" rel="prev" title="从Python Metaclass说起...">
+                从Python Metaclass说起... <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/23/io-multiplexing-epoll/"
+           data-title="io-multiplexing-epoll" data-url="https://maoao530.github.io/2016/03/23/io-multiplexing-epoll/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="风中老狼" />
+          <p class="site-author-name" itemprop="name">风中老狼</p>
+          <p class="site-description motion-element" itemprop="description">不积跬步，无以至千里；不积小流，无以成江海</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wang-zhao-shun-43" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/maoao530" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/shun_fzll" target="_blank" title="csdn">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-epoll的优点？"><span class="nav-number">1.</span> <span class="nav-text">1. epoll的优点？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-epoll使用说明"><span class="nav-number">2.</span> <span class="nav-text">2. epoll使用说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-epoll的两种模式LT和ET"><span class="nav-number">3.</span> <span class="nav-text">3. epoll的两种模式LT和ET</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-epoll-ET模式的简单HTTP服务器代码"><span class="nav-number">4.</span> <span class="nav-text">4. epoll,ET模式的简单HTTP服务器代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-epoll-amp-LT-模式简单的服务器代码"><span class="nav-number">5.</span> <span class="nav-text">5. epoll & LT 模式简单的服务器代码</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">风中老狼</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"maoao-530"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

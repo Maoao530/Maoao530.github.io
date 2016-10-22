@@ -1,0 +1,682 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Python," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="在Python中，所有数据类型都可以视为对象，当然也可以自定义对象。自定义的对象数据类型就是面向对象中的类（’Class’）的概念。类也是对象，可以把类看成是元类（’Metaclass’）创建出来的对象。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从Python Metaclass说起...">
+<meta property="og:url" content="https://maoao530.github.io/2016/04/12/python-metaclass/index.html">
+<meta property="og:site_name" content="风中老狼的博客">
+<meta property="og:description" content="在Python中，所有数据类型都可以视为对象，当然也可以自定义对象。自定义的对象数据类型就是面向对象中的类（’Class’）的概念。类也是对象，可以把类看成是元类（’Metaclass’）创建出来的对象。">
+<meta property="og:updated_time" content="2016-05-16T14:51:36.127Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从Python Metaclass说起...">
+<meta name="twitter:description" content="在Python中，所有数据类型都可以视为对象，当然也可以自定义对象。自定义的对象数据类型就是面向对象中的类（’Class’）的概念。类也是对象，可以把类看成是元类（’Metaclass’）创建出来的对象。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 从Python Metaclass说起... | 风中老狼的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">风中老狼的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">不积跬步，无以至千里；不积小流，无以成江海</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                从Python Metaclass说起...
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-12T23:50:27+08:00" content="2016-04-12">
+              2016-04-12
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Python-基础拾遗/" itemprop="url" rel="index">
+                    <span itemprop="name">Python 基础拾遗</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/12/python-metaclass/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/12/python-metaclass/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在Python中，所有数据类型都可以视为对象，当然也可以自定义对象。自定义的对象数据类型就是面向对象中的类（’Class’）的概念。<br>类也是对象，可以把类看成是元类（’Metaclass’）创建出来的对象。</p>
+<a id="more"></a>
+<h1 id="1-理解python中的class"><a href="#1-理解python中的class" class="headerlink" title="1. 理解python中的class"></a>1. 理解python中的class</h1><p>在理解元类之前，你需要先掌握Python中的类。类同样也是一种<code>对象</code>。是的，没错，就是对象。只要你使用关键字class，Python解释器在执行的时候就会创建一个对象。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">S</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"></div><div class="line">s = S()</div><div class="line"><span class="keyword">print</span> (s) <span class="comment"># &lt;__main__.S object at 0x00F3B390&gt;</span></div><div class="line"><span class="keyword">print</span> (S) <span class="comment"># &lt;class '__main__.S'&gt;</span></div></pre></td></tr></table></figure>
+<p>通过以上片段我们可以知道，’s’是一个对象实例，而’S’是一个类。而通过type()我们可以查看它的类型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">print</span> (type(s)) <span class="comment"># &lt;class '__main__.S'&gt;</span></div><div class="line"><span class="keyword">print</span> (type(S)) <span class="comment"># &lt;class 'type'&gt;</span></div></pre></td></tr></table></figure>
+<p>可以看到s的类型是<code>Class S</code>，而S的类型是<code>type</code>，那么type是什么呢？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">print(type(S)       <span class="comment"># &lt;class 'type'&gt;</span></div><div class="line">print(type(type))   <span class="comment"># &lt;class 'type'&gt;</span></div></pre></td></tr></table></figure>
+<p>为什么class的类型是type？？</p>
+<h1 id="2-理解type"><a href="#2-理解type" class="headerlink" title="2. 理解type"></a>2. 理解type</h1><p>动态语言和静态语言最大的不同，就是函数和类的定义，不是编译时定义的，而是运行时动态创建的。<br>事实上，我们说class也是对象，而这个对象是运行时动态创建的，创建class的方法就是使用type()函数。</p>
+<p>我们可以打印出<strong><code>help(type)</code></strong> :<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">Help on class type in module builtins:</div><div class="line"></div><div class="line">class type(object)</div><div class="line"> |  type(object_or_name, bases, dict)</div><div class="line"> |  type(object) -&gt; the object&apos;s type</div><div class="line"> |  type(name, bases, dict) -&gt; a new type</div><div class="line"> |</div><div class="line"> |  Methods defined here:</div><div class="line"> |</div><div class="line"> |  __call__(self, /, *args, **kwargs)</div><div class="line"> |      Call self as a function.</div><div class="line"> |</div><div class="line"> |  __delattr__(self, name, /)</div><div class="line"> |      Implement delattr(self, name).</div><div class="line"> |</div></pre></td></tr></table></figure></p>
+<p>我们主要看<code>type(name, bases, dict)</code>这个方法，事实上当我们定义class的时候，就是调用此方法来创建class对象的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">def say_hello(self):</div><div class="line">    print(&quot;say hello&quot;)</div><div class="line"></div><div class="line">name = &apos;Student&apos;                    # 类名</div><div class="line">bases = (object,)                   # 父类集合</div><div class="line">attrs = &#123;&apos;say_hello&apos; : say_hello&#125;   # 类属性和方法</div><div class="line"></div><div class="line">Student = type(name, bases, attrs)</div><div class="line">s = Student()</div><div class="line">s.say_hello()</div></pre></td></tr></table></figure>
+<p>等价于</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">class Student(object):</div><div class="line">    def say_hello(self):</div><div class="line">        print(&quot;say hello&quot;)</div><div class="line">s = Student()</div><div class="line">s.say_hello()</div></pre></td></tr></table></figure>
+<h1 id="3-理解metaclass"><a href="#3-理解metaclass" class="headerlink" title="3. 理解metaclass"></a>3. 理解metaclass</h1><p>metaclass，直译为元类，metaclass允许你动态的控制类的创建行为。换句话说，你可以把类看成是metaclass创建出来的“实例”。  </p>
+<p>因此我们可以<strong><code>先定义metaclass</code>，然后用<code>metaclass创建类</code>，最后用<code>类创建实例</code></strong>。  </p>
+<p>我们先看一个简单的例子，这个metaclass可以给我们自定义的MyList增加一个add方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 1. metaclass是类的模板，所以必须从`type`类型派生：</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ListMetaclass</span><span class="params">(type)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, name, bases, attrs)</span>:</span></div><div class="line">        attrs[<span class="string">'add'</span>] = <span class="keyword">lambda</span> self, value: self.append(value)</div><div class="line">        <span class="keyword">return</span> type.__new__(cls, name, bases, attrs)</div><div class="line"></div><div class="line"><span class="comment"># 2. 定义了metaclass，接下来我们要定义类，并指定用metaclass来创建：</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyList</span><span class="params">(list, metaclass=ListMetaclass)</span>:</span></div><div class="line">    <span class="keyword">pass</span></div></pre></td></tr></table></figure>
+<p>当我们传入关键字参数metaclass时，它指示Python解释器在创建MyList时，要通过<code>ListMetaclass.__new__()</code>来创建，因此我们在<code>__new__()</code>函数里面修改类的定义，比如，加上新的方法，然后，返回修改后的定义。<br><code>__new__()</code>方法接收到的参数依次是：</p>
+<ul>
+<li>当前准备创建的类的对象</li>
+<li>类的名字           </li>
+<li>类继承的父类集合       </li>
+<li>类的方法集合<br>即：<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">cls ==&gt; `&lt;class '__main__.ListMetaclass'&gt;`</div><div class="line">name ==&gt; `MyList`</div><div class="line">bases ==&gt; (&lt;class 'list'&gt;,) </div><div class="line">attrs ==&gt; &#123;'__qualname__': 'MyList', '__module__': '__main__'&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>当返回后，我们可以测试一下MyList类是否有add()方法：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">L = MyList()</div><div class="line">L.add(<span class="number">1</span>)</div><div class="line">print(L)  </div><div class="line"></div><div class="line"><span class="comment">###### 输出 ######</span></div><div class="line">[<span class="number">1</span>]</div></pre></td></tr></table></figure></p>
+<p>动态修改类行为有什么意义？直接在MyList定义中写上add()方法不是更简单吗？ 正常情况下，确实应该直接写，通过metaclass修改纯属变态。  </p>
+<p>但是，总会遇到需要通过metaclass修改类定义的。ORM就是一个典型的例子。ORM全称“Object Relational Mapping”，即对象-关系映射。</p>
+<p>如果做过java web的同学应当知道，<strong><code>Hibernate</code></strong>就是一个对象关系映射的框架。就是把关系数据库的一行映射为一个对象，也就是<strong>一个类对应一个表</strong>，这样，写代码更简单，不用直接操作SQL语句。</p>
+<p>下一节，我们会学习如何用python来构建一个ORM框架。  </p>
+<p>References:</p>
+<ul>
+<li><a href="http://stackoverflow.com/questions/100003/what-is-a-metaclass-in-python?answertab=active#tab-top" target="_blank" rel="external">StackOverflow</a></li>
+<li><a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000" target="_blank" rel="external">廖雪峰的教程</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag">#Python</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/23/io-multiplexing-epoll/" rel="next" title="io-multiplexing-epoll">
+                <i class="fa fa-chevron-left"></i> io-multiplexing-epoll
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/25/python-orm/" rel="prev" title="如何构建一个orm框架？">
+                如何构建一个orm框架？ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/12/python-metaclass/"
+           data-title="从Python Metaclass说起..." data-url="https://maoao530.github.io/2016/04/12/python-metaclass/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="风中老狼" />
+          <p class="site-author-name" itemprop="name">风中老狼</p>
+          <p class="site-description motion-element" itemprop="description">不积跬步，无以至千里；不积小流，无以成江海</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wang-zhao-shun-43" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/maoao530" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/shun_fzll" target="_blank" title="csdn">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-理解python中的class"><span class="nav-number">1.</span> <span class="nav-text">1. 理解python中的class</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-理解type"><span class="nav-number">2.</span> <span class="nav-text">2. 理解type</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-理解metaclass"><span class="nav-number">3.</span> <span class="nav-text">3. 理解metaclass</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">风中老狼</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"maoao-530"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

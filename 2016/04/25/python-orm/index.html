@@ -1,0 +1,673 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Python," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="ORM全称“Object Relational Mapping”，即对象-关系映射，就是把关系数据库的一行映射为一个对象，也就是一个类对应一个表，这样，写代码更简单，不用直接操作SQL语句。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何构建一个orm框架？">
+<meta property="og:url" content="https://maoao530.github.io/2016/04/25/python-orm/index.html">
+<meta property="og:site_name" content="风中老狼的博客">
+<meta property="og:description" content="ORM全称“Object Relational Mapping”，即对象-关系映射，就是把关系数据库的一行映射为一个对象，也就是一个类对应一个表，这样，写代码更简单，不用直接操作SQL语句。">
+<meta property="og:updated_time" content="2016-05-16T14:52:14.592Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何构建一个orm框架？">
+<meta name="twitter:description" content="ORM全称“Object Relational Mapping”，即对象-关系映射，就是把关系数据库的一行映射为一个对象，也就是一个类对应一个表，这样，写代码更简单，不用直接操作SQL语句。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 如何构建一个orm框架？ | 风中老狼的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">风中老狼的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">不积跬步，无以至千里；不积小流，无以成江海</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                如何构建一个orm框架？
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-25T23:54:48+08:00" content="2016-04-25">
+              2016-04-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Python-基础拾遗/" itemprop="url" rel="index">
+                    <span itemprop="name">Python 基础拾遗</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/25/python-orm/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/25/python-orm/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>ORM全称“Object Relational Mapping”，即对象-关系映射，就是把关系数据库的一行映射为一个对象，也就是一个类对应一个表，这样，写代码更简单，不用直接操作SQL语句。</p>
+<a id="more"></a>
+<h1 id="1-开始之前"><a href="#1-开始之前" class="headerlink" title="1. 开始之前"></a>1. 开始之前</h1><p>开始之前，请先掌握python metaclass的知识，请参考我的文章：<a href="https://maoao530.github.io/2016/04/12/python-metaclass/">从Python Metaclass说起</a>  </p>
+<p>为什么要使用metaclass？因为要编写一个ORM框架，所有的类都只能动态定义，只有使用者才能根据表的结构定义出对应的类来。</p>
+<p>掌握了元类的知识后，我们来尝试编写一个ORM框架。首先，假设我们有一个User表，那么我们可能会写出如下代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span><span class="params">(Model)</span>:</span></div><div class="line">    <span class="comment"># 定义类的属性到列的映射：</span></div><div class="line">    id = IntegerField(<span class="string">'id'</span>)</div><div class="line">    name = StringField(<span class="string">'username'</span>)</div><div class="line">    email = StringField(<span class="string">'email'</span>)</div><div class="line">    password = StringField(<span class="string">'password'</span>)</div><div class="line"></div><div class="line"><span class="comment"># 创建一个实例：</span></div><div class="line">u = User(id=<span class="number">12345</span>, name=<span class="string">'Michael'</span>, email=<span class="string">'test@orm.org'</span>, password=<span class="string">'my-pwd'</span>)</div><div class="line"><span class="comment"># 保存到数据库：</span></div><div class="line">u.save()</div></pre></td></tr></table></figure></p>
+<p>怎么样？我们可以不用直接去操作SQL了，看上去是不是非常简单呢？</p>
+<h1 id="2-设计Field类"><a href="#2-设计Field类" class="headerlink" title="2. 设计Field类"></a>2. 设计Field类</h1><p>接下来我们要定义Field类，它负责保存数据库表的<strong>字段名</strong>和<strong>字段类型</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Field</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, name, column_type)</span>:</span></div><div class="line">        self.name = name</div><div class="line">        self.column_type = column_type</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> <span class="string">'&lt;%s:%s&gt;'</span> % (self.__class__.__name__, self.name)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">StringField</span><span class="params">(Field)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, name)</span>:</span></div><div class="line">        super(StringField, self).__init__(name, <span class="string">'varchar(100)'</span>)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IntegerField</span><span class="params">(Field)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, name)</span>:</span></div><div class="line">        super(IntegerField, self).__init__(name, <span class="string">'bigint'</span>)</div></pre></td></tr></table></figure>
+<h1 id="3-设计Model类"><a href="#3-设计Model类" class="headerlink" title="3. 设计Model类"></a>3. 设计Model类</h1><p>Model类是数据库表类的基类。</p>
+<p>在Model类中，就可以定义各种操作数据库的方法，比如save()，delete()，find()，update等等：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 创建Model类时，指定通过ModelMetaclass来创建</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span><span class="params">(dict, metaclass=ModelMetaclass)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, **kw)</span>:</span></div><div class="line">        print(<span class="string">"Model __init__ : "</span>, kw )</div><div class="line">        super(Model, self).__init__(**kw)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getattr__</span><span class="params">(self, key)</span>:</span></div><div class="line">        print(<span class="string">"__getattr__: %s &gt; %s"</span> % (key,self[key]))</div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            <span class="keyword">return</span> self[key]</div><div class="line">        <span class="keyword">except</span> KeyError:</div><div class="line">            <span class="keyword">raise</span> AttributeError(<span class="string">r"'Model' object has no attribute '%s'"</span> % key)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__setattr__</span><span class="params">(self, key, value)</span>:</span></div><div class="line">        print(<span class="string">"__setattr__ : "</span>, key)</div><div class="line">        self[key] = value</div><div class="line"></div><div class="line">    <span class="comment">#只是模拟打印出sql语句</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">save</span><span class="params">(self)</span>:</span></div><div class="line">        fields = []</div><div class="line">        params = []</div><div class="line">        args = []</div><div class="line">        <span class="keyword">for</span> k, v <span class="keyword">in</span> self.__mappings__.items():</div><div class="line">            fields.append(v.name)  <span class="comment"># id,username,email,password 字段名</span></div><div class="line">            params.append(<span class="string">'?'</span>)     <span class="comment"># ????</span></div><div class="line">            args.append(getattr(self, k, <span class="keyword">None</span>))</div><div class="line">        sql = <span class="string">'insert into %s (%s) values (%s)'</span> % (self.__table__, <span class="string">','</span>.join(fields), <span class="string">','</span>.join(params))</div><div class="line">        print(<span class="string">'SQL: %s'</span> % sql)</div><div class="line">        print(<span class="string">'ARGS: %s'</span> % str(args))</div></pre></td></tr></table></figure>
+<h1 id="4-设计ModelMetaclass元类"><a href="#4-设计ModelMetaclass元类" class="headerlink" title="4. 设计ModelMetaclass元类"></a>4. 设计ModelMetaclass元类</h1><p>最后就是mnetaclass元类的编写了。</p>
+<p>使用Model中定义的metaclass的ModelMetaclass来创建User类，也就是说，<strong>metaclass可以隐式地继承到子类</strong>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ModelMetaclass</span><span class="params">(type)</span>:</span></div><div class="line">    <span class="comment"># 准备创建的类的对象，类名，父类集合，类方法集合</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, name, bases, attrs)</span>:</span></div><div class="line">        print(<span class="string">'Found model: %s'</span> % name)</div><div class="line">        <span class="keyword">if</span> name==<span class="string">'Model'</span>:</div><div class="line">            <span class="keyword">return</span> type.__new__(cls, name, bases, attrs)</div><div class="line">        </div><div class="line">        mappings = dict()</div><div class="line">        <span class="keyword">for</span> k, v <span class="keyword">in</span> attrs.items():</div><div class="line">            <span class="keyword">if</span> isinstance(v, Field):</div><div class="line">                print(<span class="string">'Found mapping: %s ==&gt; %s'</span> % (k, v))</div><div class="line">                mappings[k] = v</div><div class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> mappings.keys():</div><div class="line">            attrs.pop(k)</div><div class="line">        attrs[<span class="string">'__mappings__'</span>] = mappings    <span class="comment"># 保存属性和列的映射关系</span></div><div class="line">        attrs[<span class="string">'__table__'</span>] = name           <span class="comment"># 假设表名和类名一致</span></div><div class="line">        <span class="keyword">return</span> type.__new__(cls, name, bases, attrs)</div></pre></td></tr></table></figure>
+<p>至此，核心代码基本上写完了，怎么样？看起来也不是很难。我们来梳理一下：</p>
+<ol>
+<li>定义一个class User(Model)类</li>
+<li>Python解释器通过父类Model的metaclass找到ModelMetaclass类，通过它来创建User</li>
+<li>ModelMetaclass保存User类的一些信息，比如表名，字段等</li>
+<li>当我们调用save()方法时，会去用到第三步骤保存的信息，构造出SQL语句，将数据保存到数据库中</li>
+</ol>
+<p>我们编写代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">u = User(id=12345, name=&apos;Michael&apos;, email=&apos;test@orm.org&apos;, password=&apos;my-pwd&apos;)</div><div class="line">u.save()</div></pre></td></tr></table></figure></p>
+<p>输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Found model: User</div><div class="line">Found mapping: email ==&gt; &lt;StringField:email&gt;</div><div class="line">Found mapping: password ==&gt; &lt;StringField:password&gt;</div><div class="line">Found mapping: id ==&gt; &lt;IntegerField:uid&gt;</div><div class="line">Found mapping: name ==&gt; &lt;StringField:username&gt;</div><div class="line">SQL: insert into User (password,email,username,id) values (?,?,?,?)</div><div class="line">ARGS: [&apos;my-pwd&apos;, &apos;test@orm.org&apos;, &apos;Michael&apos;, 12345]</div></pre></td></tr></table></figure></p>
+<p>可以看到，save()方法打印出了SQL语句和参数列表，我们可以根据自己的需求，来将此信息存储到数据库中。</p>
+<p>References:</p>
+<ul>
+<li><a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000" target="_blank" rel="external">廖雪峰的教程</a> </li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag">#Python</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/12/python-metaclass/" rel="next" title="从Python Metaclass说起...">
+                <i class="fa fa-chevron-left"></i> 从Python Metaclass说起...
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/17/python-decorator/" rel="prev" title="python 装饰器decorator">
+                python 装饰器decorator <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/25/python-orm/"
+           data-title="如何构建一个orm框架？" data-url="https://maoao530.github.io/2016/04/25/python-orm/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="风中老狼" />
+          <p class="site-author-name" itemprop="name">风中老狼</p>
+          <p class="site-description motion-element" itemprop="description">不积跬步，无以至千里；不积小流，无以成江海</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wang-zhao-shun-43" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/maoao530" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/shun_fzll" target="_blank" title="csdn">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-开始之前"><span class="nav-number">1.</span> <span class="nav-text">1. 开始之前</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-设计Field类"><span class="nav-number">2.</span> <span class="nav-text">2. 设计Field类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-设计Model类"><span class="nav-number">3.</span> <span class="nav-text">3. 设计Model类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-设计ModelMetaclass元类"><span class="nav-number">4.</span> <span class="nav-text">4. 设计ModelMetaclass元类</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">风中老狼</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"maoao-530"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
