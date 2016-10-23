@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://maoao530.github.io/"/>
-  <updated>2016-10-23T08:33:33.261Z</updated>
+  <updated>2016-10-23T09:07:42.753Z</updated>
   <id>https://maoao530.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://maoao530.github.io/2016/10/23/%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/"/>
     <id>https://maoao530.github.io/2016/10/23/一步一步搭建hexo博客/</id>
     <published>2016-10-23T07:16:27.000Z</published>
-    <updated>2016-10-23T08:33:33.261Z</updated>
+    <updated>2016-10-23T09:07:42.753Z</updated>
     
     <content type="html"><![CDATA[<p>Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。<br><a id="more"></a></p>
 <h1 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h1><p>因为我是在windows下，所以需要先安装Git和Node.js：</p>
@@ -83,7 +83,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="hexo-命令"><a href="#hexo-命令" class="headerlink" title="hexo 命令"></a>hexo 命令</h1><p>hexo new “postName” #新建文章<br>hexo new page “pageName” #新建页面<br>hexo generate #生成静态页面至public目录<br>hexo server #开启预览访问端口（默认端口4000，’ctrl + c’关闭server）<br>hexo deploy #将.deploy目录部署到GitHub</p>
+<h1 id="hexo-命令"><a href="#hexo-命令" class="headerlink" title="hexo 命令"></a>hexo 命令</h1><p>常用几个命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">hexo new &quot;postName&quot; #新建文章</div><div class="line">hexo new page &quot;pageName&quot; #新建页面</div><div class="line">hexo generate #生成静态页面至public目录</div><div class="line">hexo server #开启预览访问端口（默认端口4000，&apos;ctrl + c&apos;关闭server）</div><div class="line">hexo deploy #将.deploy目录部署到GitHub</div></pre></td></tr></table></figure></p>
 <h1 id="更换next主题"><a href="#更换next主题" class="headerlink" title="更换next主题"></a>更换next主题</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd your-hexo-site</div><div class="line">$ git clone https://github.com/iissnan/hexo-theme-next themes/next</div></pre></td></tr></table></figure>
 <p>修改站点配置文件_config.yml：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">theme: next</div></pre></td></tr></table></figure></p>
 <p>更多关于next主题可以参考：</p>
@@ -93,9 +93,28 @@
 </ul>
 <h1 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h1><p>hexo支持插件，可以直接通过命令行安装即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">npm install plugin-name --save</div><div class="line">//更新插件</div><div class="line">npm update</div><div class="line">//卸载插件</div><div class="line">npm uninstall plugin-name</div></pre></td></tr></table></figure></p>
 <p>下面推荐几个常用的插件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">//feed插件</div><div class="line">npm install hexo-generator-feed --save</div><div class="line">//站点地图</div><div class="line">npm install hexo-generator-sitemap --save</div><div class="line">//百度站点地图</div><div class="line">npm install hexo-generator-baidu-sitemap --save</div></pre></td></tr></table></figure></p>
-<p>#配置上传到github<br>安装deploy git：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-deployer-git --save</div></pre></td></tr></table></figure></p>
-<p>配置_config.yml：<br>deploy:<br>  type: git<br>  repo: git@github.com:Maoao530/Maoao530.github.io.git<br>  branch: master</p>
-<p>配置完成后直接’hexo deploy’,就可以了。</p>
+<p>然后在 Hexo 根目录下的 _config.yml 里配置一下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">feed:</div><div class="line">    type: atom      </div><div class="line">    path: atom.xml</div><div class="line">    limit: 20  # 最近20篇文章  </div><div class="line">sitemap:</div><div class="line">    path: sitemap.xml</div><div class="line">baidusitemap:</div><div class="line">    path: baidusitemap.xml</div></pre></td></tr></table></figure></p>
+<h1 id="博客推广优化"><a href="#博客推广优化" class="headerlink" title="博客推广优化"></a>博客推广优化</h1><p>为了博客有更好的展示率, 最好的方式是通过搜索引擎, 下面讲讲怎么让搜索引擎搜录你的博客.</p>
+<p>面以百度为例:</p>
+<ul>
+<li><a href="">百度网址提交入口</a></li>
+</ul>
+<p>百度站长平台为站长提供单条url提交通道，您可以提交想被百度收录的url，百度搜索引擎会按照标准处理，不保证一定能够收录您提交的url。<br>建议验证网站所有权后，再提交url。</p>
+<p>向百度提交 Sitemap 的过程如下：</p>
+<blockquote>
+<ul>
+<li>注册并登录百度站长平台.</li>
+<li>点击 我的网站=&gt;站点管理, 添加你的域名, 类似上文中验证你的域名, 采用 文件验证 上传 html 文件的方式.</li>
+<li>验证好以后就可以在 数据提交 里面提交 Sitemap 了.</li>
+</ul>
+</blockquote>
+<p>更详细的可以参考下面这篇文章：</p>
+<ul>
+<li><a href="www.franktly.com/2016/07/06/让Baidu和Google收录Hexo博客/">franktly.com/2016/07/06/让Baidu和Google收录Hexo博客/</a></li>
+</ul>
+<h1 id="配置上传到github"><a href="#配置上传到github" class="headerlink" title="配置上传到github"></a>配置上传到github</h1><p>安装deploy git：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-deployer-git --save</div></pre></td></tr></table></figure></p>
+<p>配置_config.yml：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">deploy:</div><div class="line">  type: git</div><div class="line">  repo: git@github.com:Maoao530/Maoao530.github.io.git</div><div class="line">  branch: master</div></pre></td></tr></table></figure></p>
+<p>配置完成后直接<code>hexo deploy</code>,就可以了。</p>
 ]]></content>
     
     <summary type="html">
