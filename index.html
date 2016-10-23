@@ -243,6 +243,186 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/23/一步一步搭建hexo博客/" itemprop="url">
+                  一步一步搭建hexo博客
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-23T15:16:27+08:00" content="2016-10-23">
+              2016-10-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/hexo博客/" itemprop="url" rel="index">
+                    <span itemprop="name">hexo博客</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/23/一步一步搭建hexo博客/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/23/一步一步搭建hexo博客/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。</p>
+<h1 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h1><p>因为我是在windows下，所以需要先安装Git和Node.js：</p>
+<ul>
+<li><a href="https://github.com/git-for-windows/git/releases/download/v2.10.1.windows.1/Git-2.10.1-64-bit.exe" target="_blank" rel="external">Git for windows</a></li>
+<li><a href="https://nodejs.org/dist/v4.6.1/node-v4.6.1-x64.msi" target="_blank" rel="external">Node.js</a><br>安装过程就不多说了。</li>
+</ul>
+<h1 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h1><p>打开git，cd到你需要安装hexo的目录，然后安装hexo</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g hexo-cli</div></pre></td></tr></table></figure>
+<p><img src="/img/archives/npm-install-hexo-cli.png" alt="安装hexo"></p>
+<h1 id="初始化Hexo项目"><a href="#初始化Hexo项目" class="headerlink" title="初始化Hexo项目"></a>初始化Hexo项目</h1><p>创建并且初始化hexo项目<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">hexo init &lt;folder&gt;</div><div class="line">cd &lt;folder&gt;</div><div class="line">npm install</div></pre></td></tr></table></figure></p>
+<p>hexo默认的目录如下：<br>├── public<br>├── scaffolds<br>├── scripts<br>├── source<br>|   ├── _drafts<br>|   └── _posts<br>├── themes<br>├── _config.yml<br>└── package.json</p>
+<table>
+<thead>
+<tr>
+<th>目录</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.deploy</td>
+<td style="text-align:center">执行hexo deploy命令部署到GitHub上的内容目录</td>
+</tr>
+<tr>
+<td>public</td>
+<td style="text-align:center">执行hexo generate命令，输出的静态网页内容目录</td>
+</tr>
+<tr>
+<td>scaffolds</td>
+<td style="text-align:center">layout模板文件目录，其中的md文件可以添加编辑</td>
+</tr>
+<tr>
+<td>scripts</td>
+<td style="text-align:center">扩展脚本目录，这里可以自定义一些javascript脚本</td>
+</tr>
+<tr>
+<td>source</td>
+<td style="text-align:center">文章源码目录，该目录下的markdown和html文件均会被hexo处理。该页面对应repo的根目录，404文件、favicon，ico文件，CNAME文件等都应该放这里，该目录下可新建页面目录。</td>
+</tr>
+<tr>
+<td>_drafts</td>
+<td style="text-align:center">草稿文章</td>
+</tr>
+<tr>
+<td>_posts</td>
+<td style="text-align:center">发布文章</td>
+</tr>
+<tr>
+<td>themes</td>
+<td style="text-align:center">主题文件目录</td>
+</tr>
+<tr>
+<td>_config.yml</td>
+<td style="text-align:center">全局配置文件，大多数的设置都在这里</td>
+</tr>
+<tr>
+<td>package.json</td>
+<td style="text-align:center">应用程序数据，指明hexo的版本等信息，类似于一般软件中的关于按钮</td>
+</tr>
+</tbody>
+</table>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/05/17/python-classmethod-staticmethod/" itemprop="url">
                   python中的@classmethod和@staticmethod
                 </a>
@@ -1117,7 +1297,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1125,7 +1305,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1134,7 +1314,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>

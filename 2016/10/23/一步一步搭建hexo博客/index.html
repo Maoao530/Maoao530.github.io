@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="python," />
+  <meta name="keywords" content="hexo," />
 
 
 
@@ -84,16 +84,39 @@
 
 
 
-<meta name="description" content="花两分钟了解什么是实例方法，类方法，静态方法。">
+<meta name="description" content="Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。
+准备环境因为我是在windows下，所以需要先安装Git和Node.js：
+
+Git for windows
+Node.js安装过程就不多说了。
+
+安装Hexo打开git，cd到你需要安装hexo的目录，然后安装hexo
+1npm install -g">
 <meta property="og:type" content="article">
-<meta property="og:title" content="python中的@classmethod和@staticmethod">
-<meta property="og:url" content="https://maoao530.github.io/2016/05/17/python-classmethod-staticmethod/index.html">
+<meta property="og:title" content="一步一步搭建hexo博客">
+<meta property="og:url" content="https://maoao530.github.io/2016/10/23/一步一步搭建hexo博客/index.html">
 <meta property="og:site_name" content="风中老狼的博客">
-<meta property="og:description" content="花两分钟了解什么是实例方法，类方法，静态方法。">
-<meta property="og:updated_time" content="2016-10-22T13:54:23.921Z">
+<meta property="og:description" content="Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。
+准备环境因为我是在windows下，所以需要先安装Git和Node.js：
+
+Git for windows
+Node.js安装过程就不多说了。
+
+安装Hexo打开git，cd到你需要安装hexo的目录，然后安装hexo
+1npm install -g">
+<meta property="og:image" content="https://maoao530.github.io/img/archives/npm-install-hexo-cli.png">
+<meta property="og:updated_time" content="2016-10-23T08:07:13.073Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="python中的@classmethod和@staticmethod">
-<meta name="twitter:description" content="花两分钟了解什么是实例方法，类方法，静态方法。">
+<meta name="twitter:title" content="一步一步搭建hexo博客">
+<meta name="twitter:description" content="Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。
+准备环境因为我是在windows下，所以需要先安装Git和Node.js：
+
+Git for windows
+Node.js安装过程就不多说了。
+
+安装Hexo打开git，cd到你需要安装hexo的目录，然后安装hexo
+1npm install -g">
+<meta name="twitter:image" content="https://maoao530.github.io/img/archives/npm-install-hexo-cli.png">
 
 
 
@@ -111,7 +134,7 @@
   };
 </script>
 
-  <title> python中的@classmethod和@staticmethod | 风中老狼的博客 </title>
+  <title> 一步一步搭建hexo博客 | 风中老狼的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -241,7 +264,7 @@
             
             
               
-                python中的@classmethod和@staticmethod
+                一步一步搭建hexo博客
               
             
           </h1>
@@ -253,8 +276,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-17T23:58:59+08:00" content="2016-05-17">
-              2016-05-17
+            <time itemprop="dateCreated" datetime="2016-10-23T15:16:27+08:00" content="2016-10-23">
+              2016-10-23
             </time>
           </span>
 
@@ -267,8 +290,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Python-基础拾遗/" itemprop="url" rel="index">
-                    <span itemprop="name">Python 基础拾遗</span>
+                  <a href="/categories/hexo博客/" itemprop="url" rel="index">
+                    <span itemprop="name">hexo博客</span>
                   </a>
                 </span>
 
@@ -283,8 +306,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/05/17/python-classmethod-staticmethod/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/05/17/python-classmethod-staticmethod/" itemprop="commentsCount"></span>
+                <a href="/2016/10/23/一步一步搭建hexo博客/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/23/一步一步搭建hexo博客/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -307,38 +330,67 @@
       
 
       
-        <p>花两分钟了解什么是实例方法，类方法，静态方法。</p>
-<a id="more"></a>
-<h1 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. 定义</h1><p>python中类方法和静态方法是用装饰器<code>@classmethod</code>和<code>@staticmethod</code>来定义的。</p>
-<p><a href="https://maoao530.github.io/2016/05/17/python-decorator/">点我学习什么是装饰器</a></p>
-<p>我们先来看一个简单的实例：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(self,x)</span>:</span></div><div class="line">        <span class="keyword">print</span> (<span class="string">"executing foo(%s,%s)"</span>%(self,x))</div><div class="line"></div><div class="line"><span class="meta">    @classmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">class_foo</span><span class="params">(cls,x)</span>:</span></div><div class="line">        <span class="keyword">print</span> (<span class="string">"executing class_foo(%s,%s)"</span>%(cls,x))</div><div class="line"></div><div class="line"><span class="meta">    @staticmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">static_foo</span><span class="params">(x)</span>:</span></div><div class="line">        <span class="keyword">print</span> (<span class="string">"executing static_foo(%s)"</span>%x)</div></pre></td></tr></table></figure>
-<p>我们定义了一个<code>class A</code>，类A里面分别定义了普通方法foo，<code>@classmethod</code>修饰的类方法class_foo，还有<code>@staticmethod</code>修饰的静态方法static_foo，那么他们之间有什么区别呢？<br>我们不妨来验证一下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">a=A()</div><div class="line">print(a.foo)</div><div class="line">print(a.class_foo)</div><div class="line">print(a.static_foo)</div><div class="line"></div><div class="line"><span class="comment"># 输出结果</span></div><div class="line"><span class="comment"># &lt;bound method A.foo of &lt;__main__.A object at 0x0121B950&gt;&gt;</span></div><div class="line"><span class="comment"># &lt;bound method A.class_foo of &lt;class '__main__.A'&gt;&gt;</span></div><div class="line"><span class="comment"># &lt;function A.static_foo at 0x01222078&gt;</span></div></pre></td></tr></table></figure>
-<p>我们从输出结果可以看到：</p>
+        <p>Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。</p>
+<h1 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h1><p>因为我是在windows下，所以需要先安装Git和Node.js：</p>
 <ul>
-<li>foo是绑定在实例a上的，参数self便是实例a本身</li>
-<li>class_foo是绑定在class A上的，参数cls指向class A本身</li>
-<li>static_foo不绑定在a或者A上，所以没有额外的参数</li>
+<li><a href="https://github.com/git-for-windows/git/releases/download/v2.10.1.windows.1/Git-2.10.1-64-bit.exe" target="_blank" rel="external">Git for windows</a></li>
+<li><a href="https://nodejs.org/dist/v4.6.1/node-v4.6.1-x64.msi" target="_blank" rel="external">Node.js</a><br>安装过程就不多说了。</li>
 </ul>
-<h1 id="2-使用"><a href="#2-使用" class="headerlink" title="2. 使用"></a>2. 使用</h1><p>那么使用上有什么区别呢？<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">a = A()</div><div class="line">a.foo(<span class="number">1</span>)</div><div class="line">a.class_foo(<span class="number">1</span>)</div><div class="line">a.static_foo(<span class="number">1</span>)</div><div class="line"></div><div class="line"><span class="comment"># A.foo(2) #error</span></div><div class="line">A.class_foo(<span class="number">2</span>)</div><div class="line">A.static_foo(<span class="number">2</span>)</div><div class="line"></div><div class="line"><span class="comment"># 输出结果</span></div><div class="line"><span class="comment"># executing foo(&lt;__main__.A object at 0x0121B950&gt;,1)</span></div><div class="line"><span class="comment"># executing class_foo(&lt;class '__main__.A'&gt;,1)</span></div><div class="line"><span class="comment"># executing static_foo(1)</span></div><div class="line"><span class="comment"># executing class_foo(&lt;class '__main__.A'&gt;,2)</span></div><div class="line"><span class="comment"># executing static_foo(2)</span></div></pre></td></tr></table></figure></p>
-<p>从上面的代码我们可以看到，使用上的区别：</p>
-<ul>
-<li>foo是绑定在实例a上的，只能通过实例去调用</li>
-<li>class_foo绑定在类A上，可以通过实例a或者类A去调用</li>
-<li>static_foo不绑定任何参数，也可以通过实例a或者类A去调用</li>
-</ul>
-<h1 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h1><p>类和实例都是对象，所以它们可以有方法：</p>
-<ul>
-<li>实例的方法就叫实例方法。</li>
-<li>类的方法就叫类方法。</li>
-<li>静态方法就是写在类里的普通方法,必须用类来调用，比如说有一些跟类有关系的功能，但是运行的时候又不需要实例和类参与的函数，这个时候就可以用@staticmethod，因为如果写一堆全局函数，可能后续会变得难以维护。</li>
-</ul>
-<p>References：</p>
-<ul>
-<li><a href="https://taizilongxu.gitbooks.io/stackoverflow-about-python/content/14/README.html" target="_blank" rel="external">装饰器@staticmethod和@classmethod有什么区别?</a></li>
-<li><a href="http://www.wklken.me/posts/2013/12/22/difference-between-staticmethod-and-classmethod-in-python.html" target="_blank" rel="external">[翻译]PYTHON中STATICMETHOD和CLASSMETHOD的差异</a></li>
-</ul>
+<h1 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h1><p>打开git，cd到你需要安装hexo的目录，然后安装hexo</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g hexo-cli</div></pre></td></tr></table></figure>
+<p><img src="/img/archives/npm-install-hexo-cli.png" alt="安装hexo"></p>
+<h1 id="初始化Hexo项目"><a href="#初始化Hexo项目" class="headerlink" title="初始化Hexo项目"></a>初始化Hexo项目</h1><p>创建并且初始化hexo项目<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">hexo init &lt;folder&gt;</div><div class="line">cd &lt;folder&gt;</div><div class="line">npm install</div></pre></td></tr></table></figure></p>
+<p>hexo默认的目录如下：<br>├── public<br>├── scaffolds<br>├── scripts<br>├── source<br>|   ├── _drafts<br>|   └── _posts<br>├── themes<br>├── _config.yml<br>└── package.json</p>
+<table>
+<thead>
+<tr>
+<th>目录</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.deploy</td>
+<td style="text-align:center">执行hexo deploy命令部署到GitHub上的内容目录</td>
+</tr>
+<tr>
+<td>public</td>
+<td style="text-align:center">执行hexo generate命令，输出的静态网页内容目录</td>
+</tr>
+<tr>
+<td>scaffolds</td>
+<td style="text-align:center">layout模板文件目录，其中的md文件可以添加编辑</td>
+</tr>
+<tr>
+<td>scripts</td>
+<td style="text-align:center">扩展脚本目录，这里可以自定义一些javascript脚本</td>
+</tr>
+<tr>
+<td>source</td>
+<td style="text-align:center">文章源码目录，该目录下的markdown和html文件均会被hexo处理。该页面对应repo的根目录，404文件、favicon，ico文件，CNAME文件等都应该放这里，该目录下可新建页面目录。</td>
+</tr>
+<tr>
+<td>_drafts</td>
+<td style="text-align:center">草稿文章</td>
+</tr>
+<tr>
+<td>_posts</td>
+<td style="text-align:center">发布文章</td>
+</tr>
+<tr>
+<td>themes</td>
+<td style="text-align:center">主题文件目录</td>
+</tr>
+<tr>
+<td>_config.yml</td>
+<td style="text-align:center">全局配置文件，大多数的设置都在这里</td>
+</tr>
+<tr>
+<td>package.json</td>
+<td style="text-align:center">应用程序数据，指明hexo的版本等信息，类似于一般软件中的关于按钮</td>
+</tr>
+</tbody>
+</table>
 
       
     </div>
@@ -360,7 +412,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/python/" rel="tag">#python</a>
+            <a href="/tags/hexo/" rel="tag">#hexo</a>
           
         </div>
       
@@ -369,17 +421,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/17/python-decorator/" rel="next" title="python 装饰器decorator">
-                <i class="fa fa-chevron-left"></i> python 装饰器decorator
+              <a href="/2016/05/17/python-classmethod-staticmethod/" rel="next" title="python中的@classmethod和@staticmethod">
+                <i class="fa fa-chevron-left"></i> python中的@classmethod和@staticmethod
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/10/23/一步一步搭建hexo博客/" rel="prev" title="一步一步搭建hexo博客">
-                一步一步搭建hexo博客 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -405,8 +453,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/05/17/python-classmethod-staticmethod/"
-           data-title="python中的@classmethod和@staticmethod" data-url="https://maoao530.github.io/2016/05/17/python-classmethod-staticmethod/">
+      <div class="ds-thread" data-thread-key="2016/10/23/一步一步搭建hexo博客/"
+           data-title="一步一步搭建hexo博客" data-url="https://maoao530.github.io/2016/10/23/一步一步搭建hexo博客/">
       </div>
     
   </div>
@@ -526,7 +574,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-定义"><span class="nav-number">1.</span> <span class="nav-text">1. 定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-使用"><span class="nav-number">2.</span> <span class="nav-text">2. 使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-总结"><span class="nav-number">3.</span> <span class="nav-text">3. 总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#准备环境"><span class="nav-number">1.</span> <span class="nav-text">准备环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装Hexo"><span class="nav-number">2.</span> <span class="nav-text">安装Hexo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#初始化Hexo项目"><span class="nav-number">3.</span> <span class="nav-text">初始化Hexo项目</span></a></li></ol></div>
             
           </div>
         </section>
