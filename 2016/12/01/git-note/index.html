@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="python," />
+  <meta name="keywords" content="git," />
 
 
 
@@ -86,16 +86,18 @@
 
 
 
-<meta name="description" content="花两分钟了解什么是实例方法，类方法，静态方法。">
+<meta name="description" content="把常用的GIT命令在这里记录一下。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="python中的@classmethod和@staticmethod">
-<meta property="og:url" content="https://maoao530.github.io/2016/05/17/python-classmethod-staticmethod/index.html">
+<meta property="og:title" content="git-note">
+<meta property="og:url" content="https://maoao530.github.io/2016/12/01/git-note/index.html">
 <meta property="og:site_name" content="风中老狼的博客">
-<meta property="og:description" content="花两分钟了解什么是实例方法，类方法，静态方法。">
-<meta property="og:updated_time" content="2016-10-22T13:54:23.921Z">
+<meta property="og:description" content="把常用的GIT命令在这里记录一下。">
+<meta property="og:image" content="https://maoao530.github.io/img/archives/git.png">
+<meta property="og:updated_time" content="2016-12-01T14:38:28.265Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="python中的@classmethod和@staticmethod">
-<meta name="twitter:description" content="花两分钟了解什么是实例方法，类方法，静态方法。">
+<meta name="twitter:title" content="git-note">
+<meta name="twitter:description" content="把常用的GIT命令在这里记录一下。">
+<meta name="twitter:image" content="https://maoao530.github.io/img/archives/git.png">
 
 
 
@@ -113,7 +115,7 @@
   };
 </script>
 
-  <title> python中的@classmethod和@staticmethod | 风中老狼的博客 </title>
+  <title> git-note | 风中老狼的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -243,7 +245,7 @@
             
             
               
-                python中的@classmethod和@staticmethod
+                git-note
               
             
           </h1>
@@ -255,38 +257,19 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-17T23:58:59+08:00" content="2016-05-17">
-              2016-05-17
+            <time itemprop="dateCreated" datetime="2016-12-01T22:22:24+08:00" content="2016-12-01">
+              2016-12-01
             </time>
           </span>
 
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Python-基础拾遗/" itemprop="url" rel="index">
-                    <span itemprop="name">Python 基础拾遗</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
           
 
           
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/05/17/python-classmethod-staticmethod/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/05/17/python-classmethod-staticmethod/" itemprop="commentsCount"></span>
+                <a href="/2016/12/01/git-note/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/01/git-note/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -309,38 +292,23 @@
       
 
       
-        <p>花两分钟了解什么是实例方法，类方法，静态方法。</p>
+        <p>把常用的GIT命令在这里记录一下。</p>
 <a id="more"></a>
-<h1 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. 定义</h1><p>python中类方法和静态方法是用装饰器<code>@classmethod</code>和<code>@staticmethod</code>来定义的。</p>
-<p><a href="https://maoao530.github.io/2016/05/17/python-decorator/">点我学习什么是装饰器</a></p>
-<p>我们先来看一个简单的实例：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(self,x)</span>:</span></div><div class="line">        <span class="keyword">print</span> (<span class="string">"executing foo(%s,%s)"</span>%(self,x))</div><div class="line"></div><div class="line"><span class="meta">    @classmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">class_foo</span><span class="params">(cls,x)</span>:</span></div><div class="line">        <span class="keyword">print</span> (<span class="string">"executing class_foo(%s,%s)"</span>%(cls,x))</div><div class="line"></div><div class="line"><span class="meta">    @staticmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">static_foo</span><span class="params">(x)</span>:</span></div><div class="line">        <span class="keyword">print</span> (<span class="string">"executing static_foo(%s)"</span>%x)</div></pre></td></tr></table></figure>
-<p>我们定义了一个<code>class A</code>，类A里面分别定义了普通方法foo，<code>@classmethod</code>修饰的类方法class_foo，还有<code>@staticmethod</code>修饰的静态方法static_foo，那么他们之间有什么区别呢？<br>我们不妨来验证一下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">a=A()</div><div class="line">print(a.foo)</div><div class="line">print(a.class_foo)</div><div class="line">print(a.static_foo)</div><div class="line"></div><div class="line"><span class="comment"># 输出结果</span></div><div class="line"><span class="comment"># &lt;bound method A.foo of &lt;__main__.A object at 0x0121B950&gt;&gt;</span></div><div class="line"><span class="comment"># &lt;bound method A.class_foo of &lt;class '__main__.A'&gt;&gt;</span></div><div class="line"><span class="comment"># &lt;function A.static_foo at 0x01222078&gt;</span></div></pre></td></tr></table></figure>
-<p>我们从输出结果可以看到：</p>
+<h1 id="1-Git流程图"><a href="#1-Git流程图" class="headerlink" title="1 Git流程图"></a>1 Git流程图</h1><p><img src="/img/archives/git.png" alt="Git流程"></p>
 <ul>
-<li>foo是绑定在实例a上的，参数self便是实例a本身</li>
-<li>class_foo是绑定在class A上的，参数cls指向class A本身</li>
-<li>static_foo不绑定在a或者A上，所以没有额外的参数</li>
+<li>workspace: 本地的工作目录。（记作A）</li>
+<li>index：缓存区域，临时保存本地改动。（记作B）</li>
+<li>local repository: 本地仓库，只想最后一次提交HEAD。（记作C）</li>
+<li>remote repository：远程仓库。（记作D）</li>
 </ul>
-<h1 id="2-使用"><a href="#2-使用" class="headerlink" title="2. 使用"></a>2. 使用</h1><p>那么使用上有什么区别呢？<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">a = A()</div><div class="line">a.foo(<span class="number">1</span>)</div><div class="line">a.class_foo(<span class="number">1</span>)</div><div class="line">a.static_foo(<span class="number">1</span>)</div><div class="line"></div><div class="line"><span class="comment"># A.foo(2) #error</span></div><div class="line">A.class_foo(<span class="number">2</span>)</div><div class="line">A.static_foo(<span class="number">2</span>)</div><div class="line"></div><div class="line"><span class="comment"># 输出结果</span></div><div class="line"><span class="comment"># executing foo(&lt;__main__.A object at 0x0121B950&gt;,1)</span></div><div class="line"><span class="comment"># executing class_foo(&lt;class '__main__.A'&gt;,1)</span></div><div class="line"><span class="comment"># executing static_foo(1)</span></div><div class="line"><span class="comment"># executing class_foo(&lt;class '__main__.A'&gt;,2)</span></div><div class="line"><span class="comment"># executing static_foo(2)</span></div></pre></td></tr></table></figure></p>
-<p>从上面的代码我们可以看到，使用上的区别：</p>
-<ul>
-<li>foo是绑定在实例a上的，只能通过实例去调用</li>
-<li>class_foo绑定在类A上，可以通过实例a或者类A去调用</li>
-<li>static_foo不绑定任何参数，也可以通过实例a或者类A去调用</li>
-</ul>
-<h1 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h1><p>类和实例都是对象，所以它们可以有方法：</p>
-<ul>
-<li>实例的方法就叫实例方法。</li>
-<li>类的方法就叫类方法。</li>
-<li>静态方法就是写在类里的普通方法,必须用类来调用，比如说有一些跟类有关系的功能，但是运行的时候又不需要实例和类参与的函数，这个时候就可以用@staticmethod，因为如果写一堆全局函数，可能后续会变得难以维护。</li>
-</ul>
-<p>References：</p>
-<ul>
-<li><a href="https://taizilongxu.gitbooks.io/stackoverflow-about-python/content/14/README.html" target="_blank" rel="external">装饰器@staticmethod和@classmethod有什么区别?</a></li>
-<li><a href="http://www.wklken.me/posts/2013/12/22/difference-between-staticmethod-and-classmethod-in-python.html" target="_blank" rel="external">[翻译]PYTHON中STATICMETHOD和CLASSMETHOD的差异</a></li>
-</ul>
+<h1 id="2-新建"><a href="#2-新建" class="headerlink" title="2 新建"></a>2 新建</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"># 在当前目录新建一个Git代码库</div><div class="line">$ git init</div><div class="line"></div><div class="line"># </div><div class="line"></div><div class="line"></div><div class="line"># 下载一个项目和它的整个代码历史</div><div class="line">$ </div><div class="line"></div><div class="line">git init                 //创建</div><div class="line">git init [project-name]  //新建一个目录，将其初始化为Git代码库</div><div class="line">git clone [url]          //检出</div><div class="line">git config --global user.email &quot;you@example.com&quot; //配置email</div><div class="line">git config --global user.name &quot;Name&quot; //配置用户名</div></pre></td></tr></table></figure>
+<h1 id="3-操作"><a href="#3-操作" class="headerlink" title="3 操作"></a>3 操作</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">git add &lt;file&gt; // 文件添加，A → B</div><div class="line">git add . // 所有文件添加，A → B</div><div class="line">git commit -m &quot;代码提交信息&quot; //文件提交，B → C</div><div class="line">git commit --amend //与上次commit合并, *B → C</div><div class="line">git push origin master //推送至master分支, C → D</div><div class="line">git pull //更新本地仓库至最新改动， D → A</div><div class="line">git fetch //抓取远程仓库更新， D → C</div><div class="line">git log //查看提交记录</div><div class="line">git status //查看修改状态</div><div class="line">git diff//查看详细修改内容</div><div class="line">git show//显示某次提交的内容</div></pre></td></tr></table></figure>
+<h1 id="4-撤销操作"><a href="#4-撤销操作" class="headerlink" title="4 撤销操作"></a>4 撤销操作</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">git reset &lt;file&gt;//某个文件索引会回滚到最后一次提交， C → B</div><div class="line">git reset//索引会回滚到最后一次提交， C → B</div><div class="line">git reset --hard // 索引会回滚到最后一次提交， C → B → A</div><div class="line">git checkout // 从index复制到workspace， B → A</div><div class="line">git checkout -- files // 文件从index复制到workspace， B → A</div><div class="line">git checkout HEAD -- files // 文件从local repository复制到workspace， C → A</div></pre></td></tr></table></figure>
+<h1 id="5-分支相关"><a href="#5-分支相关" class="headerlink" title="5 分支相关"></a>5 分支相关</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">git checkout -b branch_name //创建名叫“branch_name”的分支，并切换过去</div><div class="line">git checkout master //切换回主分支</div><div class="line">git branch -d branch_name // 删除名叫“branch_name”的分支</div><div class="line">git push origin branch_name //推送分支到远端仓库</div><div class="line">git merge branch_name // 合并分支branch_name到当前分支(如master)</div><div class="line">git rebase //衍合，线性化的自动， D → A</div></pre></td></tr></table></figure>
+<h1 id="6-冲突处理"><a href="#6-冲突处理" class="headerlink" title="6 冲突处理"></a>6 冲突处理</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">git diff //对比workspace与index</div><div class="line">git diff HEAD //对于workspace与最后一次commit</div><div class="line">git diff &lt;source_branch&gt; &lt;target_branch&gt; //对比差异</div><div class="line">git add &lt;filename&gt; //修改完冲突，需要add以标记合并成功</div></pre></td></tr></table></figure>
+<h1 id="7-其他"><a href="#7-其他" class="headerlink" title="7 其他"></a>7 其他</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">git diff //对比workspace与index</div><div class="line">git diff HEAD //对于workspace与最后一次commit</div><div class="line">git diff &lt;source_branch&gt; &lt;target_branch&gt; //对比差异</div><div class="line">git add &lt;filename&gt; //修改完冲突，需要add以标记合并成功</div></pre></td></tr></table></figure>
+<p>关于Git更详细可以参考：</p>
+<p><a href="https://git-scm.com/book/zh/v2" target="_blank" rel="external">Git完整命令地址</a></p>
 
       
     </div>
@@ -362,7 +330,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/python/" rel="tag">#python</a>
+            <a href="/tags/git/" rel="tag">#git</a>
           
         </div>
       
@@ -371,17 +339,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/17/python-decorator/" rel="next" title="python 装饰器decorator">
-                <i class="fa fa-chevron-left"></i> python 装饰器decorator
+              <a href="/2016/11/27/rsa/" rel="next" title="Python RSA文件加密">
+                <i class="fa fa-chevron-left"></i> Python RSA文件加密
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/10/23/一步一步搭建hexo博客/" rel="prev" title="一步一步搭建hexo博客">
-                一步一步搭建hexo博客 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -407,8 +371,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/05/17/python-classmethod-staticmethod/"
-           data-title="python中的@classmethod和@staticmethod" data-url="https://maoao530.github.io/2016/05/17/python-classmethod-staticmethod/">
+      <div class="ds-thread" data-thread-key="2016/12/01/git-note/"
+           data-title="git-note" data-url="https://maoao530.github.io/2016/12/01/git-note/">
       </div>
     
   </div>
@@ -535,7 +499,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-定义"><span class="nav-number">1.</span> <span class="nav-text">1. 定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-使用"><span class="nav-number">2.</span> <span class="nav-text">2. 使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-总结"><span class="nav-number">3.</span> <span class="nav-text">3. 总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Git流程图"><span class="nav-number">1.</span> <span class="nav-text">1 Git流程图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-新建"><span class="nav-number">2.</span> <span class="nav-text">2 新建</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-操作"><span class="nav-number">3.</span> <span class="nav-text">3 操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-撤销操作"><span class="nav-number">4.</span> <span class="nav-text">4 撤销操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-分支相关"><span class="nav-number">5.</span> <span class="nav-text">5 分支相关</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-冲突处理"><span class="nav-number">6.</span> <span class="nav-text">6 冲突处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-其他"><span class="nav-number">7.</span> <span class="nav-text">7 其他</span></a></li></ol></div>
             
           </div>
         </section>

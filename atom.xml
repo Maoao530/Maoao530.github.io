@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://maoao530.github.io/"/>
-  <updated>2016-11-03T13:11:39.605Z</updated>
+  <updated>2016-12-01T14:38:28.265Z</updated>
   <id>https://maoao530.github.io/</id>
   
   <author>
@@ -16,11 +16,74 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>git-note</title>
+    <link href="https://maoao530.github.io/2016/12/01/git-note/"/>
+    <id>https://maoao530.github.io/2016/12/01/git-note/</id>
+    <published>2016-12-01T14:22:24.000Z</published>
+    <updated>2016-12-01T14:38:28.265Z</updated>
+    
+    <content type="html"><![CDATA[<p>把常用的GIT命令在这里记录一下。</p>
+<a id="more"></a>
+<h1 id="1-Git流程图"><a href="#1-Git流程图" class="headerlink" title="1 Git流程图"></a>1 Git流程图</h1><p><img src="/img/archives/git.png" alt="Git流程"></p>
+<ul>
+<li>workspace: 本地的工作目录。（记作A）</li>
+<li>index：缓存区域，临时保存本地改动。（记作B）</li>
+<li>local repository: 本地仓库，只想最后一次提交HEAD。（记作C）</li>
+<li>remote repository：远程仓库。（记作D）</li>
+</ul>
+<h1 id="2-新建"><a href="#2-新建" class="headerlink" title="2 新建"></a>2 新建</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"># 在当前目录新建一个Git代码库</div><div class="line">$ git init</div><div class="line"></div><div class="line"># </div><div class="line"></div><div class="line"></div><div class="line"># 下载一个项目和它的整个代码历史</div><div class="line">$ </div><div class="line"></div><div class="line">git init                 //创建</div><div class="line">git init [project-name]  //新建一个目录，将其初始化为Git代码库</div><div class="line">git clone [url]          //检出</div><div class="line">git config --global user.email &quot;you@example.com&quot; //配置email</div><div class="line">git config --global user.name &quot;Name&quot; //配置用户名</div></pre></td></tr></table></figure>
+<h1 id="3-操作"><a href="#3-操作" class="headerlink" title="3 操作"></a>3 操作</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">git add &lt;file&gt; // 文件添加，A → B</div><div class="line">git add . // 所有文件添加，A → B</div><div class="line">git commit -m &quot;代码提交信息&quot; //文件提交，B → C</div><div class="line">git commit --amend //与上次commit合并, *B → C</div><div class="line">git push origin master //推送至master分支, C → D</div><div class="line">git pull //更新本地仓库至最新改动， D → A</div><div class="line">git fetch //抓取远程仓库更新， D → C</div><div class="line">git log //查看提交记录</div><div class="line">git status //查看修改状态</div><div class="line">git diff//查看详细修改内容</div><div class="line">git show//显示某次提交的内容</div></pre></td></tr></table></figure>
+<h1 id="4-撤销操作"><a href="#4-撤销操作" class="headerlink" title="4 撤销操作"></a>4 撤销操作</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">git reset &lt;file&gt;//某个文件索引会回滚到最后一次提交， C → B</div><div class="line">git reset//索引会回滚到最后一次提交， C → B</div><div class="line">git reset --hard // 索引会回滚到最后一次提交， C → B → A</div><div class="line">git checkout // 从index复制到workspace， B → A</div><div class="line">git checkout -- files // 文件从index复制到workspace， B → A</div><div class="line">git checkout HEAD -- files // 文件从local repository复制到workspace， C → A</div></pre></td></tr></table></figure>
+<h1 id="5-分支相关"><a href="#5-分支相关" class="headerlink" title="5 分支相关"></a>5 分支相关</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">git checkout -b branch_name //创建名叫“branch_name”的分支，并切换过去</div><div class="line">git checkout master //切换回主分支</div><div class="line">git branch -d branch_name // 删除名叫“branch_name”的分支</div><div class="line">git push origin branch_name //推送分支到远端仓库</div><div class="line">git merge branch_name // 合并分支branch_name到当前分支(如master)</div><div class="line">git rebase //衍合，线性化的自动， D → A</div></pre></td></tr></table></figure>
+<h1 id="6-冲突处理"><a href="#6-冲突处理" class="headerlink" title="6 冲突处理"></a>6 冲突处理</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">git diff //对比workspace与index</div><div class="line">git diff HEAD //对于workspace与最后一次commit</div><div class="line">git diff &lt;source_branch&gt; &lt;target_branch&gt; //对比差异</div><div class="line">git add &lt;filename&gt; //修改完冲突，需要add以标记合并成功</div></pre></td></tr></table></figure>
+<h1 id="7-其他"><a href="#7-其他" class="headerlink" title="7 其他"></a>7 其他</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">git diff //对比workspace与index</div><div class="line">git diff HEAD //对于workspace与最后一次commit</div><div class="line">git diff &lt;source_branch&gt; &lt;target_branch&gt; //对比差异</div><div class="line">git add &lt;filename&gt; //修改完冲突，需要add以标记合并成功</div></pre></td></tr></table></figure>
+<p>关于Git更详细可以参考：</p>
+<p><a href="https://git-scm.com/book/zh/v2" target="_blank" rel="external">Git完整命令地址</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;把常用的GIT命令在这里记录一下。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="git" scheme="https://maoao530.github.io/tags/git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Python RSA文件加密</title>
+    <link href="https://maoao530.github.io/2016/11/27/rsa/"/>
+    <id>https://maoao530.github.io/2016/11/27/rsa/</id>
+    <published>2016-11-27T13:51:47.000Z</published>
+    <updated>2016-11-27T14:06:29.020Z</updated>
+    
+    <content type="html"><![CDATA[<a id="more"></a>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+
+    
+    </summary>
+    
+      <category term="python 进阶" scheme="https://maoao530.github.io/categories/python-%E8%BF%9B%E9%98%B6/"/>
+    
+    
+      <category term="文件加密" scheme="https://maoao530.github.io/tags/%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86/"/>
+    
+      <category term="RSA" scheme="https://maoao530.github.io/tags/RSA/"/>
+    
+  </entry>
+  
+  <entry>
     <title>flask源码阅读</title>
     <link href="https://maoao530.github.io/2016/10/24/flask-source-reading/"/>
     <id>https://maoao530.github.io/2016/10/24/flask-source-reading/</id>
     <published>2016-10-24T12:26:04.000Z</published>
-    <updated>2016-11-03T13:11:39.605Z</updated>
+    <updated>2016-11-08T15:13:03.594Z</updated>
     
     <content type="html"><![CDATA[<p>Flask是一个使用 Python 编写的轻量级 Web 应用框架。其 WSGI 工具箱采用 Werkzeug ，模板引擎则使用 Jinja2 。</p>
 <a id="more"></a>
@@ -67,7 +130,7 @@
 <h3 id="4-2-1-生成request-context"><a href="#4-2-1-生成request-context" class="headerlink" title="4.2.1 生成request_context"></a>4.2.1 生成request_context</h3><p>我们一个一个来分析，先看是如何创建request context的：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Flask类函数</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">request_context</span><span class="params">(self, environ)</span>:</span></div><div class="line">        <span class="keyword">return</span> _RequestContext(self, environ)</div><div class="line"></div><div class="line"><span class="comment"># _RequestContext类</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">_RequestContext</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, app, environ)</span>:</span></div><div class="line">        self.app = app                                           <span class="comment"># Flask app</span></div><div class="line">        self.url_adapter = app.url_map.bind_to_environ(environ)  <span class="comment"># 将ENV绑定到URL Adappter，可以参考werkzeug相关文档说明</span></div><div class="line">        self.request = app.request_class(environ)                <span class="comment"># app.request = Request类，其实就是把environ字典的一些信息封装为Request对象</span></div><div class="line">        self.session = app.open_session(self.request)            <span class="comment"># 从cookie中拿到sessionID，然后读取用户的session</span></div><div class="line">        self.g = _RequestGlobals()                               </div><div class="line">        self.flashes = <span class="keyword">None</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__enter__</span><span class="params">(self)</span>:</span></div><div class="line">        _request_ctx_stack.push(self)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__exit__</span><span class="params">(self, exc_type, exc_value, tb)</span>:</span></div><div class="line">        <span class="keyword">if</span> tb <span class="keyword">is</span> <span class="keyword">None</span> <span class="keyword">or</span> <span class="keyword">not</span> self.app.debug:</div><div class="line">            _request_ctx_stack.pop()</div></pre></td></tr></table></figure>
 <ul>
-<li>点击这里 =&gt; <a href="http://werkzeug-docs-cn.readthedocs.io/zh_CN/latest/tutorial.html#step-4" target="_blank" rel="external">Werkzeug 文档说明 </a></li>
+<li>URL Adappter更多，可以点击这里 =&gt; <a href="http://werkzeug-docs-cn.readthedocs.io/zh_CN/latest/tutorial.html#step-4" target="_blank" rel="external">Werkzeug 文档说明 </a></li>
 </ul>
 <p>关于<code>Session</code>和<code>Cookie</code>，我这里多补充几句：</p>
 <ul>
@@ -90,6 +153,52 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">return</span> response(environ, start_response)</div></pre></td></tr></table></figure>
 <p>至此，flask 0.1主框架大致分析完成了。</p>
 <h1 id="5-Flask-Context机制"><a href="#5-Flask-Context机制" class="headerlink" title="5 Flask Context机制"></a>5 Flask Context机制</h1><p>细心的同学在上面应该注意到了，我们还有一个点没有讲，那就是Flask的Context机制。</p>
+<p>Flask 中有分为请求上下文和应用上下文：</p>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th style="text-align:left">Context类型</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>current_app</td>
+<td style="text-align:left">AppContext</td>
+<td style="text-align:left">当前应用的对象</td>
+</tr>
+<tr>
+<td>g</td>
+<td style="text-align:left">AppContext</td>
+<td style="text-align:left">处理请求时用作临时存储的对象</td>
+</tr>
+<tr>
+<td>request</td>
+<td style="text-align:left">RequestContext</td>
+<td style="text-align:left">请求request对象</td>
+</tr>
+<tr>
+<td>session</td>
+<td style="text-align:left">RequestContext</td>
+<td style="text-align:left">请求的session对象</td>
+</tr>
+</tbody>
+</table>
+<p>拉到Flask.py最后面，我们可以看到有以下几行：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">_request_ctx_stack = LocalStack()</div><div class="line">current_app = LocalProxy(<span class="keyword">lambda</span>: _request_ctx_stack.top.app)</div><div class="line">request = LocalProxy(<span class="keyword">lambda</span>: _request_ctx_stack.top.request)</div><div class="line">session = LocalProxy(<span class="keyword">lambda</span>: _request_ctx_stack.top.session)</div><div class="line">g = LocalProxy(<span class="keyword">lambda</span>: _request_ctx_stack.top.g)</div></pre></td></tr></table></figure>
+<p>所有的对象都交由request_ctx_stack这个堆栈来管理了。</p>
+<h2 id="5-1-LocakStack"><a href="#5-1-LocakStack" class="headerlink" title="5.1 LocakStack()"></a>5.1 LocakStack()</h2><p>LocalStack()会返回一个栈。栈肯定会有push 、pop和top函数，如下所示:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LocalStack</span><span class="params">(object)</span>:</span></div><div class="line"></div><div class="line">    <span class="string">"""</span></div><div class="line">        &gt;&gt;&gt; ls = LocalStack()</div><div class="line">        &gt;&gt;&gt; ls.push(42)</div><div class="line">        &gt;&gt;&gt; ls.top</div><div class="line">        42</div><div class="line">        &gt;&gt;&gt; ls.push(23)</div><div class="line">        &gt;&gt;&gt; ls.top</div><div class="line">        23</div><div class="line">        &gt;&gt;&gt; ls.pop()</div><div class="line">        23</div><div class="line">        &gt;&gt;&gt; ls.top</div><div class="line">        42</div><div class="line">    """</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self._local = Local()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">push</span><span class="params">(self, obj)</span>:</span></div><div class="line">        rv = getattr(self._local, <span class="string">'stack'</span>, <span class="keyword">None</span>)</div><div class="line">        <span class="keyword">if</span> rv <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">            self._local.stack = rv = []</div><div class="line">        rv.append(obj)</div><div class="line">        <span class="keyword">return</span> rv</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pop</span><span class="params">(self)</span>:</span></div><div class="line">        stack = getattr(self._local, <span class="string">'stack'</span>, <span class="keyword">None</span>)</div><div class="line">        <span class="keyword">if</span> stack <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">None</span></div><div class="line">        <span class="keyword">elif</span> len(stack) == <span class="number">1</span>:</div><div class="line">            release_local(self._local)</div><div class="line">            <span class="keyword">return</span> stack[<span class="number">-1</span>]</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="keyword">return</span> stack.pop()</div><div class="line"></div><div class="line"><span class="meta">    @property</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">top</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            <span class="keyword">return</span> self._local.stack[<span class="number">-1</span>]</div><div class="line">        <span class="keyword">except</span> (AttributeError, IndexError):</div><div class="line">            <span class="keyword">return</span> <span class="keyword">None</span></div></pre></td></tr></table></figure>
+<p>按照我们的理解，要实现一个栈，那么LocalStack类应该有一个成员变量，是一个list，然后通过 这个list来保存栈的元素。然而，LocalStack并没有一个类型是list的成员变量， LocalStack仅有一个成员变量self._local = Local()。</p>
+<p>我们再看push，pop，top函数可以知道，具体是通过self._local.stack这个来实现栈的操作。</p>
+<h2 id="5-2-Local"><a href="#5-2-Local" class="headerlink" title="5.2 Local()"></a>5.2 Local()</h2><p>当我们操作self._local.stack时，会调用Local()的<strong>getattr</strong>和<strong>setattr</strong>方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Local</span><span class="params">(object)</span>:</span></div><div class="line">    __slots__ = (<span class="string">'__storage__'</span>, <span class="string">'__ident_func__'</span>)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        object.__setattr__(self, <span class="string">'__storage__'</span>, &#123;&#125;)</div><div class="line">        object.__setattr__(self, <span class="string">'__ident_func__'</span>, get_ident)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getattr__</span><span class="params">(self, name)</span>:</span></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            <span class="keyword">return</span> self.__storage__[self.__ident_func__()][name]</div><div class="line">        <span class="keyword">except</span> KeyError:</div><div class="line">            <span class="keyword">raise</span> AttributeError(name)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__setattr__</span><span class="params">(self, name, value)</span>:</span></div><div class="line">        ident = self.__ident_func__()</div><div class="line">        storage = self.__storage__</div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            storage[ident][name] = value</div><div class="line">        <span class="keyword">except</span> KeyError:</div><div class="line">            storage[ident] = &#123;name: value&#125;</div></pre></td></tr></table></figure>
+<p>Local类有两个成员变量，分别是<strong>storage</strong>和<strong>ident_func</strong>，其中，前者 是一个字典，后者是一个函数。<br>这个函数的含义是，获取当前线程的id。</p>
+<p>例如，当我们执行：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">request_ctx_stack = LocalStack()</div><div class="line">_request_ctx_stack.push(RequestContext)</div></pre></td></tr></table></figure>
+<p>注意，这里赋值的时候，最终会调用：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># name =&gt; stack</span></div><div class="line">self.__storage__[self.__ident_func__()][name] = RequestContext</div></pre></td></tr></table></figure></p>
+<p>所以最终看起来会是这样一个数据结构：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="string">'thread_id1'</span>:&#123;<span class="string">'stack'</span>:[_RequestContext()]&#125;,</div><div class="line">    <span class="string">'thread_id2'</span>:&#123;<span class="string">'stack'</span>:[_RequestContext()]&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 ]]></content>
     
     <summary type="html">
