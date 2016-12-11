@@ -4,6 +4,78 @@
 
     
   <url>
+    <loc>https://maoao530.github.io/2016/10/24/flask-source-reading/</loc>
+    <lastmod>2016-12-11T08:47:19.934Z</lastmod>
+    <data>
+        <display>
+        <title>flask源码阅读</title>
+        <pubTime>2016-10-24T12:26:04.000Z</pubTime>
+        
+        <tag>Flask</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python进阶" url="https://maoao530.github.io/categories/Python%E8%BF%9B%E9%98%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://maoao530.github.io/2016/12/11/android-looper-handler-message/</loc>
+    <lastmod>2016-12-11T07:39:39.413Z</lastmod>
+    <data>
+        <display>
+        <title>Android消息机制理解</title>
+        <pubTime>2016-12-11T06:17:21.000Z</pubTime>
+        
+        <tag>Looper</tag>
+         
+        <tag>Handler</tag>
+         
+        <tag>Message</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android进阶" url="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://maoao530.github.io/2016/08/11/android-base/</loc>
+    <lastmod>2016-12-11T06:14:16.074Z</lastmod>
+    <data>
+        <display>
+        <title>Android四大组件</title>
+        <pubTime>2016-08-11T01:59:38.000Z</pubTime>
+        
+        <tag>Android</tag>
+         
+        <tag>Activity</tag>
+         
+        <tag>Service</tag>
+         
+        <tag>BroadcastReceiver</tag>
+         
+        <tag>ContentProvider</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android基础" url="https://maoao530.github.io/categories/Android%E5%9F%BA%E7%A1%80/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://maoao530.github.io/2016/12/10/cpp-ref-count/</loc>
     <lastmod>2016-12-10T14:07:05.298Z</lastmod>
     <data>
@@ -99,26 +171,6 @@
            
              
               <breadCrumb title="Python基础" url="https://maoao530.github.io/categories/Python%E5%9F%BA%E7%A1%80/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://maoao530.github.io/2016/10/24/flask-source-reading/</loc>
-    <lastmod>2016-12-10T05:41:10.211Z</lastmod>
-    <data>
-        <display>
-        <title>flask源码阅读</title>
-        <pubTime>2016-10-24T12:26:04.000Z</pubTime>
-        
-        <tag>Flask</tag>
-         
-         
-           
-             
-              <breadCrumb title="Python进阶" url="https://maoao530.github.io/categories/Python%E8%BF%9B%E9%98%B6/"/>
           
         </display>
     </data>
