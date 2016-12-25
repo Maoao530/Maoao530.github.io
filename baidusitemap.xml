@@ -4,6 +4,30 @@
 
     
   <url>
+    <loc>https://maoao530.github.io/2016/12/11/android-looper-handler-message/</loc>
+    <lastmod>2016-12-25T15:05:24.946Z</lastmod>
+    <data>
+        <display>
+        <title>Android消息机制</title>
+        <pubTime>2016-12-11T06:17:21.000Z</pubTime>
+        
+        <tag>Looper</tag>
+         
+        <tag>Handler</tag>
+         
+        <tag>Message</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android进阶" url="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://maoao530.github.io/2016/12/25/android-binder-02/</loc>
     <lastmod>2016-12-25T14:53:54.729Z</lastmod>
     <data>
@@ -80,30 +104,6 @@
            
              
               <breadCrumb title="Python进阶" url="https://maoao530.github.io/categories/Python%E8%BF%9B%E9%98%B6/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://maoao530.github.io/2016/12/11/android-looper-handler-message/</loc>
-    <lastmod>2016-12-11T07:39:39.413Z</lastmod>
-    <data>
-        <display>
-        <title>Android消息机制理解</title>
-        <pubTime>2016-12-11T06:17:21.000Z</pubTime>
-        
-        <tag>Looper</tag>
-         
-        <tag>Handler</tag>
-         
-        <tag>Message</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android进阶" url="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
           
         </display>
     </data>

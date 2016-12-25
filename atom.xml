@@ -206,11 +206,11 @@
   </entry>
   
   <entry>
-    <title>Android消息机制理解</title>
+    <title>Android消息机制</title>
     <link href="https://maoao530.github.io/2016/12/11/android-looper-handler-message/"/>
     <id>https://maoao530.github.io/2016/12/11/android-looper-handler-message/</id>
     <published>2016-12-11T06:17:21.000Z</published>
-    <updated>2016-12-11T07:39:39.413Z</updated>
+    <updated>2016-12-25T15:05:24.946Z</updated>
     
     <content type="html"><![CDATA[<p>本文介绍Android的消息机制。</p>
 <a id="more"></a>

@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://maoao530.github.io/2016/12/11/android-looper-handler-message/</loc>
+    
+    <lastmod>2016-12-25T15:05:24.946Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://maoao530.github.io/2016/12/25/android-binder-02/</loc>
     
     <lastmod>2016-12-25T14:53:54.729Z</lastmod>
@@ -33,13 +40,6 @@
     <loc>https://maoao530.github.io/2016/10/24/flask-source-reading/</loc>
     
     <lastmod>2016-12-11T08:47:19.934Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://maoao530.github.io/2016/12/11/android-looper-handler-message/</loc>
-    
-    <lastmod>2016-12-11T07:39:39.413Z</lastmod>
     
   </url>
   
