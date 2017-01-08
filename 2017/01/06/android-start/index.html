@@ -1,0 +1,795 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android启动," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="风中老狼的博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="本文介绍android的启动流程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android系统启动流程">
+<meta property="og:url" content="https://maoao530.github.io/2017/01/06/android-start/index.html">
+<meta property="og:site_name" content="风中老狼的博客">
+<meta property="og:description" content="本文介绍android的启动流程。">
+<meta property="og:image" content="https://maoao530.github.io/img/archives/android-boot-up.png">
+<meta property="og:image" content="https://maoao530.github.io/img/archives/system_server.jpg">
+<meta property="og:updated_time" content="2017-01-08T09:57:20.842Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android系统启动流程">
+<meta name="twitter:description" content="本文介绍android的启动流程。">
+<meta name="twitter:image" content="https://maoao530.github.io/img/archives/android-boot-up.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Android系统启动流程 | 风中老狼的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">风中老狼的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">不积跬步，无以至千里；不积小流，无以成江海</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android系统启动流程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-01-06T21:29:35+08:00" content="2017-01-06">
+              2017-01-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android进阶/" itemprop="url" rel="index">
+                    <span itemprop="name">Android进阶</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/01/06/android-start/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/06/android-start/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文介绍android的启动流程。</p>
+<a id="more"></a>
+<p>系统启动架构图：</p>
+<p><img src="/img/archives/android-boot-up.png" alt="android-boot-up.png"></p>
+<h1 id="1-Loader层"><a href="#1-Loader层" class="headerlink" title="1 Loader层"></a>1 Loader层</h1><p><strong>1. Boot ROM: </strong><br>上电后，BootRom会被激活，<code>引导芯片代码</code>开始从预定义的地方（固化在ROM）开始执行，然后加载引导程序到<code>RAM</code>。</p>
+<p><strong>2. Boot Loader引导程序</strong><br>Boot Loader是启动Android系统之前的引导程序，引导程序是OEM厂商或者运营商加锁和限制的地方，它是针对特定的主板与芯片的。OEM厂商要么使用很受欢迎的引导程序比如<code>redboot</code>、<code>uboot</code>、<code>ARMboot</code>等或者开发自己的引导程序，它不是Android操作系统的一部分。<br>Boot Loader主要作用是检查RAM，初始化硬件参数等功能。</p>
+<p><strong>3 Preloader: </strong><br>（1）Preloader是MTK平台独有的防止芯片被Hack的一个loader，MTK平台的bootrom会先加载preloader到SRAM中，preloader会先去初始化一些HW组件，比如通信端口(USB/Uart)，外部存储设备(Emmc or Nand)，内存设备(DRAM Calibration)等，最后会Load LK到DRAM中并且run LK(U-boot)。<br>（2）LK会从外部存储设备load boot image,包括Linux kernel和Ramdisk到DRAM中.最后LK会跳到 Linux Kernel里去执行start kernel.<br>（3）linux kernel会先完成一些初始化动作，mount 根文件系统和启动第一个用户进程(init 进程)</p>
+<h1 id="2-kernel层"><a href="#2-kernel层" class="headerlink" title="2 kernel层"></a>2 kernel层</h1><p>Android内核与linux内核启动的方式差不多。Kernel的启动流程：</p>
+<blockquote>
+<p>alps/kernel/init/main.c<br><strong>start_kernel() ==&gt; rest_init() ==&gt; kernel_thread(kernel_init) ==&gt; kernel_init()</strong></p>
+</blockquote>
+<h2 id="2-1-rest-init"><a href="#2-1-rest-init" class="headerlink" title="2.1 rest_init()"></a>2.1 rest_init()</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> noinline <span class="keyword">void</span> __<span class="function">ref <span class="title">rest_init</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">    ...</div><div class="line">    kernel_thread(kernel_init, <span class="literal">NULL</span>, CLONE_FS);</div><div class="line">    pid = kernel_thread(kthreadd, <span class="literal">NULL</span>, CLONE_FS | CLONE_FILES);</div><div class="line">    ...</div><div class="line">    init_idle_bootup_task(current);</div><div class="line">    schedule_preempt_disabled();</div><div class="line">    ...</div><div class="line">    cpu_idle();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>rest_init中调用kernel_thread函数启动了2个内核线程，分别是：kernel_init和kthreadd</li>
+<li>调用schedule函数开启了内核的调度系统，从此linux系统开始转起来了。</li>
+<li>rest_init最终调用cpu_idle函数结束了整个内核的启动。<br>也就是说linux内核最终结束了一个函数cpu_idle。这个函数里面肯定是死循环。</li>
+<li>简单来说，linux内核最终的状态是：<strong>有事干的时候去执行有意义的工作（执行各个进程任务），实在没活干的时候就去死循环（实际上死循环也可以看成是一个任务）。</strong></li>
+<li>之前已经启动了内核调度系统，调度系统会负责考评系统中所有的进程，这些进程里面只有有哪个需要被运行，调度系统就会终止cpu_idle死循环进程（空闲进程）转而去执行有意义的干活的进程。这样操作系统就转起来了。</li>
+</ol>
+<p><strong> 0号进程：</strong><br>swapper进程(pid=0)：又称为idle进程, 叫空闲进程，由系统自动创建, 运行在内核态。<br>系统初始化过程Kernel由无到有开创的第一个进程, 也是唯一一个没有通过fork或者kernel_thread产生的进程。<br>swapper进程用于初始化进程管理、内存管理，加载Display,Camera Driver，Binder Driver等相关工作。</p>
+<p><strong> 1号进程 </strong><br>init进程(pid=1)：由0号进程通过kernel_thread创建，在内核空间完成初始化后, 加载init程序, 并最终运行在用户空间，<code>init进程是所有用户进程的鼻祖</code>。</p>
+<p><strong> 2号进程 </strong><br>kthreadd进程(pid=2)：由0号进程通过kernel_thread创建，是Linux系统的内核进程，会创建内核工作线程kworkder，软中断线程ksoftirqd，thermal等内核守护进程。<br>kthreadd运行在内核空间, 负责所有内核线程的调度和管理 , <code>kthreadd进程是所有内核进程的鼻祖</code>。</p>
+<h2 id="2-2-kernel-init"><a href="#2-2-kernel-init" class="headerlink" title="2.2 kernel_init()"></a>2.2 kernel_init()</h2><p>init进程会通过kernel_init创建，这个时候是在内核态，那么怎么一步步走到用户态呢？</p>
+<blockquote>
+<p>kernel_init-&gt;init_post-&gt;run_init_process-&gt;kernel_execve</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> __<span class="function">init <span class="title">kernel_init</span><span class="params">(<span class="keyword">void</span> * unused)</span>  </span></div><div class="line">&#123;  </div><div class="line">    <span class="comment">/*Wait until kthreadd is all set-up.*/</span>  </div><div class="line">    wait_for_completion(&amp;kthreadd_done);  </div><div class="line">     </div><div class="line">    <span class="comment">//主要是初始化设备驱动，完成其他驱动程序（直接编译进内核的模块）的初始化。</span></div><div class="line">    do_basic_setup();  </div><div class="line"></div><div class="line">    <span class="comment">//挂载根文件系统</span></div><div class="line">    <span class="keyword">if</span> (sys_open((<span class="keyword">const</span> <span class="keyword">char</span> __user *) <span class="string">"/dev/console"</span>, O_RDWR, <span class="number">0</span>) &lt; <span class="number">0</span>)  </div><div class="line">        printk(KERN_WARNING <span class="string">"Warning: unable to open an initial console.\n"</span>); </div><div class="line"></div><div class="line">    <span class="comment">//定义init进程 </span></div><div class="line">    <span class="keyword">if</span> (!ramdisk_execute_command)  </div><div class="line">        ramdisk_execute_command = <span class="string">"/init"</span>;  </div><div class="line"></div><div class="line">    <span class="comment">//最后调用init_post，启动进程负责用户空间的初始化 </span></div><div class="line">    init_post();  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接下来定位到<code>init_post</code>的函数体，代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> noinline <span class="keyword">int</span> <span class="title">init_post</span><span class="params">(<span class="keyword">void</span>)</span>  </span></div><div class="line">&#123;  </div><div class="line">    ……<span class="comment">//省略部分代码  </span></div><div class="line">    <span class="keyword">if</span> (ramdisk_execute_command) &#123;  </div><div class="line">    <span class="comment">//run_init_process执行后将不再返回  </span></div><div class="line">    run_init_process(ramdisk_execute_command);  </div><div class="line">    &#125;  </div><div class="line">    <span class="keyword">if</span> (execute_command) &#123;  </div><div class="line">       run_init_process(execute_command);  </div><div class="line">    &#125;  </div><div class="line">    run_init_process(<span class="string">"/sbin/init"</span>);  </div><div class="line">    run_init_process(<span class="string">"/etc/init"</span>);  </div><div class="line">    run_init_process(<span class="string">"/bin/init"</span>);  </div><div class="line">    run_init_process(<span class="string">"/bin/sh"</span>);  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>execute_command 是bootloader传递给内核的参数，一般是/init（即根目录下的init程序），也就是调用文件系统里的init进程。如果找不到就会继续寻找“/sbin/init”、“/etc/init”、“/bin/init”、“/bin/sh”，找到后便执行run_init_process，且不再返回。run_init_process的函数体非常简单，仅仅是对kernel_execve函数的封装，代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">run_init_process</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *init_filename)</span>  </span></div><div class="line">&#123;  </div><div class="line">  argv_init[<span class="number">0</span>] = init_filename;  </div><div class="line">  kernel_execve(init_filename, argv_init, envp_init);  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>kernel_execve</code>是Linux内核中创建用户进程的方法接口，其实现位于</p>
+<blockquote>
+<p>arch/arm/kernel/sys_arm.c。</p>
+</blockquote>
+<p>那么至此，我们已经对Android Kernel如何引导以及用户空间1号进程（init进程）如何启动做了详细分析。</p>
+<h1 id="3-Init进程"><a href="#3-Init进程" class="headerlink" title="3 Init进程"></a>3 Init进程</h1><h2 id="3-1-Init-Process"><a href="#3-1-Init-Process" class="headerlink" title="3.1 Init Process"></a>3.1 Init Process</h2><p>这里的Native层主要说明init进程，当kernel Initialize完成之后，系统会执行第一个用户进程init<br>，我们可以说它是root进程或者所有进程的父进程。init进程相关的代码：</p>
+<blockquote>
+<p>/system/core/init/init.cpp：<br>/system/core/rootdir/init.rc<br>/system/core/init/readme.txt</p>
+</blockquote>
+<p>Init进程启动过程就是代码init.cpp中main函数执行过程，我们来看看它做了什么：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(basename(argv[<span class="number">0</span>]), <span class="string">"ueventd"</span>)) &#123;</div><div class="line">        <span class="keyword">return</span> ueventd_main(argc, argv);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(basename(argv[<span class="number">0</span>]), <span class="string">"watchdogd"</span>)) &#123;</div><div class="line">        <span class="keyword">return</span> watchdogd_main(argc, argv);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Clear the umask.</span></div><div class="line">    umask(<span class="number">0</span>);</div><div class="line"></div><div class="line">    add_environment(<span class="string">"PATH"</span>, _PATH_DEFPATH);</div><div class="line"></div><div class="line">    <span class="keyword">bool</span> is_first_stage = (argc == <span class="number">1</span>) || (<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">"--second-stage"</span>) != <span class="number">0</span>);</div><div class="line"></div><div class="line">    <span class="comment">//挂载tmpfs, devpts, proc, sysfs文件系统</span></div><div class="line">    <span class="keyword">if</span> (is_first_stage) &#123;</div><div class="line">        mount(<span class="string">"tmpfs"</span>, <span class="string">"/dev"</span>, <span class="string">"tmpfs"</span>, MS_NOSUID, <span class="string">"mode=0755"</span>);</div><div class="line">        mkdir(<span class="string">"/dev/pts"</span>, <span class="number">0755</span>);</div><div class="line">        mkdir(<span class="string">"/dev/socket"</span>, <span class="number">0755</span>);</div><div class="line">        mount(<span class="string">"devpts"</span>, <span class="string">"/dev/pts"</span>, <span class="string">"devpts"</span>, <span class="number">0</span>, <span class="literal">NULL</span>);</div><div class="line">        <span class="meta">#<span class="meta-keyword">define</span> MAKE_STR(x) __STRING(x)</span></div><div class="line">        mount(<span class="string">"proc"</span>, <span class="string">"/proc"</span>, <span class="string">"proc"</span>, <span class="number">0</span>, <span class="string">"hidepid=2,gid="</span> MAKE_STR(AID_READPROC));</div><div class="line">        mount(<span class="string">"sysfs"</span>, <span class="string">"/sys"</span>, <span class="string">"sysfs"</span>, <span class="number">0</span>, <span class="literal">NULL</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// We must have some place other than / to create the device nodes for</span></div><div class="line">    <span class="comment">// kmsg and null, otherwise we won't be able to remount / read-only</span></div><div class="line">    <span class="comment">// later on. Now that tmpfs is mounted on /dev, we can actually talk</span></div><div class="line">    <span class="comment">// to the outside world.</span></div><div class="line">    <span class="comment">//屏蔽标准的输入输出，即标准的输入输出定向到NULL设备。  </span></div><div class="line">    open_devnull_stdio();</div><div class="line">    <span class="comment">//kernel log初始化</span></div><div class="line">    klog_init();</div><div class="line">    klog_set_level(KLOG_NOTICE_LEVEL);</div><div class="line"></div><div class="line">    NOTICE(<span class="string">"init %s started!\n"</span>, is_first_stage ? <span class="string">"first stage"</span> : <span class="string">"second stage"</span>);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!is_first_stage) &#123;</div><div class="line">        <span class="comment">// Indicate that booting is in progress to background fw loaders, etc.</span></div><div class="line">        close(open(<span class="string">"/dev/.booting"</span>, O_WRONLY | O_CREAT | O_CLOEXEC, <span class="number">0000</span>));</div><div class="line">        <span class="comment">//创建一块共享的内存空间，用于属性服务</span></div><div class="line">        property_init();</div><div class="line"></div><div class="line">        <span class="comment">// If arguments are passed both on the command line and in DT,</span></div><div class="line">        <span class="comment">// properties set in DT always have priority over the command-line ones.</span></div><div class="line">        <span class="comment">//设置基本属性 </span></div><div class="line">        process_kernel_dt();</div><div class="line">        process_kernel_cmdline();</div><div class="line"></div><div class="line">        <span class="comment">// Propagate the kernel variables to internal variables</span></div><div class="line">        <span class="comment">// used by init as well as the current required properties.</span></div><div class="line">        export_kernel_boot_props();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Set up SELinux, including loading the SELinux policy if we're in the kernel domain.</span></div><div class="line">    <span class="comment">// 加载SELinux</span></div><div class="line">    selinux_initialize(is_first_stage);</div><div class="line"></div><div class="line">    <span class="comment">// If we're in the kernel domain, re-exec init to transition to the init domain now</span></div><div class="line">    <span class="comment">// that the SELinux policy has been loaded.</span></div><div class="line">    <span class="keyword">if</span> (is_first_stage) &#123;</div><div class="line">        <span class="keyword">if</span> (restorecon(<span class="string">"/init"</span>) == <span class="number">-1</span>) &#123;</div><div class="line">            ERROR(<span class="string">"restorecon failed: %s\n"</span>, strerror(errno));</div><div class="line">            security_failure();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">char</span>* path = argv[<span class="number">0</span>];</div><div class="line">        <span class="keyword">char</span>* args[] = &#123; path, <span class="keyword">const_cast</span>&lt;<span class="keyword">char</span>*&gt;(<span class="string">"--second-stage"</span>), <span class="literal">nullptr</span> &#125;;</div><div class="line">        <span class="keyword">if</span> (execv(path, args) == <span class="number">-1</span>) &#123;</div><div class="line">            ERROR(<span class="string">"execv(\"%s\") failed: %s\n"</span>, path, strerror(errno));</div><div class="line">            security_failure();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// These directories were necessarily created before initial policy load</span></div><div class="line">    <span class="comment">// and therefore need their security context restored to the proper value.</span></div><div class="line">    <span class="comment">// This must happen before /dev is populated by ueventd.</span></div><div class="line">    NOTICE(<span class="string">"Running restorecon...\n"</span>);</div><div class="line">    restorecon(<span class="string">"/dev"</span>);</div><div class="line">    restorecon(<span class="string">"/dev/socket"</span>);</div><div class="line">    restorecon(<span class="string">"/dev/__properties__"</span>);</div><div class="line">    restorecon(<span class="string">"/property_contexts"</span>);</div><div class="line">    restorecon_recursive(<span class="string">"/sys"</span>);</div><div class="line"></div><div class="line">    epoll_fd = epoll_create1(EPOLL_CLOEXEC);</div><div class="line">    <span class="keyword">if</span> (epoll_fd == <span class="number">-1</span>) &#123;</div><div class="line">        ERROR(<span class="string">"epoll_create1 failed: %s\n"</span>, strerror(errno));</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//初始化子进程退出的信号处理过程</span></div><div class="line">    signal_handler_init();</div><div class="line">    <span class="comment">//加载/default.prop文件</span></div><div class="line">    property_load_boot_defaults();</div><div class="line">    export_oem_lock_status();</div><div class="line">    <span class="comment">//启动属性服务</span></div><div class="line">    start_property_service();</div><div class="line"></div><div class="line">    <span class="keyword">const</span> BuiltinFunctionMap function_map;</div><div class="line">    Action::set_function_map(&amp;function_map);</div><div class="line"></div><div class="line">    <span class="comment">// 添加解service, on, import 解析器</span></div><div class="line">    Parser&amp; parser = Parser::GetInstance();</div><div class="line">    parser.AddSectionParser(<span class="string">"service"</span>,<span class="built_in">std</span>::make_unique&lt;ServiceParser&gt;());</div><div class="line">    parser.AddSectionParser(<span class="string">"on"</span>, <span class="built_in">std</span>::make_unique&lt;ActionParser&gt;());</div><div class="line">    parser.AddSectionParser(<span class="string">"import"</span>, <span class="built_in">std</span>::make_unique&lt;ImportParser&gt;());</div><div class="line">    <span class="comment">// 解析init rc文件</span></div><div class="line">    parser.ParseConfig(<span class="string">"/init.rc"</span>);</div><div class="line"></div><div class="line">    ActionManager&amp; am = ActionManager::GetInstance();</div><div class="line"></div><div class="line">    <span class="comment">//执行rc文件中触发器为 on early-init的语句</span></div><div class="line">    am.QueueEventTrigger(<span class="string">"early-init"</span>);</div><div class="line">    <span class="comment">//创建wait_for_coldboot_done 动作并添加到action vector和trigger_queue_中</span></div><div class="line">    am.QueueBuiltinAction(wait_for_coldboot_done_action, <span class="string">"wait_for_coldboot_done"</span>);</div><div class="line">    am.QueueBuiltinAction(mix_hwrng_into_linux_rng_action, <span class="string">"mix_hwrng_into_linux_rng"</span>);</div><div class="line">    am.QueueBuiltinAction(set_mmap_rnd_bits_action, <span class="string">"set_mmap_rnd_bits"</span>);</div><div class="line">    am.QueueBuiltinAction(keychord_init_action, <span class="string">"keychord_init"</span>);</div><div class="line">    am.QueueBuiltinAction(console_init_action, <span class="string">"console_init"</span>);</div><div class="line"></div><div class="line">    <span class="comment">//执行rc文件中触发器为 on init的语句</span></div><div class="line">    <span class="comment">// Trigger all the boot actions to get us started.</span></div><div class="line">    am.QueueEventTrigger(<span class="string">"init"</span>);</div><div class="line"></div><div class="line">    <span class="comment">// Repeat mix_hwrng_into_linux_rng in case /dev/hw_random or /dev/random</span></div><div class="line">    <span class="comment">// wasn't ready immediately after wait_for_coldboot_done</span></div><div class="line">    am.QueueBuiltinAction(mix_hwrng_into_linux_rng_action, <span class="string">"mix_hwrng_into_linux_rng"</span>);</div><div class="line"></div><div class="line">    <span class="comment">// Don't mount filesystems or start core system services in charger mode.</span></div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> bootmode = property_get(<span class="string">"ro.bootmode"</span>);</div><div class="line">    <span class="keyword">if</span> (bootmode == <span class="string">"charger"</span>) &#123;</div><div class="line">        <span class="comment">//充电模式下，执行rc文件中触发器为charger的语句</span></div><div class="line">        am.QueueEventTrigger(<span class="string">"charger"</span>);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">//非充电模式下，执行rc文件中触发器为late-init的语句</span></div><div class="line">        am.QueueEventTrigger(<span class="string">"late-init"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Run all property triggers based on current state of the properties.</span></div><div class="line">    <span class="comment">// 创建queue_property_triggers动作并且添加到action vector和trigger_queue_中</span></div><div class="line">    am.QueueBuiltinAction(queue_property_triggers_action, <span class="string">"queue_property_triggers"</span>);</div><div class="line"></div><div class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</div><div class="line">        <span class="keyword">if</span> (!waiting_for_exec) &#123;</div><div class="line">            am.ExecuteOneCommand();</div><div class="line">            <span class="comment">// 重启一些关键进程</span></div><div class="line">            restart_processes();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">int</span> timeout = <span class="number">-1</span>;</div><div class="line">        <span class="keyword">if</span> (process_needs_restart) &#123;</div><div class="line">            timeout = (process_needs_restart - gettime()) * <span class="number">1000</span>;</div><div class="line">            <span class="keyword">if</span> (timeout &lt; <span class="number">0</span>)</div><div class="line">                timeout = <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (am.HasMoreCommands()) &#123;</div><div class="line">            timeout = <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        bootchart_sample(&amp;timeout);</div><div class="line"></div><div class="line">        epoll_event ev;</div><div class="line">        <span class="comment">//循环 等待事件发生</span></div><div class="line">        <span class="keyword">int</span> nr = TEMP_FAILURE_RETRY(epoll_wait(epoll_fd, &amp;ev, <span class="number">1</span>, timeout));</div><div class="line">        <span class="keyword">if</span> (nr == <span class="number">-1</span>) &#123;</div><div class="line">            ERROR(<span class="string">"epoll_wait failed: %s\n"</span>, strerror(errno));</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nr == <span class="number">1</span>) &#123;</div><div class="line">            ((<span class="keyword">void</span> (*)()) ev.data.ptr)();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>可以看到，init进程主要以下功能：</strong></p>
+<ol>
+<li>是挂载tmpfs, devpts, proc, sysfs<code>文件系统</code>。</li>
+<li>是运行init.rc脚本，init将会解析init.rc，并且执行init.rc中的命令。</li>
+<li>当一些关键进程死亡时，重启该进程；</li>
+<li>提供Android系统的属性服务</li>
+</ol>
+<h2 id="3-2-文件系统简介"><a href="#3-2-文件系统简介" class="headerlink" title="3.2 文件系统简介"></a>3.2 文件系统简介</h2><p><strong> 1. tmpfs文件系统</strong></p>
+<p>tmpfs是一种虚拟内存文件系统，因此它会将所有的文件存储在虚拟内存中，并且tmpfs下的所有内容均为临时性的内容，如果你将tmpfs文件系统卸载后，那么其下的所有的内容将不复存在。tmpfs是一个独立的文件系统，不是块设备，只要挂接，立即就可以使用。</p>
+<p><strong> 2. devpts文件系统 </strong>  </p>
+<p>devpts文件系统为伪终端提供了一个标准接口，它的标准挂接点是/dev/pts。只要pty的主复合设备/dev/ptmx被打开，就会在/dev/pts下动态的创建一个新的pty设备文件。</p>
+<p><strong> 3. proc文件系统 </strong></p>
+<p>proc文件系统是一个非常重要的虚拟文件系统，它可以看作是内核内部数据结构的接口，通过它我们可以获得系统的信息，同时也能够在运行时修改特定的内核参数。</p>
+<p><strong> 4. sysfs文件系统 </strong></p>
+<p>与proc文件系统类似，sysfs文件系统也是一个不占有任何磁盘空间的虚拟文件系统。它通常被挂接在/sys目录下。sysfs文件系统是Linux2.6内核引入的，它把连接在系统上的设备和总线组织成为一个分级的文件，使得它们可以在用户空间存取。</p>
+<h1 id="4-init-rc文件和语法"><a href="#4-init-rc文件和语法" class="headerlink" title="4 init rc文件和语法"></a>4 init rc文件和语法</h1><p>init rc文件语法是以行尾单位，以空格间隔的语法，以#开始代表注释行。rc文件主要包含<code>Action</code>、<code>Service</code>、<code>Command</code>、<code>Options</code>，其中对于Action和Service的名称都是唯一的，对于重复的命名视为无效。</p>
+<h2 id="4-1-动作Action"><a href="#4-1-动作Action" class="headerlink" title="4.1 动作Action"></a>4.1 动作Action</h2><p>Action： 通过trigger，即以 on开头的语句，决定何时执行相应的service。</p>
+<ul>
+<li><strong>on early-init</strong>; 在初始化早期阶段触发；</li>
+<li><strong>on init</strong>; 在初始化阶段触发；</li>
+<li><strong>on late-init</strong>; 在初始化晚期阶段触发；</li>
+<li><strong>on boot/charger</strong>： 当系统启动/充电时触发，还包含其他情况，此处不一一列举；</li>
+<li><strong>on property:<key>=<value></value></key></strong>: 当属性值满足条件时触发；</li>
+</ul>
+<h2 id="4-2-服务Service"><a href="#4-2-服务Service" class="headerlink" title="4.2 服务Service"></a>4.2 服务Service</h2><p>服务Service，以service开头，由init进程启动，一般运行于另外一个init的子进程，所以启动service前需要判断对应的可执行文件是否存在。init生成的子进程，定义在rc文件，其中每一个service，<strong>在启动时会通过fork方式生成子进程。</strong></p>
+<p>例如： <code>service servicemanager /system/bin/servicemanager</code>代表的是服务名为servicemanager，服务的路径，也就是服务执行操作时运行/system/bin/servicemanager。</p>
+<h2 id="4-3-命令Command"><a href="#4-3-命令Command" class="headerlink" title="4.3 命令Command"></a>4.3 命令Command</h2><p>下面列举常用的命令</p>
+<ul>
+<li>class_start <service_class_name>： 启动属于同一个class的所有服务；</service_class_name></li>
+<li>start <service_name>： 启动指定的服务，若已启动则跳过；</service_name></li>
+<li>stop <service_name>： 停止正在运行的服务</service_name></li>
+<li>setprop <name> <value>：设置属性值</value></name></li>
+<li>mkdir <path></path>：创建指定目录</li>
+<li>symlink <target> <sym_link>： 创建连接到<target>的<sym_link>符号链接；</sym_link></target></sym_link></target></li>
+<li>write <path></path> <string>： 向文件path中写入字符串；</string></li>
+<li>exec： fork并执行，会阻塞init进程直到程序完毕；</li>
+<li>exprot <name> <name>：设定环境变量；</name></name></li>
+<li>loglevel <level>：设置log级别</level></li>
+</ul>
+<h2 id="4-4-可选操作Options"><a href="#4-4-可选操作Options" class="headerlink" title="4.4 可选操作Options"></a>4.4 可选操作Options</h2><p>Options是Services的可选项，与service配合使用</p>
+<ul>
+<li>disabled: 不随class自动启动，只有根据service名才启动；</li>
+<li>oneshot: service退出后不再重启；</li>
+<li>user/group： 设置执行服务的用户/用户组，默认都是root；</li>
+<li>class：设置所属的类名，当所属类启动/退出时，服务也启动/停止，默认为default；</li>
+<li>onrestart:当服务重启时执行相应命令；</li>
+<li>socket: 创建名为/dev/socket/<name>的socket</name></li>
+<li>critical: 在规定时间内该service不断重启，则系统会重启并进入恢复模式</li>
+</ul>
+<p><em>*default:</em> 意味着disabled=false，oneshot=false，critical=false。</p>
+<p>所有的Service里面只有servicemanager ，zygote ，surfaceflinger这3个service有onrestart关键字来触发其他service启动过程。</p>
+<h1 id="5-Daemon守护进程"><a href="#5-Daemon守护进程" class="headerlink" title="5 Daemon守护进程"></a>5 Daemon守护进程</h1><p>init.rc会启动一些daemon进程，比如ueventd, adbd, servicemanager, vold, netd, debuggerd等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">service ueventd /sbin/ueventd  </div><div class="line">    class core  </div><div class="line">    critical  </div><div class="line">  </div><div class="line">service console /system/bin/sh  </div><div class="line">    class core  </div><div class="line">    console  </div><div class="line">    disabled  </div><div class="line">    user shell  </div><div class="line">    group log  </div><div class="line">  </div><div class="line">service adbd /sbin/adbd  </div><div class="line">    class core  </div><div class="line">    disabled  </div><div class="line">      </div><div class="line">service servicemanager /system/bin/servicemanager  </div><div class="line">    class core  </div><div class="line">    user system  </div><div class="line">    group system  </div><div class="line">    critical  </div><div class="line">    onrestart restart zygote  </div><div class="line">    onrestart restart media  </div><div class="line">    onrestart restart surfaceflinger  </div><div class="line">    onrestart restart drm  </div><div class="line">  </div><div class="line">service vold /system/bin/vold  </div><div class="line">    class core  </div><div class="line">    socket vold stream 0660 root mount  </div><div class="line">    ioprio be 2  </div><div class="line">  </div><div class="line">service netd /system/bin/netd  </div><div class="line">    class main  </div><div class="line">    socket netd stream 0660 root system  </div><div class="line">    socket dnsproxyd stream 0660 root inet  </div><div class="line">    socket mdns stream 0660 root system  </div><div class="line">  </div><div class="line">service debuggerd /system/bin/debuggerd  </div><div class="line">    class main</div></pre></td></tr></table></figure>
+<h1 id="6-ServiceManager"><a href="#6-ServiceManager" class="headerlink" title="6 ServiceManager"></a>6 ServiceManager</h1><p>ServiceManager也是守护进程，它是android的服务大管家，是一个很重要的服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//servicemanager可触发healthd、zygote、media、surfaceflinger、drm重启</div><div class="line">service servicemanager /system/bin/servicemanager</div><div class="line">    class core</div><div class="line">    user system</div><div class="line">    group system</div><div class="line">    critical</div><div class="line">    onrestart restart healthd</div><div class="line">    onrestart restart zygote</div><div class="line">    onrestart restart media</div><div class="line">    onrestart restart surfaceflinger</div><div class="line">    onrestart restart drm</div></pre></td></tr></table></figure>
+<p><code>service servicemanager /system/bin/servicemanager</code>表示服务名为servicemanager，服务运行的时候会执行<code>/system/bin/servicemanager</code>。</p>
+<h1 id="7-Zygote"><a href="#7-Zygote" class="headerlink" title="7 Zygote"></a>7 Zygote</h1><p>Zygote是第一个Java进程，并且<strong>是所有java进程的父进程</strong>。在init.zygote32.rc文件中，zygote服务定义如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//zygote可触发media、netd重启</span></div><div class="line">service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server</div><div class="line">    <span class="keyword">class</span> main</div><div class="line">    socket zygote stream <span class="number">660</span> root system</div><div class="line">    onrestart write /sys/android_power/request_state wake</div><div class="line">    onrestart write /sys/power/state on</div><div class="line">    onrestart restart media</div><div class="line">    onrestart restart netd</div></pre></td></tr></table></figure>
+<p><strong>Zygote入口和相关类：</strong></p>
+<blockquote>
+<p>/frameworks/base/cmds/app_process/App_main.cpp （内含AppRuntime类）<br>/frameworks/base/core/jni/AndroidRuntime.cpp<br>/frameworks/base/core/java/com/android/internal/os/ZygoteInit.java<br>/frameworks/base/core/java/com/android/internal/os/Zygote.java<br>/frameworks/base/core/java/android/net/LocalServerSocket.java<br>/system/core/libutils/Threads.cpp</p>
+</blockquote>
+<p>解释下第一行参数：</p>
+<ul>
+<li>zygote : 服务名</li>
+<li>systen/bin/app_process : zygote所对应的可执行文件是，通过调用pid =fork()创建子进程</li>
+<li>剩下的四个参数是zygote进程的<code>启动参数</code>，其中最后一个参数<code>--start-system-server</code>是表示zygote进程启动完成后，马上将system进程启动起来。</li>
+</ul>
+<p>zygote启动过程调用堆栈：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">App_main.main()</div><div class="line">    AndroidRuntime.start()</div><div class="line">        StartVM()</div><div class="line">        StartReg()</div><div class="line">        ZygoteInit.main()</div><div class="line">            ResgisterZygoteSocket()</div><div class="line">            preload()</div><div class="line">            startSystemServer()</div><div class="line">            runSelectLoop()</div></pre></td></tr></table></figure>
+<p>zygote进程的主要工作如下：</p>
+<ol>
+<li>解析init.zygote.rc中的参数，创建AppRuntime并调用AppRuntime.start()方法；</li>
+<li>调用AndroidRuntime的startVM()方法创建虚拟机，再调用startReg()注册JNI函数；</li>
+<li>通过JNI方式调用ZygoteInit.main()，第一次进入Java世界；</li>
+<li>registerZygoteSocket()建立socket通道，zygote作为通信的服务端，用于响应客户端请求；</li>
+<li>preload()预加载通用类、drawable和color资源、openGL以及共享库以及WebView，用于提高ap启动效率；</li>
+<li>zygote完毕大部分工作，接下来再通过startSystemServer()，fork得力帮手system_server进程，也是上层framework的运行载体。</li>
+<li>zygote功成身退，调用runSelectLoop()，随时待命，当接收到请求创建新进程请求时立即唤醒并执行相应工作。</li>
+</ol>
+<h1 id="8-system-server"><a href="#8-system-server" class="headerlink" title="8 system_server"></a>8 system_server</h1><p>上面提到Zygote启动过程中会调用startSystemServer()，可知startSystemServer()函数是system_server启动流程的起点， system_server相关类函数如下：</p>
+<blockquote>
+<p>/frameworks/base/core/java/android/app/ActivityThread.java<br>/frameworks/base/core/java/android/app/LoadedApk.java<br>/frameworks/base/core/java/android/app/ContextImpl.java<br>/frameworks/base/core/java/com/android/server/LocalServices.java<br>/frameworks/base/services/java/com/android/server/SystemServer.java<br>/frameworks/base/services/core/java/com/android/server/SystemServiceManager.java<br>/frameworks/base/services/core/java/com/android/server/ServiceThread.java<br>/frameworks/base/services/core/java/com/android/server/pm/Installer.java<br>/frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</p>
+</blockquote>
+<p><strong>启动流程图如下：</strong></p>
+<p><img src="/img/archives/system_server.jpg" alt="system_server.png"></p>
+<p>进入到SystemServer.main后，调用堆栈如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">SystemServer.main</div><div class="line">    SystemServer.run</div><div class="line">        createSystemContext</div><div class="line">            ActivityThread.systemMain</div><div class="line">                ActivityThread.attach</div><div class="line">                    LoadedApk.makeApplication</div><div class="line">            ActivityThread.getSystemContext</div><div class="line">                ContextImpl.createSystemContext</div><div class="line">        startBootstrapServices();//启动引导服务</div><div class="line">        startCoreServices();     // 启动核心服务</div><div class="line">        startOtherServices();    // 启动其他服务</div><div class="line">        Looper.loop();</div></pre></td></tr></table></figure></p>
+<p>有兴趣的读者可以跟着follow源码一步步展开，由于篇幅所限，只做总结归纳，system_server最主要的工作就是启动系统服务。 通过startBootstrapServices(), startCoreServices(), startOtherServices()3个方法。</p>
+<h2 id="8-1-startBootstrapServices"><a href="#8-1-startBootstrapServices" class="headerlink" title="8.1 startBootstrapServices();"></a>8.1 startBootstrapServices();</h2><p>[ SystemServer.java ] 启动引导服务</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startBootstrapServices</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">//阻塞等待与installd建立socket通道</span></div><div class="line">    Installer installer = mSystemServiceManager.startService(Installer.class);</div><div class="line"></div><div class="line">    <span class="comment">//启动服务ActivityManagerService</span></div><div class="line">    mActivityManagerService = mSystemServiceManager.startService(</div><div class="line">            ActivityManagerService.Lifecycle.class).getService();</div><div class="line">    mActivityManagerService.setSystemServiceManager(mSystemServiceManager);</div><div class="line">    mActivityManagerService.setInstaller(installer);</div><div class="line"></div><div class="line">    <span class="comment">//启动服务PowerManagerService</span></div><div class="line">    mPowerManagerService = mSystemServiceManager.startService(PowerManagerService.class);</div><div class="line"></div><div class="line">    <span class="comment">//初始化power management</span></div><div class="line">    mActivityManagerService.initPowerManagement();</div><div class="line"></div><div class="line">    <span class="comment">//启动服务LightsService</span></div><div class="line">    mSystemServiceManager.startService(LightsService.class);</div><div class="line"></div><div class="line">    <span class="comment">//启动服务DisplayManagerService</span></div><div class="line">    mDisplayManagerService = mSystemServiceManager.startService(DisplayManagerService.class);</div><div class="line"></div><div class="line">    <span class="comment">//Phase100: 在初始化package manager之前，需要默认的显示.</span></div><div class="line">    mSystemServiceManager.startBootPhase(SystemService.PHASE_WAIT_FOR_DEFAULT_DISPLAY);</div><div class="line"></div><div class="line">    <span class="comment">//当设备正在加密时，仅运行核心</span></div><div class="line">    String cryptState = SystemProperties.get(<span class="string">"vold.decrypt"</span>);</div><div class="line">    <span class="keyword">if</span> (ENCRYPTING_STATE.equals(cryptState)) &#123;</div><div class="line">        mOnlyCore = <span class="keyword">true</span>;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ENCRYPTED_STATE.equals(cryptState)) &#123;</div><div class="line">        mOnlyCore = <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//启动服务PackageManagerService</span></div><div class="line">    mPackageManagerService = PackageManagerService.main(mSystemContext, installer,</div><div class="line">            mFactoryTestMode != FactoryTest.FACTORY_TEST_OFF, mOnlyCore);</div><div class="line">    mFirstBoot = mPackageManagerService.isFirstBoot();</div><div class="line">    mPackageManager = mSystemContext.getPackageManager();</div><div class="line"></div><div class="line">    <span class="comment">//启动服务UserManagerService，新建目录/data/user/</span></div><div class="line">    ServiceManager.addService(Context.USER_SERVICE, UserManagerService.getInstance());</div><div class="line"></div><div class="line">    AttributeCache.init(mSystemContext);</div><div class="line"></div><div class="line">    <span class="comment">//设置AMS</span></div><div class="line">    mActivityManagerService.setSystemProcess();</div><div class="line"></div><div class="line">    <span class="comment">//启动传感器服务</span></div><div class="line">    startSensorService();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>该方法所创建的服务：<br><code>ActivityManagerService</code>, <code>PowerManagerService</code>, <code>LightsService</code>, <code>DisplayManagerService</code>， <code>PackageManagerService</code>， <code>UserManagerService</code>， <code>SensorService</code>服务。</p>
+<h2 id="8-2-startCoreServices"><a href="#8-2-startCoreServices" class="headerlink" title="8.2 startCoreServices();"></a>8.2 startCoreServices();</h2><p>[ SystemServer.java ]  启动核心服务</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startCoreServices</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">//启动服务BatteryService，用于统计电池电量，需要LightService.</span></div><div class="line">    mSystemServiceManager.startService(BatteryService.class);</div><div class="line"></div><div class="line">    <span class="comment">//启动服务UsageStatsService，用于统计应用使用情况</span></div><div class="line">    mSystemServiceManager.startService(UsageStatsService.class);</div><div class="line">    mActivityManagerService.setUsageStatsManager(</div><div class="line">            LocalServices.getService(UsageStatsManagerInternal.class));</div><div class="line"></div><div class="line">    mPackageManagerService.getUsageStatsIfNoPackageUsageInfo();</div><div class="line"></div><div class="line">    <span class="comment">//启动服务WebViewUpdateService</span></div><div class="line">    mSystemServiceManager.startService(WebViewUpdateService.class);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>启动服务<code>BatteryService</code>，<code>UsageStatsService</code>，<code>WebViewUpdateService</code>。</p>
+<h2 id="8-3-startOtherServices"><a href="#8-3-startOtherServices" class="headerlink" title="8.3 startOtherServices()"></a>8.3 startOtherServices()</h2><p>[ SystemServer.java ]  启动其他服务</p>
+<p>该方法比较长，有近千行代码，逻辑很简单，主要是启动一系列的服务:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startOtherServices</span><span class="params">()</span> </span>&#123;</div><div class="line">        ...</div><div class="line">        SystemConfig.getInstance();</div><div class="line">        mContentResolver = context.getContentResolver(); <span class="comment">// resolver</span></div><div class="line">        ...</div><div class="line">        mActivityManagerService.installSystemProviders(); <span class="comment">//provider</span></div><div class="line">        mSystemServiceManager.startService(AlarmManagerService.class); <span class="comment">// alarm</span></div><div class="line">        <span class="comment">// watchdog</span></div><div class="line">        watchdog.init(context, mActivityManagerService); </div><div class="line">        inputManager = <span class="keyword">new</span> InputManagerService(context); <span class="comment">// input</span></div><div class="line">        wm = WindowManagerService.main(...); <span class="comment">// window</span></div><div class="line">        inputManager.start();  <span class="comment">//启动input</span></div><div class="line">        mDisplayManagerService.windowManagerAndInputReady();</div><div class="line">        ...</div><div class="line">        mSystemServiceManager.startService(MOUNT_SERVICE_CLASS); <span class="comment">// mount</span></div><div class="line">        mPackageManagerService.performBootDexOpt();  <span class="comment">// dexopt操作</span></div><div class="line">        ActivityManagerNative.getDefault().showBootMessage(...); <span class="comment">//显示启动界面</span></div><div class="line">        ...</div><div class="line">        statusBar = <span class="keyword">new</span> StatusBarManagerService(context, wm); <span class="comment">//statusBar</span></div><div class="line">        <span class="comment">//dropbox</span></div><div class="line">        ServiceManager.addService(Context.DROPBOX_SERVICE,</div><div class="line">                    <span class="keyword">new</span> DropBoxManagerService(context, <span class="keyword">new</span> File(<span class="string">"/data/system/dropbox"</span>)));</div><div class="line">         mSystemServiceManager.startService(JobSchedulerService.class); <span class="comment">//JobScheduler</span></div><div class="line">         lockSettings.systemReady(); <span class="comment">//lockSettings</span></div><div class="line"></div><div class="line">        <span class="comment">//phase480 和phase500</span></div><div class="line">        mSystemServiceManager.startBootPhase(SystemService.PHASE_LOCK_SETTINGS_READY);</div><div class="line">        mSystemServiceManager.startBootPhase(SystemService.PHASE_SYSTEM_SERVICES_READY);</div><div class="line">        ...</div><div class="line">        <span class="comment">// 准备好window, power, package, display服务</span></div><div class="line">        wm.systemReady();</div><div class="line">        mPowerManagerService.systemReady(...);</div><div class="line">        mPackageManagerService.systemReady();</div><div class="line">        mDisplayManagerService.systemReady(...);</div><div class="line">        <span class="comment">//见下面分析</span></div><div class="line">        mActivityManagerService.systemReady(<span class="keyword">new</span> Runnable() &#123;...&#125;);</div></pre></td></tr></table></figure>
+<p>其中AMS.systemReady()的大致过程如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityManagerService</span> <span class="keyword">extends</span> <span class="title">ActivityManagerNative</span></span></div><div class="line">    <span class="keyword">implements</span> <span class="title">Watchdog</span>.<span class="title">Monitor</span>, <span class="title">BatteryStatsImpl</span>.<span class="title">BatteryCallback</span> &#123;</div><div class="line">        </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">systemReady</span><span class="params">(<span class="keyword">final</span> Runnable goingCallback)</span> </span>&#123;</div><div class="line">        ... <span class="comment">//update相关</span></div><div class="line">        mSystemReady = <span class="keyword">true</span>;</div><div class="line">        </div><div class="line">        <span class="comment">//杀掉所有非persistent进程</span></div><div class="line">        removeProcessLocked(proc, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="string">"system update done"</span>);</div><div class="line">        mProcessesReady = <span class="keyword">true</span>; </div><div class="line"></div><div class="line">        goingCallback.run();  <span class="comment">//[见小节1.6.2]</span></div><div class="line">        </div><div class="line">        addAppLocked(info, <span class="keyword">false</span>, <span class="keyword">null</span>); <span class="comment">//启动所有的persistent进程</span></div><div class="line">        mBooting = <span class="keyword">true</span>; </div><div class="line">        </div><div class="line">        <span class="comment">//启动home</span></div><div class="line">        startHomeActivityLocked(mCurrentUserId, <span class="string">"systemReady"</span>); </div><div class="line">        <span class="comment">//恢复栈顶的Activity</span></div><div class="line">        mStackSupervisor.resumeTopActivitiesLocked();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ActivityManagerService的systemReady方法，在该方法里会启动系统界面以及Home程序。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android启动/" rel="tag">#Android启动</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/25/android-binder-02/" rel="next" title="Binder实用指南（二） - 实战篇">
+                <i class="fa fa-chevron-left"></i> Binder实用指南（二） - 实战篇
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/06/android-start/"
+           data-title="Android系统启动流程" data-url="https://maoao530.github.io/2017/01/06/android-start/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="风中老狼" />
+          <p class="site-author-name" itemprop="name">风中老狼</p>
+          <p class="site-description motion-element" itemprop="description">不积跬步，无以至千里；不积小流，无以成江海</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wang-zhao-shun-43" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/maoao530" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/shun_fzll" target="_blank" title="csdn">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Loader层"><span class="nav-number">1.</span> <span class="nav-text">1 Loader层</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-kernel层"><span class="nav-number">2.</span> <span class="nav-text">2 kernel层</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-rest-init"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 rest_init()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-kernel-init"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 kernel_init()</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Init进程"><span class="nav-number">3.</span> <span class="nav-text">3 Init进程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-Init-Process"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 Init Process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-文件系统简介"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 文件系统简介</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-init-rc文件和语法"><span class="nav-number">4.</span> <span class="nav-text">4 init rc文件和语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-动作Action"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 动作Action</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-服务Service"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 服务Service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-命令Command"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 命令Command</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-可选操作Options"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 可选操作Options</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-Daemon守护进程"><span class="nav-number">5.</span> <span class="nav-text">5 Daemon守护进程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-ServiceManager"><span class="nav-number">6.</span> <span class="nav-text">6 ServiceManager</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-Zygote"><span class="nav-number">7.</span> <span class="nav-text">7 Zygote</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-system-server"><span class="nav-number">8.</span> <span class="nav-text">8 system_server</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#8-1-startBootstrapServices"><span class="nav-number">8.1.</span> <span class="nav-text">8.1 startBootstrapServices();</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-2-startCoreServices"><span class="nav-number">8.2.</span> <span class="nav-text">8.2 startCoreServices();</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-3-startOtherServices"><span class="nav-number">8.3.</span> <span class="nav-text">8.3 startOtherServices()</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">风中老狼</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"maoao-530"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
