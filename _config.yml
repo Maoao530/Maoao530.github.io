@@ -80,4 +80,4 @@ baidusitemap:
 feed:
     type: atom      
     path: atom.xml
-    limit: 20  # 最近20骗文章
+    limit: 20  # 最近20篇文章
