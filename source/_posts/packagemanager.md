@@ -9,7 +9,7 @@ tags:
 date: 2017-01-10 22:04:59
 ---
 
-本文基于Android 7.0介绍PackageManager。
+本文介绍PackageManagerService启动流程。
 
 <!-- more -->
 
@@ -19,7 +19,7 @@ frameworks/base/services/core/java/com/android/server/pm/PackageManagerService.j
 frameworks/base/services/core/java/com/android/server/pm/PackageInstallerService.java
 frameworks/base/services/core/java/com/android/server/pm/Settings.java
 frameworks/base/services/core/java/com/android/server/pm/Installer.java
-frameworks/base/services/core/java/com/android/server/SystemConfig
+frameworks/base/services/core/java/com/android/server/SystemConfig.java
 
 frameworks/base/core/java/android/content/pm/PackageManager.java
 frameworks/base/core/java/android/content/pm/IPackageManager.aidl
@@ -29,9 +29,6 @@ frameworks/base/core/java/com/android/internal/os/InstallerConnection.java
 frameworks/base/cmds/pm/src/com/android/commands/pm/Pm.java
 
 ```
-
-
-
 
 
 # system_server启动PMS
@@ -93,26 +90,39 @@ private void startBootstrapServices() {
 
 ```java
 private void startOtherServices() {
-    ...
-    //启动MountService，后续PackageManager会需要使用
-    mSystemServiceManager.startService(MOUNT_SERVICE_CLASS);
-    //
-    mPackageManagerService.performBootDexOpt();
-    ...  
-
-    //
-    mSystemServiceManager.startBootPhase(SystemService.PHASE_SYSTEM_SERVICES_READY);
-    ...
-    //
-    mPackageManagerService.systemReady();
+    ......
+    if (!mOnlyCore) {
+        ........
+        try {
+            //将调用performDexOpt:Performs dexopt on the set of packages
+            mPackageManagerService.updatePackagesIfNeeded();
+        }.......
+        ........
+        try {
+            //执行Fstrim，执行磁盘维护操作，未看到详细的资料
+            //可能类似于TRIM技术，将标记为删除的文件，彻底从硬盘上移除
+            //而不是等到写入时再移除，目的是提高写入时效率
+            mPackageManagerService.performFstrimIfNeeded();
+        }.........
+        .......
+        try {
+            mPackageManagerService.systemReady();
+        }........
+        .......
+    }
 }
 ```
 
-整个system_server进程启动过程，涉及PMS服务的主要几个动作如下，接下来分别讲解每个过程
+从上面的代码可以看出，PMS启动后将参与一些系统优化的工作，然后调用SystemReady函数通知系统进入就绪状态。
+
+
+整个system_server进程启动过程，涉及PMS服务的主要几个动作如下:
 
 - PMS.main()
-- PMS.performBootDexOpt()
+- PMS.performDexOpt()
 - PMS.systemReady()
+
+本文主要介绍PMS.main()流程，即PackageManagerService启动流程。
 
 
 # PMS.main入口
@@ -140,7 +150,7 @@ public static PackageManagerService main(Context context, Installer installer,
 }
 ```
 
-# 创建PMS服务 - 细节
+# PMS构造函数 - 分析
 
 > new PackageManagerService(context, installer, factoryTest, onlyCore);
 
@@ -780,7 +790,7 @@ BOOT_PROGRESS_PMS_READY阶段：
 - 初始化PackageInstallerService
 - GC回收下内存
 
-# 创建PMS服务 - 总结
+# PMS构造函数 - 总结
 
 PMS初始化过程，分为5个阶段：
 
@@ -808,7 +818,403 @@ PMS初始化过程，分为5个阶段：
  - 创建服务PackageInstallerService；
 
 
- # 开机时间分析
+到这里，大致介绍完了整个PMS构造函数的流程，基本上PMS_SCAN_END阶段我们apk就算安装完成了，那么接下来我们单独看看其中几个比较重要的模块：
+- Settings
+- SystemConfig - readPermissions 
+- scanPackageLI
+
+# Settings
+
+在BOOT_PROGRESS_PMS_START阶段，我们会创建Setting对象，以及一堆的addSharedUserLPw调用：
+```java
+mSettings = new Settings(mPackages);
+mSettings.addSharedUserLPw("android.uid.system", Process.SYSTEM_UID,
+    ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);
+```
+
+## 创建Settings
+
+> frameworks/base/services/core/java/com/android/server/pm/Settings.java
+
+```java
+Settings(Object lock) {
+    this(Environment.getDataDirectory(), lock);
+}
+
+Settings(File dataDir, Object lock) {
+    mLock = lock;
+
+    mRuntimePermissionsPersistence = new RuntimePermissionPersistence(mLock);
+
+    //创建目录"data/system"
+    mSystemDir = new File(dataDir, "system");
+    mSystemDir.mkdirs();
+    FileUtils.setPermissions(mSystemDir.toString(),
+            FileUtils.S_IRWXU|FileUtils.S_IRWXG
+            |FileUtils.S_IROTH|FileUtils.S_IXOTH,
+            -1, -1);
+    // packages.xml和packages-backup.xml为一组，用于描述系统所安装的Package信息，
+    // 其中packages-backup.xml是packages.xml的备份
+    // PMS写把数据写到backup文件中，信息全部写成功后在改名为非backup文件，
+    // 以防止在写文件的过程中出错，导致信息丢失
+    mSettingsFilename = new File(mSystemDir, "packages.xml");
+    mBackupSettingsFilename = new File(mSystemDir, "packages-backup.xml");
+
+    //packages.list保存系统中存在的所有非系统自带的APK信息，即UID大于10000的apk
+    mPackageListFilename = new File(mSystemDir, "packages.list");
+    FileUtils.setPermissions(mPackageListFilename, 0640, SYSTEM_UID, PACKAGE_INFO_GID);
+
+    //感觉是sdcardfs相关的文件
+    final File kernelDir = new File("/config/sdcardfs");
+    mKernelMappingFilename = kernelDir.exists() ? kernelDir : null;
+
+    // Deprecated: Needed for migration
+    //packages-stopped.xml用于描述系统中强行停止运行的package信息，backup也是备份文件
+    mStoppedPackagesFilename = new File(mSystemDir, "packages-stopped.xml");
+    mBackupStoppedPackagesFilename = new File(mSystemDir, "packages-stopped-backup.xml");
+}
+```
+
+Settings的构造函数主要用于创建"data/system"目录和一些xml文件，并配置相应的权限,其中：
+
+- packages.xml 记录所有安装app的信息，当系统进行程序安装、卸载和更新等操作时，均会更新该文件。
+- packages-backup.xml 备份文件
+- packages-stopped.xml 记录被用户强行停止的应用的Package信息
+- packages-stopped-backup.xml 备份文件
+- packages.list 记录非系统自带的APK的数据信息，这些APK有变化时会更新该文件
+
+## Setings.readLPw
+
+readLPw()函数，从/data/system/packages.xml或packages-backup.xml文件中获得packages、permissions相关信息，添加到相关内存列表中。packages.xml文件记录了系统的permisssions以及每个APK的name、codePath、flags、version等信息这些信息主要通过APK的AndroidManifest.xml解析获取，解析完APK后将更新信息写入这个文件，下次开机直接从里面读取相关信息添加到内存相关结构中。当有APK升级、安装或删除时会更新这个文件。
+
+## Settings.writeLPr
+
+writeLPr函数，将解析出的每个APK的信息（mSetting.mPackages）保存到packages.xml和packages.list文件。packages.list记录了如下数据：pkgName, userId, debugFlag, dataPath(包的数据路径)。
+
+# SystemConfig - readPermissions
+
+同样是在BOOT_PROGRESS_PMS_START阶段，我们会初始化SystemConfig去获取系统配置信息：
+
+```java
+// 获取系统配置信息
+SystemConfig systemConfig = SystemConfig.getInstance();
+mGlobalGids = systemConfig.getGlobalGids();
+mSystemPermissions = systemConfig.getSystemPermissions();
+mAvailableFeatures = systemConfig.getAvailableFeatures();
+```
+
+## 创建SystemConfig
+
+> frameworks/base/services/core/java/com/android/server/SystemConfig.java
+
+```java
+//单例模式
+public static SystemConfig getInstance() {
+    synchronized (SystemConfig.class) {
+        if (sInstance == null) {
+            sInstance = new SystemConfig();
+        }
+        return sInstance;
+    }
+}
+
+SystemConfig() {
+
+    // system/etc/目录
+    readPermissions(Environment.buildPath(
+            Environment.getRootDirectory(), "etc", "sysconfig"), ALLOW_ALL);
+    readPermissions(Environment.buildPath(
+            Environment.getRootDirectory(), "etc", "permissions"), ALLOW_ALL);
+
+    int odmPermissionFlag = ALLOW_LIBS | ALLOW_FEATURES | ALLOW_APP_CONFIGS;
+    
+    // odm/etc/目录
+    readPermissions(Environment.buildPath(
+            Environment.getOdmDirectory(), "etc", "sysconfig"), odmPermissionFlag);
+    readPermissions(Environment.buildPath(
+            Environment.getOdmDirectory(), "etc", "permissions"), odmPermissionFlag);
+
+    // oem/etc/目录
+    readPermissions(Environment.buildPath(
+        Environment.getOemDirectory(), "etc", "sysconfig"), ALLOW_FEATURES);
+    readPermissions(Environment.buildPath(
+        Environment.getOemDirectory(), "etc", "permissions"), ALLOW_FEATURES);
+}
+```
+
+从上面的代码可以看出，SystemConfig是单例模式，会通过readPermissions解析指定目录下的xml文件：
+
+- /system/etc/sysconfig
+- /system/etc/permissions
+- /odm/etc/sysconfig
+- /odm/etc/permissions
+- /oem/etc/sysconfig
+- /oem/etc/permissions
+
+其中比较重要的是system/etc/permissions目录，该目录文件大多来源于代码中的`framworks/(base or native)/data/etc`，这些文件的作用是表明系统支持的feature有哪些，例如是否支持蓝牙、wifi、P2P等。
+
+## readPermissions
+
+readPermissions会循环去读取目录下的xml文件，但是它会跳过platform.xml文件，最后再去读取platform.xml文件。
+
+```java
+void readPermissions(File libraryDir, int permissionFlag) {
+    //检测目录是否存在，是否可读
+    ..........
+    // Iterate over the files in the directory and scan .xml files
+    File platformFile = null;
+    //  循环解析xml文件
+    for (File f : libraryDir.listFiles()) {
+        // 跳过，最后再解析platform.xml 
+        if (f.getPath().endsWith("etc/permissions/platform.xml")) {
+            platformFile = f;
+            continue;
+        }
+
+        // 解析可读的xml文件
+        readPermissionsFromXml(f, permissionFlag);
+    }
+
+    // 最后解析platform.xml文件
+    if (platformFile != null) {
+        readPermissionsFromXml(platformFile, permissionFlag);
+    }
+}
+```
+
+我们发现读取函数最后都调用了readPermissionsFromXml()，函数readPermissionsFromXml最终会使用XMLPullParser的方式解析这些XML文件，然后把解析出来的数据结构保存到PMS中。
+
+### android.hardware.bluetooth.xml
+
+最终会解析并且保存到PMS的`final ArrayMap<String, FeatureInfo> mAvailableFeatures`中。
+
+```xml
+<permissions>  
+    <feature name="android.hardware.bluetooth" />  
+</permissions> 
+```
+
+### com.android.location.provider.xml
+
+指明了运行一些library时，还需要加载一些java库。
+这个最终会解析并保存到PMS的`final ArrayMap<String, SharedLibraryEntry> mSharedLibraries`中。
+
+```xml
+<permissions>
+    <library name="com.android.location.provider"
+            file="/system/framework/com.android.location.provider.jar" />
+</permissions>
+```
+
+### platform.xml
+
+这个文件中定义了底层GID和app层权限名字之间的对应关系，或者直接给某一个uid赋予对应的权限：
+
+```xml
+<permissions>
+    <permission name="android.permission.WRITE_EXTERNAL_STORAGE" >
+        <group gid="sdcard_r" />
+        <group gid="sdcard_rw" />
+    </permission>
+    ......
+
+    <assign-permission name="android.permission.MODIFY_AUDIO_SETTINGS" uid="media" />
+    <assign-permission name="android.permission.ACCESS_SURFACE_FLINGER" uid="media" />
+    ......
+
+</permissions>
+```
+
+解析`<permission>`标签的时候，会创建一个PermissionEntry类，他关联了gids和permission name：
+最终PermissionEntry会放入SystemConfig的`final ArrayMap<String, PermissionEntry> mPermissions`变量中。
+
+```java
+public static final class PermissionEntry {
+        public final String name;
+        public int[] gids;
+        PermissionEntry(String _name) {
+            name = _name;
+        }
+    }
+```
+
+解析`<assign-permission>`的时候表示把属性name中的字符串表示的权限赋予属性uid中的用户。uid和name则存入SystemConfig中的SparseArray> 类型的`mSystemPermissions`变量中。
+
+# scanPackageLI
+
+scanPackageLI是比较重要的安装apk的方法，下面具体分析。
+
+## scanDirLI
+
+scanDirLI函数会处理目录下每一个package文件：(当然不止scanDirLI最后会调用到scanPackageLI)
+
+```java
+private void scanDirLI(File dir, final int parseFlags, int scanFlags, long currentTime) {
+    final File[] files = dir.listFiles();
+    .......
+    for (File file : files) {
+        final boolean isPackage = (isApkFile(file) || file.isDirectory())
+                && !PackageInstallerService.isStageName(file.getName());
+        if (!isPackage) {
+            // Ignore entries which are not packages
+            continue;
+        }
+
+        try {
+            //处理目录下每一个package文件
+            scanPackageTracedLI(file, parseFlags | PackageParser.PARSE_MUST_BE_APK,
+                    scanFlags, currentTime, null);
+        } catch (PackageManagerException e) {
+            .........
+        }
+    }
+}
+```
+
+scanPackageTracedLI函数最终会调用到scanPackageLI函数：
+
+```java
+private PackageParser.Package scanPackageTracedLI(File scanFile, final int parseFlags,
+        int scanFlags, long currentTime, UserHandle user) throws PackageManagerException {
+    Trace.traceBegin(TRACE_TAG_PACKAGE_MANAGER, "scanPackage");
+    try {
+        return scanPackageLI(scanFile, parseFlags, scanFlags, currentTime, user);
+    } finally {
+        Trace.traceEnd(TRACE_TAG_PACKAGE_MANAGER);
+    }
+}
+```
+
+## scanPackageLI安装apk
+
+PackageManagerService的scanPackageLI过程scanPackageLI()有3个重载的方法，参数稍有不同：
+
+```java
+// 第（1）个
+private PackageParser.Package scanPackageLI(File scanFile, int parseFlags, int scanFlags,
+        long currentTime, UserHandle user)
+// 第（2）个
+private PackageParser.Package scanPackageLI(PackageParser.Package pkg, File scanFile,
+        final int policyFlags, int scanFlags, long currentTime, UserHandle user)
+// 第（3）个
+private PackageParser.Package scanPackageLI(PackageParser.Package pkg, final int policyFlags,
+        int scanFlags, long currentTime, UserHandle user)
+```
+
+**（1）scanPackageLI(File scanFile, int parseFlags,...）函数**
+
+- 实例化一个PackageParser对象，接着调用该对象的parsePackage()对APK文件进行解析。
+- 实例化一个Package对象，用于保存解析出的APK信息
+- 从AndroidManifest.xml文件中解析出VersionCode、VersionName、installLocation等全局属性信息，然后根据标签循环解析XML文件包含的其它组成部分，将解析出的信息添加到Package对象的相关列表中。
+
+```java
+private PackageParser.Package scanPackageLI(File scanFile, int parseFlags, int scanFlags,
+        long currentTime, UserHandle user) throws PackageManagerException {
+    //创建出PackageParser对象
+    PackageParser pp = new PackageParser();
+    ...........
+    final PackageParser.Package pkg;
+    try {
+        // 解析package
+        pkg = pp.parsePackage(scanFile, parseFlags);
+    } catch (PackageParserException e) {
+        ..........
+    } finally {
+        ..........
+    }
+
+    //调用第（2）个scanPackageLI
+    return scanPackageLI(pkg, scanFile, parseFlags, scanFlags, currentTime, user);
+}
+```
+
+最后会调用第（2）个scanPackageLI去继续解析。
+
+**（2）scanPackageLI(PackageParser.Package pkg, File scanFile,...)函数**
+
+
+
+```java
+private PackageParser.Package scanPackageLI(PackageParser.Package pkg, File scanFile,
+        final int policyFlags, int scanFlags, long currentTime, UserHandle user)
+        throws PackageManagerException {
+    
+    //有childPackage时，第一次只执行检查的工作
+    if ((scanFlags & SCAN_CHECK_ONLY) == 0) {
+        //当解析一个Package的AndroidManifest.xml时，如果该XML文件中使用了"package"的tag
+        //那么该tag对应的package是当前XML文件对应package的childPackage
+        if (pkg.childPackages != null && pkg.childPackages.size() > 0) {
+            scanFlags |= SCAN_CHECK_ONLY;
+        }
+    } else {
+        //第二次进入，才开始实际的解析
+        scanFlags &= ~SCAN_CHECK_ONLY;
+    }
+
+    final PackageParser.Package scannedPkg;
+    try {
+        // Scan the parent
+        //scanFlags将决定这一次是否仅执行检查工作
+        scannedPkg = scanPackageLI(pkg, policyFlags, scanFlags, currentTime, user);
+
+        final int childCount = (pkg.childPackages != null) ? pkg.childPackages.size() : 0;
+        for (int i = 0; i < childCount; i++) {
+            PackageParser.Package childPkg = pkg.childPackages.get(i);
+            scanPackageLI(childPkg, policyFlags,
+                    scanFlags, currentTime, user);
+        }
+    } finally {
+        .........   
+    }
+
+    if ((scanFlags & SCAN_CHECK_ONLY) != 0) {
+        //第一次检查完毕后，再次调用函数
+        return scanPackageTracedLI(pkg, policyFlags, scanFlags, currentTime, user);
+    }
+
+    return scannedPkg;
+}
+```
+
+**（3）scanPackageLI(PackageParser.Package pkg, final int policyFlags,...)函数**
+
+最终会走到第三个scanPackageLI函数，这个函数最后会调用scanPackageDirtyLI函数，scanPackageDirtyLI是实际解析package的函数，这个才是真正干活的。
+
+```java
+private PackageParser.Package scanPackageLI(PackageParser.Package pkg, final int policyFlags,
+        int scanFlags, long currentTime, UserHandle user) throws PackageManagerException {
+    boolean success = false;
+    try {
+        //实际的解析函数，很长...
+        final PackageParser.Package res = scanPackageDirtyLI(pkg, policyFlags, scanFlags,
+                currentTime, user);
+        success = true;
+        return res;
+    } finally {
+        ...........
+    }
+}
+```
+
+## scanPackageDirtyLI
+
+
+通过上述的扫描过程，我们得到了当前apk文件对应的Package信息。不过这部分信息是存储在PackageParser中的，我们必须将这部分信息传递到PMS中。毕竟最终的目的是：**让PMS能得到所有目录下Package的信息**。
+scanPackageDirtyLI函数主要就是把签名解析应用程序得到的package、provider、service、receiver和activity等信息保存在PackageManagerService相关的成员列表里。
+
+比如将每个APK的receivers列表里的元素，通过mReceivers.addActivity(a, "receiver")添加到PMS成员列表mReceivers中:
+
+```java
+final ActivityIntentResolver mReceivers = new ActivityIntentResolver();`
+```
+
+由于实际解析函数太长，粗略看下有1000来行，读者有兴趣的可以自行研究。
+
+
+
+- http://blog.csdn.net/column/details/13723.html?&page=2
+
+# 开机时间分析
 
 adb shell cat /proc/bootprof/
 ```
@@ -864,7 +1270,7 @@ adb shell cat /proc/bootprof/
      33967.604076 : AP_Init:[broadcast]:[com.android.contacts]:[com.android.contacts/com.mediatek.contacts.simcontact.BootCmpReceiver]:pid:972
      34752.970538 : AP_Init:[content provider]:[android.process.acore]:[com.android.providers.contacts/.ContactsProvider2]:pid:1028
      35486.120000 : BOOT_Animation:END
-----------------------------------------
+---------------------------------
 ```
 
 我们可以从上面的信息看到PMS在开机的时候做的动作和时间分布：（因为手上只有kk的平台，所以信息不太对应）
@@ -886,3 +1292,8 @@ adb shell cat /proc/bootprof/
 ```
 
 一般app装的越多，那么开机时间就会越长。
+
+# 附录
+- [packages.xml 文件 ](/img/archives/packages.xml)
+- [packages.list 文件](/img/archives/packages.list)
+- [platform.xml 文件](/img/archives/platform.xml)
