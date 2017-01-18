@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://maoao530.github.io/"/>
-  <updated>2017-01-17T14:24:37.744Z</updated>
+  <updated>2017-01-17T14:26:02.647Z</updated>
   <id>https://maoao530.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://maoao530.github.io/2017/01/10/packagemanager/"/>
     <id>https://maoao530.github.io/2017/01/10/packagemanager/</id>
     <published>2017-01-10T14:04:59.000Z</published>
-    <updated>2017-01-17T14:24:37.744Z</updated>
+    <updated>2017-01-17T14:26:02.647Z</updated>
     
     <content type="html"><![CDATA[<p>本文介绍PackageManagerService启动流程。</p>
 <a id="more"></a>
@@ -705,11 +705,11 @@
   </entry>
   
   <entry>
-    <title>引用计数 &amp; Android智能指针</title>
+    <title>引用计数 Android智能指针</title>
     <link href="https://maoao530.github.io/2016/12/10/cpp-ref-count/"/>
     <id>https://maoao530.github.io/2016/12/10/cpp-ref-count/</id>
     <published>2016-12-10T03:48:56.000Z</published>
-    <updated>2016-12-10T14:07:05.298Z</updated>
+    <updated>2017-01-18T13:18:18.226Z</updated>
     
     <content type="html"><![CDATA[<p>引用计数机制</p>
 <p>以前学cocos写游戏的时候有接触过这个概念。</p>
@@ -832,11 +832,11 @@
   </entry>
   
   <entry>
-    <title>flask源码阅读</title>
+    <title>Flask源码阅读</title>
     <link href="https://maoao530.github.io/2016/10/24/flask-source-reading/"/>
     <id>https://maoao530.github.io/2016/10/24/flask-source-reading/</id>
     <published>2016-10-24T12:26:04.000Z</published>
-    <updated>2016-12-11T08:47:19.934Z</updated>
+    <updated>2017-01-18T13:18:10.692Z</updated>
     
     <content type="html"><![CDATA[<p>Flask是一个使用 Python 编写的轻量级 Web 应用框架。其 WSGI 工具箱采用 Werkzeug ，模板引擎则使用 Jinja2 。</p>
 <a id="more"></a>
@@ -1526,11 +1526,11 @@
   </entry>
   
   <entry>
-    <title>I/O Multiplexing &amp; poll</title>
+    <title>I/O Multiplexing-poll</title>
     <link href="https://maoao530.github.io/2016/03/18/io-multiplexing-poll/"/>
     <id>https://maoao530.github.io/2016/03/18/io-multiplexing-poll/</id>
     <published>2016-03-18T15:46:00.000Z</published>
-    <updated>2016-12-10T05:40:33.491Z</updated>
+    <updated>2017-01-18T13:17:14.640Z</updated>
     
     <content type="html"><![CDATA[<p>poll和select实现功能差不多，但poll效率比select效率高。</p>
 <a id="more"></a>
@@ -1576,11 +1576,11 @@
   </entry>
   
   <entry>
-    <title>I/O Multiplexing &amp; select</title>
+    <title>I/O Multiplexing select</title>
     <link href="https://maoao530.github.io/2016/03/17/io-multiplexing-select/"/>
     <id>https://maoao530.github.io/2016/03/17/io-multiplexing-select/</id>
     <published>2016-03-17T14:46:56.000Z</published>
-    <updated>2016-12-10T05:40:33.555Z</updated>
+    <updated>2017-01-18T13:17:22.509Z</updated>
     
     <content type="html"><![CDATA[<p>I / O多路转接(I/O multiplexing),其基本思想是:先构造一张有关描述符的表,然后调用一个函数,它要到这些描述符中的一个已准备好进行 I / O时才返回.<br>在返回时,它告诉进程哪一个描述符已准备好可以进行 I / O。</p>
 <a id="more"></a>
