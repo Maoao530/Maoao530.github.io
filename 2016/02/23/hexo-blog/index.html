@@ -97,7 +97,7 @@
 <meta property="og:site_name" content="风中老狼的博客">
 <meta property="og:description" content="Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。">
 <meta property="og:image" content="https://maoao530.github.io/img/archives/npm-install-hexo-cli.png">
-<meta property="og:updated_time" content="2016-12-10T14:06:40.722Z">
+<meta property="og:updated_time" content="2017-01-18T14:41:21.505Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一步一步搭建hexo博客">
 <meta name="twitter:description" content="Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。">
@@ -387,24 +387,29 @@
 <h1 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h1><p>hexo支持插件，可以直接通过命令行安装即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">npm install plugin-name --save</div><div class="line">//更新插件</div><div class="line">npm update</div><div class="line">//卸载插件</div><div class="line">npm uninstall plugin-name</div></pre></td></tr></table></figure></p>
 <p>下面推荐几个常用的插件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">//feed插件</div><div class="line">npm install hexo-generator-feed --save</div><div class="line">//站点地图</div><div class="line">npm install hexo-generator-sitemap --save</div><div class="line">//百度站点地图</div><div class="line">npm install hexo-generator-baidu-sitemap --save</div></pre></td></tr></table></figure></p>
 <p>然后在 Hexo 根目录下的 _config.yml 里配置一下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">feed:</div><div class="line">    type: atom      </div><div class="line">    path: atom.xml</div><div class="line">    limit: 20  # 最近20篇文章  </div><div class="line">sitemap:</div><div class="line">    path: sitemap.xml</div><div class="line">baidusitemap:</div><div class="line">    path: baidusitemap.xml</div></pre></td></tr></table></figure></p>
-<h1 id="博客推广优化"><a href="#博客推广优化" class="headerlink" title="博客推广优化"></a>博客推广优化</h1><p>为了博客有更好的展示率, 最好的方式是通过搜索引擎, 下面讲讲怎么让搜索引擎搜录你的博客.</p>
-<p>面以百度为例:</p>
+<h1 id="SEO"><a href="#SEO" class="headerlink" title="SEO"></a>SEO</h1><h2 id="增加主页关键词"><a href="#增加主页关键词" class="headerlink" title="增加主页关键词"></a>增加主页关键词</h2><p>更改index.swig文件，文件路径是your-hexo-site\themes\next\layout，将下面代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;% block title %&#125; &#123;&#123; config.title &#125;&#125; &#123;% endblock %&#125;</div></pre></td></tr></table></figure>
+<p>改成</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;% block title %&#125; &#123;&#123; config.title &#125;&#125; - &#123;&#123; theme.description &#125;&#125; &#123;% endblock %&#125;</div></pre></td></tr></table></figure>
+<h2 id="百度收录"><a href="#百度收录" class="headerlink" title="百度收录"></a>百度收录</h2><p>（1）网站验证</p>
+<p>先到百度站长注册账号，并且添加网站，然后进行网站验证，我们通过html标签验证，next主题已经给我们做好了：</p>
+<p>打开_config.yml:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">baidu_site_verification: *****</div></pre></td></tr></table></figure></p>
+<p>然后hexo deploy后，点击完成验证即可。</p>
+<p>（2）提交baidusitemap.xml</p>
+<p>打开百度站长工具，网页抓取-链接提交栏下，选择自动提交：</p>
 <ul>
-<li><a href="">百度网址提交入口</a></li>
+<li>主动推送 最为快速的提交方式，将站点当天新产出链接立即通过此方式推送给百度，以保证新链接可以及时被百度收录。需要改写url链接带参数，操作起来不好搞，放弃。</li>
+<li>自动推送 需要嵌入一段js代码，当我们每访问一次网站，则自动运行脚本，推送链接到百度 （next主题也为我们做好了）</li>
+<li>sitemap：自动提交baidusitemap.xml</li>
 </ul>
-<p>百度站长平台为站长提供单条url提交通道，您可以提交想被百度收录的url，百度搜索引擎会按照标准处理，不保证一定能够收录您提交的url。<br>建议验证网站所有权后，再提交url。</p>
-<p>向百度提交 Sitemap 的过程如下：</p>
-<blockquote>
-<ul>
-<li>注册并登录百度站长平台.</li>
-<li>点击 我的网站=&gt;站点管理, 添加你的域名, 类似上文中验证你的域名, 采用 文件验证 上传 html 文件的方式.</li>
-<li>验证好以后就可以在 数据提交 里面提交 Sitemap 了.</li>
-</ul>
-</blockquote>
-<p>更详细的可以参考下面这篇文章：</p>
-<ul>
-<li><a href="www.franktly.com/2016/07/06/让Baidu和Google收录Hexo博客/">franktly.com/2016/07/06/让Baidu和Google收录Hexo博客/</a></li>
-</ul>
+<p>（3）自动推送</p>
+<p>打开_config.yml：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">baidu_push: true</div></pre></td></tr></table></figure></p>
+<p>打开hexo-blog/themes/next/layout/_scripts/baidu-push.swig，替换为百度给我们的js代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&#123;% <span class="keyword">if</span> theme.baidu_push %&#125;</div><div class="line">&lt;script&gt;</div><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> bp = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</div><div class="line">    <span class="keyword">var</span> curProtocol = <span class="built_in">window</span>.location.protocol.split(<span class="string">':'</span>)[<span class="number">0</span>];</div><div class="line">    <span class="keyword">if</span> (curProtocol === <span class="string">'https'</span>) &#123;</div><div class="line">        bp.src = <span class="string">'https://zz.bdstatic.com/linksubmit/push.js'</span>;        </div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">        bp.src = <span class="string">'http://push.zhanzhang.baidu.com/push.js'</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">var</span> s = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"script"</span>)[<span class="number">0</span>];</div><div class="line">    s.parentNode.insertBefore(bp, s);</div><div class="line">&#125;)();</div><div class="line">&lt;/script&gt;</div><div class="line">&#123;% endif %&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="谷歌收录"><a href="#谷歌收录" class="headerlink" title="谷歌收录"></a>谷歌收录</h2><p>（1）网站验证</p>
+<p>验证方式基本一样，打开_config.yml:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">google_site_verification: *******</div></pre></td></tr></table></figure>
+<p>（2）提交sitemap</p>
+<p>点击站点地图，提交sitemap.xml即可，比较简单。</p>
 <h1 id="配置上传到github"><a href="#配置上传到github" class="headerlink" title="配置上传到github"></a>配置上传到github</h1><p>安装deploy git：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-deployer-git --save</div></pre></td></tr></table></figure></p>
 <p>配置_config.yml：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">deploy:</div><div class="line">  type: git</div><div class="line">  repo: git@github.com:Maoao530/Maoao530.github.io.git</div><div class="line">  branch: master</div></pre></td></tr></table></figure></p>
 <p>配置完成后直接<code>hexo deploy</code>,就可以了。</p>
@@ -598,7 +603,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#准备环境"><span class="nav-number">1.</span> <span class="nav-text">准备环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装Hexo"><span class="nav-number">2.</span> <span class="nav-text">安装Hexo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#初始化Hexo项目"><span class="nav-number">3.</span> <span class="nav-text">初始化Hexo项目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hexo-命令"><span class="nav-number">4.</span> <span class="nav-text">hexo 命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更换next主题"><span class="nav-number">5.</span> <span class="nav-text">更换next主题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装插件"><span class="nav-number">6.</span> <span class="nav-text">安装插件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#博客推广优化"><span class="nav-number">7.</span> <span class="nav-text">博客推广优化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置上传到github"><span class="nav-number">8.</span> <span class="nav-text">配置上传到github</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#准备环境"><span class="nav-number">1.</span> <span class="nav-text">准备环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装Hexo"><span class="nav-number">2.</span> <span class="nav-text">安装Hexo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#初始化Hexo项目"><span class="nav-number">3.</span> <span class="nav-text">初始化Hexo项目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hexo-命令"><span class="nav-number">4.</span> <span class="nav-text">hexo 命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更换next主题"><span class="nav-number">5.</span> <span class="nav-text">更换next主题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装插件"><span class="nav-number">6.</span> <span class="nav-text">安装插件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SEO"><span class="nav-number">7.</span> <span class="nav-text">SEO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#增加主页关键词"><span class="nav-number">7.1.</span> <span class="nav-text">增加主页关键词</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#百度收录"><span class="nav-number">7.2.</span> <span class="nav-text">百度收录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谷歌收录"><span class="nav-number">7.3.</span> <span class="nav-text">谷歌收录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置上传到github"><span class="nav-number">8.</span> <span class="nav-text">配置上传到github</span></a></li></ol></div>
             
           </div>
         </section>

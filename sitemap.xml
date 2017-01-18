@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://maoao530.github.io/2016/02/23/hexo-blog/</loc>
+    
+    <lastmod>2017-01-18T14:41:21.505Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://maoao530.github.io/2016/08/11/android-base/</loc>
     
     <lastmod>2017-01-18T13:18:32.073Z</lastmod>
@@ -89,13 +96,6 @@
     <loc>https://maoao530.github.io/2016/07/01/git-note/</loc>
     
     <lastmod>2016-12-10T14:06:49.536Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://maoao530.github.io/2016/02/23/hexo-blog/</loc>
-    
-    <lastmod>2016-12-10T14:06:40.722Z</lastmod>
     
   </url>
   
