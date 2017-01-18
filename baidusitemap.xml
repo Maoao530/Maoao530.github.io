@@ -4,6 +4,34 @@
 
     
   <url>
+    <loc>https://maoao530.github.io/2016/08/11/android-base/</loc>
+    <lastmod>2017-01-18T13:18:32.073Z</lastmod>
+    <data>
+        <display>
+        <title>Android四大组件</title>
+        <pubTime>2016-08-11T01:59:38.000Z</pubTime>
+        
+        <tag>Android</tag>
+         
+        <tag>Activity</tag>
+         
+        <tag>Service</tag>
+         
+        <tag>BroadcastReceiver</tag>
+         
+        <tag>ContentProvider</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android基础" url="https://maoao530.github.io/categories/Android%E5%9F%BA%E7%A1%80/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://maoao530.github.io/2016/12/10/cpp-ref-count/</loc>
     <lastmod>2017-01-18T13:18:18.226Z</lastmod>
     <data>
@@ -213,34 +241,6 @@
     </url>
 
     
-    
-  <url>
-    <loc>https://maoao530.github.io/2016/08/11/android-base/</loc>
-    <lastmod>2016-12-11T06:14:16.074Z</lastmod>
-    <data>
-        <display>
-        <title>Android四大组件</title>
-        <pubTime>2016-08-11T01:59:38.000Z</pubTime>
-        
-        <tag>Android</tag>
-         
-        <tag>Activity</tag>
-         
-        <tag>Service</tag>
-         
-        <tag>BroadcastReceiver</tag>
-         
-        <tag>ContentProvider</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android基础" url="https://maoao530.github.io/categories/Android%E5%9F%BA%E7%A1%80/"/>
-          
-        </display>
-    </data>
-    </url>
-
     
   <url>
     <loc>https://maoao530.github.io/2016/07/01/git-note/</loc>
