@@ -1,5 +1,5 @@
 ---
-title: I/O Multiplexing & select
+title: I/O Multiplexing select
 date: 2016-03-17 22:46:56
 categories: 
 - Linux

@@ -73,11 +73,16 @@ deploy:
   branch: master
 
 sitemap:
-    path: sitemap.xml
+  path: sitemap.xml
 baidusitemap:
-    path: baidusitemap.xml
+  path: baidusitemap.xml
 
 feed:
     type: atom      
     path: atom.xml
     limit: 20  # 最近20篇文章
+
+baidu_site_verification: KDQ5UD1bGz
+google_site_verification: tAZFMfKLyroTOSdyRn-N_-NNj4LWJk_LNcOAbASRlso
+
+baidu_push: true

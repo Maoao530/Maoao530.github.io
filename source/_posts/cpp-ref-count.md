@@ -1,5 +1,5 @@
 ---
-title: 引用计数 & Android智能指针
+title: 引用计数 Android智能指针
 date: 2016-12-10 11:48:56
 categories:
 - Android进阶

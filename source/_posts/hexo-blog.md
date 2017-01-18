@@ -114,38 +114,117 @@ baidusitemap:
     path: baidusitemap.xml
 ```
 
-# 博客推广优化
+# SEO
 
-为了博客有更好的展示率, 最好的方式是通过搜索引擎, 下面讲讲怎么让搜索引擎搜录你的博客.
+## 增加主页关键词
 
-面以百度为例:
+更改index.swig文件，文件路径是your-hexo-site\themes\next\layout，将下面代码：
 
-- [百度网址提交入口]()
+```
+{% block title %} {{ config.title }} {% endblock %}
+```
 
-百度站长平台为站长提供单条url提交通道，您可以提交想被百度收录的url，百度搜索引擎会按照标准处理，不保证一定能够收录您提交的url。
-建议验证网站所有权后，再提交url。
+改成
 
-向百度提交 Sitemap 的过程如下：
+```
+{% block title %} {{ config.title }} - {{ theme.description }} {% endblock %}
+```
 
-> - 注册并登录百度站长平台.
-> - 点击 我的网站=>站点管理, 添加你的域名, 类似上文中验证你的域名, 采用 文件验证 上传 html 文件的方式.
-> - 验证好以后就可以在 数据提交 里面提交 Sitemap 了.
+## 百度收录
 
-更详细的可以参考下面这篇文章：
+（1）网站验证
 
-- [franktly.com/2016/07/06/让Baidu和Google收录Hexo博客/](www.franktly.com/2016/07/06/让Baidu和Google收录Hexo博客/)
+先到百度站长注册账号，并且添加网站，然后进行网站验证，我们通过html标签验证，next主题已经给我们做好了：
 
-# 配置上传到github
+打开_config.yml:
+```
+baidu_site_verification: *****
+```
+
+然后hexo deploy后，点击完成验证即可。
+
+（2）提交baidusitemap.xml
+
+打开百度站长工具，网页抓取-链接提交栏下，选择自动提交：
+
+- 主动推送 最为快速的提交方式，将站点当天新产出链接立即通过此方式推送给百度，以保证新链接可以及时被百度收录。需要改写url链接带参数，操作起来不好搞，放弃。
+- 自动推送 需要嵌入一段js代码，当我们每访问一次网站，则自动运行脚本，推送链接到百度 （next主题也为我们做好了）
+- sitemap：自动提交baidusitemap.xml
+
+（3）自动推送
+
+打开_config.yml：
+```
+baidu_push: true
+```
+
+打开hexo-blog/themes/next/layout/_scripts/baidu-push.swig，替换为百度给我们的js代码：
+```javascript
+{% if theme.baidu_push %}
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+{% endif %}
+```
+
+
+## 谷歌收录
+
+（1）网站验证
+
+验证方式基本一样，打开_config.yml:
+
+```
+google_site_verification: *******
+```
+
+（2）提交sitemap
+
+点击站点地图，提交sitemap.xml即可，比较简单。
+
+
+# 同时使用coding和github
+
+补充一下，因为百度对github page不太友好，如果博客托管在github page上，很难被百度收录。
+所以我们可以把网站托管到coding平台，即同时使用Coding提供的Pages服务和Github提供的Pages服务
 
 安装deploy git：
+
 ```
 npm install hexo-deployer-git --save
 ```
+
 配置_config.yml：
+
 ```
 deploy:
   type: git
-  repo: git@github.com:Maoao530/Maoao530.github.io.git
+  repo: 
+      git@github.com:Maoao530/Maoao530.github.io.git
+      coding: https://git.coding.net/xxxxxx,coding-pages
   branch: master
 ```
+
 配置完成后直接`hexo deploy`,就可以了。
+
+# 国内国外访问不同的Pages服务
+
+如果托管到coding pages后，那么域名当然也和github pages不一样了，那么怎么办呢？
+
+去dnspod买个域名，我们可以通过DnsPod让国内用户访问coding，让国外用户访问github。然后我们只要访问这个域名即可。
+
+
+
+
+

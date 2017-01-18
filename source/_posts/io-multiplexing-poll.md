@@ -1,5 +1,5 @@
 ---
-title: I/O Multiplexing & poll
+title: I/O Multiplexing-poll
 date: 2016-03-18 23:46
 categories: 
 - Linux
