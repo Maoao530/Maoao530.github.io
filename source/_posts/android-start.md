@@ -1,10 +1,11 @@
 ---
-title: Android系统启动流程
+title: Android系统启动流程 【置顶】
 categories:
   - Android进阶
 tags:
   - Android启动
 date: 2017-1-6 21:29:35
+top: 10
 ---
 
 本文介绍android的启动流程。
