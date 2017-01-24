@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>https://maoao530.github.io/2017/01/06/android-start/</loc>
+    <lastmod>2017-01-24T14:55:34.109Z</lastmod>
+    <data>
+        <display>
+        <title>Android系统启动流程</title>
+        <pubTime>2017-01-06T13:29:35.000Z</pubTime>
+        
+        <tag>Android启动</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android进阶" url="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://maoao530.github.io/2016/02/23/hexo-blog/</loc>
     <lastmod>2017-01-18T15:07:12.046Z</lastmod>
     <data>
@@ -144,26 +164,6 @@
         <tag>PackageManager</tag>
          
         <tag>PackageManagerService</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android进阶" url="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://maoao530.github.io/2017/01/06/android-start/</loc>
-    <lastmod>2017-01-08T09:57:20.842Z</lastmod>
-    <data>
-        <display>
-        <title>Android系统启动流程</title>
-        <pubTime>2017-01-06T13:29:35.000Z</pubTime>
-        
-        <tag>Android启动</tag>
          
          
            
