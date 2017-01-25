@@ -1,5 +1,5 @@
 ---
-title: Android系统启动流程 【置顶】
+title: Android系统启动流程
 categories:
   - Android进阶
 tags:
