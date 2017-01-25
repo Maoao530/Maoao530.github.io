@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://maoao530.github.io/"/>
-  <updated>2017-01-25T13:06:41.069Z</updated>
+  <updated>2017-01-25T14:14:06.297Z</updated>
   <id>https://maoao530.github.io/</id>
   
   <author>
@@ -14,6 +14,64 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Hexo Next博客优化</title>
+    <link href="https://maoao530.github.io/2017/01/25/hexo-blog-seo/"/>
+    <id>https://maoao530.github.io/2017/01/25/hexo-blog-seo/</id>
+    <published>2017-01-25T13:30:58.000Z</published>
+    <updated>2017-01-25T14:14:06.297Z</updated>
+    
+    <content type="html"><![CDATA[<p>进一步打造自己的Blog。</p>
+<a id="more"></a>
+<h1 id="搜索服务"><a href="#搜索服务" class="headerlink" title="搜索服务"></a>搜索服务</h1><p>安装 <code>hexo-generator-searchdb</code></p>
+<p>在站点的根目录下执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install hexo-generator-searchdb --save</div></pre></td></tr></table></figure>
+<p>编辑主题配置文件_config.yml，新增以下内容到任意位置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">search:</div><div class="line">  path: search.xml</div><div class="line">  field: post</div><div class="line">  format: html</div><div class="line">  limit: 10000</div></pre></td></tr></table></figure>
+<h1 id="开启打赏功能"><a href="#开启打赏功能" class="headerlink" title="开启打赏功能"></a>开启打赏功能</h1><p>主题的_config.yml:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">reward_comment: 坚持原创技术分享，您的支持将鼓励我继续创作！</div><div class="line">wechatpay: /img/archives/ss.png</div><div class="line">alipay: /img/archives/ss.png</div></pre></td></tr></table></figure>
+<h1 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h1><p><strong>全局字体：</strong>编辑 next/source/css/_variables/custom.styl,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$font-size-base = 16px;</div></pre></td></tr></table></figure>
+<h1 id="背景图片"><a href="#背景图片" class="headerlink" title="背景图片"></a>背景图片</h1><p>next/source/css/_custom/custom.styl文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">body &#123; background:url(/images/backGround.jpg);&#125;</div></pre></td></tr></table></figure>
+<h1 id="背景颜色"><a href="#背景颜色" class="headerlink" title="背景颜色"></a>背景颜色</h1><p>定义颜色变量：themes/next/source/css/_variables/custom.styl</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// 背景颜色</div><div class="line">$body-bg-color = #f5f5d5;</div><div class="line">$header-bg-color = #f5f5d5;</div><div class="line">$footer-bg-color = #f5f5d5;</div></pre></td></tr></table></figure>
+<p>定义完后，其实body的背景已经换了。</p>
+<p><strong>头部背景色：</strong></p>
+<p>themes/next/source/css/_schemes/Mist/sidebar/_header.styl：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">.header &#123; background: $header-bg-color; &#125;</div></pre></td></tr></table></figure>
+<p><strong>footer背景色：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">.footer &#123;</div><div class="line">  margin-top: 80px;</div><div class="line">  padding: 10px 0;</div><div class="line">  background: $footer-bg-color;</div><div class="line">  color: $grey-dim;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="代码风格"><a href="#代码风格" class="headerlink" title="代码风格"></a>代码风格</h1><p>主题_config.yml:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">highlight_theme: night blue</div></pre></td></tr></table></figure>
+<h1 id="内容宽度"><a href="#内容宽度" class="headerlink" title="内容宽度"></a>内容宽度</h1><p>themes/next/source/css/_variables/custom.styl</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// 修改成你期望的宽度</div><div class="line">$content-desktop = 900px</div><div class="line">// 当视窗超过 1600px 后的宽度</div><div class="line">$content-desktop-large = 1100px</div></pre></td></tr></table></figure>
+<h1 id="文章目录序号关闭"><a href="#文章目录序号关闭" class="headerlink" title="文章目录序号关闭"></a>文章目录序号关闭</h1><p>主题_config.yml:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#Table Of Contents in the Sidebar</div><div class="line">toc:</div><div class="line">  enable: true</div><div class="line"></div><div class="line">  # Automatically add list number to toc.</div><div class="line">  number: false</div></pre></td></tr></table></figure>
+<h1 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h1><p>不喜欢空心的，我们换成实心的列表：</p>
+<p>文章列表：<br>source/css/_common/components/post/post-expand.styl:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ul li &#123; list-style: disc; &#125;</div></pre></td></tr></table></figure></p>
+<p>页面列表：<br>next/source/css/_custom/custom.styl:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ul &#123;</div><div class="line">list-style-type: disc;  // 空心圆，实心圆为 disc</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>参考：<a href="https://github.com/iissnan/hexo-theme-next/issues/559" target="_blank" rel="external">https://github.com/iissnan/hexo-theme-next/issues/559</a></p>
+<h1 id="文章访问次数"><a href="#文章访问次数" class="headerlink" title="文章访问次数"></a>文章访问次数</h1><p>主题_config.yml:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">busuanzi_count:</div><div class="line">  # count values only if the other configs are false</div><div class="line">  enable: true</div><div class="line">  # custom uv span for the whole site</div><div class="line">  site_uv: true</div><div class="line">  site_uv_header: &lt;i class=&quot;fa fa-user&quot;&gt;&lt;/i&gt;访问人数</div><div class="line">  site_uv_footer:</div><div class="line">  # custom pv span for the whole site</div><div class="line">  site_pv: true</div><div class="line">  site_pv_header: &lt;i class=&quot;fa fa-eye&quot;&gt;&lt;/i&gt;总访问量</div><div class="line">  site_pv_footer: 次</div><div class="line">  # custom pv span for one page only</div><div class="line">  page_pv: true</div><div class="line">  page_pv_header: &lt;i class=&quot;fa fa-file-o&quot;&gt;&lt;/i&gt;浏览</div><div class="line">  page_pv_footer: 次</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;进一步打造自己的Blog。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Hexo" scheme="https://maoao530.github.io/categories/Hexo/"/>
+    
+    
+      <category term="hexo" scheme="https://maoao530.github.io/tags/hexo/"/>
+    
+      <category term="next" scheme="https://maoao530.github.io/tags/next/"/>
+    
+  </entry>
   
   <entry>
     <title>应用程序安装流程</title>
@@ -1811,131 +1869,6 @@
     
     
       <category term="Linux" scheme="https://maoao530.github.io/tags/Linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>一步一步搭建hexo博客</title>
-    <link href="https://maoao530.github.io/2016/02/23/hexo-blog/"/>
-    <id>https://maoao530.github.io/2016/02/23/hexo-blog/</id>
-    <published>2016-02-23T07:16:27.000Z</published>
-    <updated>2017-01-18T15:07:12.046Z</updated>
-    
-    <content type="html"><![CDATA[<p>Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。<br><a id="more"></a></p>
-<h1 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h1><p>因为我是在windows下，所以需要先安装Git和Node.js：</p>
-<ul>
-<li><a href="https://github.com/git-for-windows/git/releases/download/v2.10.1.windows.1/Git-2.10.1-64-bit.exe" target="_blank" rel="external">Git for windows</a></li>
-<li><a href="https://nodejs.org/dist/v4.6.1/node-v4.6.1-x64.msi" target="_blank" rel="external">Node.js</a><br>安装过程就不多说了。</li>
-</ul>
-<h1 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h1><p>打开git，cd到你需要安装hexo的目录，然后安装hexo</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g hexo-cli</div></pre></td></tr></table></figure>
-<p><img src="/img/archives/npm-install-hexo-cli.png" alt="安装hexo"></p>
-<h1 id="初始化Hexo项目"><a href="#初始化Hexo项目" class="headerlink" title="初始化Hexo项目"></a>初始化Hexo项目</h1><p>创建并且初始化hexo项目<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">hexo init &lt;folder&gt;</div><div class="line">cd &lt;folder&gt;</div><div class="line">npm install</div></pre></td></tr></table></figure></p>
-<p>hexo默认的目录如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">├── .deploy_git</div><div class="line">├── public</div><div class="line">├── scaffolds</div><div class="line">├── scripts</div><div class="line">├── source</div><div class="line">|   ├── _drafts</div><div class="line">|   └── _posts</div><div class="line">├── themes</div><div class="line">├── _config.yml</div><div class="line">└── package.json</div></pre></td></tr></table></figure></p>
-<table>
-<thead>
-<tr>
-<th>目录</th>
-<th style="text-align:left">描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>.deploy_git</td>
-<td style="text-align:left">执行hexo deploy命令部署到GitHub上的内容目录</td>
-</tr>
-<tr>
-<td>public</td>
-<td style="text-align:left">执行hexo generate命令，输出的静态网页内容目录</td>
-</tr>
-<tr>
-<td>scaffolds</td>
-<td style="text-align:left">layout模板文件目录，其中的md文件可以添加编辑</td>
-</tr>
-<tr>
-<td>scripts</td>
-<td style="text-align:left">扩展脚本目录，这里可以自定义一些javascript脚本</td>
-</tr>
-<tr>
-<td>source</td>
-<td style="text-align:left">文章源码目录，该目录下的markdown和html文件均会被hexo处理。该页面对应repo的根目录，404文件、favicon，ico文件，CNAME文件等都应该放这里，该目录下可新建页面目录。</td>
-</tr>
-<tr>
-<td>_drafts</td>
-<td style="text-align:left">草稿文章</td>
-</tr>
-<tr>
-<td>_posts</td>
-<td style="text-align:left">发布文章</td>
-</tr>
-<tr>
-<td>themes</td>
-<td style="text-align:left">主题文件目录</td>
-</tr>
-<tr>
-<td>_config.yml</td>
-<td style="text-align:left">全局配置文件，大多数的设置都在这里</td>
-</tr>
-<tr>
-<td>package.json</td>
-<td style="text-align:left">应用程序数据，指明hexo的版本等信息，类似于一般软件中的关于按钮</td>
-</tr>
-</tbody>
-</table>
-<h1 id="hexo-命令"><a href="#hexo-命令" class="headerlink" title="hexo 命令"></a>hexo 命令</h1><p>常用几个命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">hexo new &quot;postName&quot; #新建文章</div><div class="line">hexo new page &quot;pageName&quot; #新建页面</div><div class="line">hexo generate #生成静态页面至public目录</div><div class="line">hexo server #开启预览访问端口（默认端口4000，&apos;ctrl + c&apos;关闭server）</div><div class="line">hexo deploy #将.deploy目录部署到GitHub</div></pre></td></tr></table></figure></p>
-<h1 id="更换next主题"><a href="#更换next主题" class="headerlink" title="更换next主题"></a>更换next主题</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd your-hexo-site</div><div class="line">$ git clone https://github.com/iissnan/hexo-theme-next themes/next</div></pre></td></tr></table></figure>
-<p>修改站点配置文件_config.yml：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">theme: next</div></pre></td></tr></table></figure></p>
-<p>更多关于next主题可以参考：</p>
-<ul>
-<li><a href="http://theme-next.iissnan.com/getting-started.html" target="_blank" rel="external">使用文档</a></li>
-<li><a href="https://github.com/iissnan/hexo-theme-next/wiki" target="_blank" rel="external">next常见问答</a></li>
-</ul>
-<h1 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h1><p>hexo支持插件，可以直接通过命令行安装即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">npm install plugin-name --save</div><div class="line">//更新插件</div><div class="line">npm update</div><div class="line">//卸载插件</div><div class="line">npm uninstall plugin-name</div></pre></td></tr></table></figure></p>
-<p>下面推荐几个常用的插件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">//feed插件</div><div class="line">npm install hexo-generator-feed --save</div><div class="line">//站点地图</div><div class="line">npm install hexo-generator-sitemap --save</div><div class="line">//百度站点地图</div><div class="line">npm install hexo-generator-baidu-sitemap --save</div></pre></td></tr></table></figure></p>
-<p>然后在 Hexo 根目录下的 _config.yml 里配置一下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">feed:</div><div class="line">    type: atom      </div><div class="line">    path: atom.xml</div><div class="line">    limit: 20  # 最近20篇文章  </div><div class="line">sitemap:</div><div class="line">    path: sitemap.xml</div><div class="line">baidusitemap:</div><div class="line">    path: baidusitemap.xml</div></pre></td></tr></table></figure></p>
-<h1 id="SEO"><a href="#SEO" class="headerlink" title="SEO"></a>SEO</h1><h2 id="增加主页关键词"><a href="#增加主页关键词" class="headerlink" title="增加主页关键词"></a>增加主页关键词</h2><p>更改index.swig文件，文件路径是your-hexo-site\themes\next\layout，将下面代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;% block title %&#125; &#123;&#123; config.title &#125;&#125; &#123;% endblock %&#125;</div></pre></td></tr></table></figure>
-<p>改成</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;% block title %&#125; &#123;&#123; config.title &#125;&#125; - &#123;&#123; theme.description &#125;&#125; &#123;% endblock %&#125;</div></pre></td></tr></table></figure>
-<h2 id="百度收录"><a href="#百度收录" class="headerlink" title="百度收录"></a>百度收录</h2><p>（1）网站验证</p>
-<p>先到百度站长注册账号，并且添加网站，然后进行网站验证，我们通过html标签验证，next主题已经给我们做好了：</p>
-<p>打开_config.yml:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">baidu_site_verification: *****</div></pre></td></tr></table></figure></p>
-<p>然后hexo deploy后，点击完成验证即可。</p>
-<p>（2）提交baidusitemap.xml</p>
-<p>打开百度站长工具，网页抓取-链接提交栏下，选择自动提交：</p>
-<ul>
-<li>主动推送 最为快速的提交方式，将站点当天新产出链接立即通过此方式推送给百度，以保证新链接可以及时被百度收录。需要改写url链接带参数，操作起来不好搞，放弃。</li>
-<li>自动推送 需要嵌入一段js代码，当我们每访问一次网站，则自动运行脚本，推送链接到百度 （next主题也为我们做好了）</li>
-<li>sitemap：自动提交baidusitemap.xml</li>
-</ul>
-<p>（3）自动推送</p>
-<p>打开_config.yml：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">baidu_push: true</div></pre></td></tr></table></figure></p>
-<p>打开hexo-blog/themes/next/layout/_scripts/baidu-push.swig，替换为百度给我们的js代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&#123;% <span class="keyword">if</span> theme.baidu_push %&#125;</div><div class="line">&lt;script&gt;</div><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> bp = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</div><div class="line">    <span class="keyword">var</span> curProtocol = <span class="built_in">window</span>.location.protocol.split(<span class="string">':'</span>)[<span class="number">0</span>];</div><div class="line">    <span class="keyword">if</span> (curProtocol === <span class="string">'https'</span>) &#123;</div><div class="line">        bp.src = <span class="string">'https://zz.bdstatic.com/linksubmit/push.js'</span>;        </div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">        bp.src = <span class="string">'http://push.zhanzhang.baidu.com/push.js'</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">var</span> s = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"script"</span>)[<span class="number">0</span>];</div><div class="line">    s.parentNode.insertBefore(bp, s);</div><div class="line">&#125;)();</div><div class="line">&lt;/script&gt;</div><div class="line">&#123;% endif %&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="谷歌收录"><a href="#谷歌收录" class="headerlink" title="谷歌收录"></a>谷歌收录</h2><p>（1）网站验证</p>
-<p>验证方式基本一样，打开_config.yml:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">google_site_verification: *******</div></pre></td></tr></table></figure>
-<p>（2）提交sitemap</p>
-<p>点击站点地图，提交sitemap.xml即可，比较简单。</p>
-<h1 id="同时使用coding和github"><a href="#同时使用coding和github" class="headerlink" title="同时使用coding和github"></a>同时使用coding和github</h1><p>补充一下，因为百度对github page不太友好，如果博客托管在github page上，很难被百度收录。<br>所以我们可以把网站托管到coding平台，即同时使用Coding提供的Pages服务和Github提供的Pages服务</p>
-<p>安装deploy git：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-deployer-git --save</div></pre></td></tr></table></figure>
-<p>配置_config.yml：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">deploy:</div><div class="line">  type: git</div><div class="line">  repo: </div><div class="line">      git@github.com:Maoao530/Maoao530.github.io.git</div><div class="line">      coding: https://git.coding.net/xxxxxx,coding-pages</div><div class="line">  branch: master</div></pre></td></tr></table></figure>
-<p>配置完成后直接<code>hexo deploy</code>,就可以了。</p>
-<h1 id="国内国外访问不同的Pages服务"><a href="#国内国外访问不同的Pages服务" class="headerlink" title="国内国外访问不同的Pages服务"></a>国内国外访问不同的Pages服务</h1><p>如果托管到coding pages后，那么域名当然也和github pages不一样了，那么怎么办呢？</p>
-<p>去dnspod买个域名，我们可以通过DnsPod让国内用户访问coding，让国外用户访问github。然后我们只要访问这个域名即可。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="其他" scheme="https://maoao530.github.io/categories/%E5%85%B6%E4%BB%96/"/>
-    
-    
-      <category term="Hexo" scheme="https://maoao530.github.io/tags/Hexo/"/>
     
   </entry>
   
