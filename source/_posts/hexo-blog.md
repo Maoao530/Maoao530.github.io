@@ -2,7 +2,7 @@
 title: 一步一步搭建hexo博客
 date: 2016-02-23 15:16:27
 categories:
-- 其他
+- Hexo
 tags:
 - Hexo
 ---
