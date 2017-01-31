@@ -5,7 +5,6 @@ categories:
 tags:
   - Android启动
 date: 2017-1-6 21:29:35
-top: 10
 ---
 
 本文介绍android的启动流程。
