@@ -11,7 +11,7 @@ ORM全称“Object Relational Mapping”，即对象-关系映射，就是把关
 
 <!-- more -->
 
-# 1. 开始之前
+# 一、预备知识
 
 开始之前，请先掌握python metaclass的知识，请参考我的文章：[从Python Metaclass说起](https://maoao530.github.io/2016/04/12/python-metaclass/)  
 
@@ -33,7 +33,7 @@ u.save()
 ```
 怎么样？我们可以不用直接去操作SQL了，看上去是不是非常简单呢？
 
-# 2. 设计Field类
+# 二、设计Field类
 
 接下来我们要定义Field类，它负责保存数据库表的**字段名**和**字段类型**：
 
@@ -54,7 +54,7 @@ class IntegerField(Field):
         super(IntegerField, self).__init__(name, 'bigint')
 ```
 
-# 3. 设计Model类
+# 三、设计Model类
 
 Model类是数据库表类的基类。
 
@@ -93,7 +93,7 @@ class Model(dict, metaclass=ModelMetaclass):
         print('ARGS: %s' % str(args))
 ```
 
-# 4. 设计ModelMetaclass元类
+# 四、设计ModelMetaclass元类
 
 最后就是mnetaclass元类的编写了。
 

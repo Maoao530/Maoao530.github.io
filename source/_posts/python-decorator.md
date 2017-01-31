@@ -11,12 +11,12 @@ tags:
 
 <!-- more -->
 
-# 1. 什么是装饰器
+# 一、什么是装饰器
 
 Python的装饰器的英文名叫`Decorator`，这个和设计模式中的`Decorator Pattern`是两种东西。
 Python中的装饰器主要用于对已经有的模块做一些“修饰工作”。比如说，我们经常需要在函数调用前后自动打印日志，又不想要改变原有函数的模块，这个时候，我们便可以写一个打印log的装饰器。
 
-# 2. Hello World
+# 二、Hello World
 
 ```python
 # 定义log装饰器
@@ -43,7 +43,7 @@ end foo()
 ```
 有木有发现很神奇？
 
-# 3. Decorator 的本质
+# 三、Decorator 的本质
 
 对于Python的这个@注解语法糖来说，当你在用某个@decorator来修饰某个函数func时，如下所示:
 ```python
@@ -91,7 +91,7 @@ func = decorator(arg1,arg2)(func)
 ```
 这意味着decorator(arg1, arg2)这个函数需要返回一个“真正的decorator”。
 
-# 4. 带参数的装饰器示例
+# 四、带参数的装饰器示例
 
 假设我们可以编写一个带参数的装饰器：
 ```python
@@ -140,7 +140,7 @@ def log(text):
 ```
 其实也没有什么复杂的东西。
 
-# 5. class式的 Decorator
+# 五、class式的 Decorator
 
 最后再来看下decorator的class方式，还是看个示例：
 ```python
@@ -173,11 +173,9 @@ aFunction()
 - 一个是__call__()，这个方法是在我们调用被decorator函数时被调用的。
 上面输出可以看到整个程序的执行顺序。
 
-# 6. 总结
+# 六、总结
 
 decorator可以增强函数的功能，定义起来虽然有点复杂，但使用起来非常灵活和方便。
-
-
 
 References:
 - [Python修饰器的函数式编程](http://coolshell.cn/articles/11265.html)

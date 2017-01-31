@@ -16,7 +16,7 @@ top: 10
 
 ![android-boot-up.png](/img/archives/android-boot-up.png)
 
-# 1 Loader层
+# 一、Loader层
 
 **1. Boot ROM: **
 上电后，BootRom会被激活，`引导芯片代码`开始从预定义的地方（固化在ROM）开始执行，然后加载引导程序到`RAM`。
@@ -31,7 +31,7 @@ Boot Loader主要作用是检查RAM，初始化硬件参数等功能。
 （3）linux kernel会先完成一些初始化动作，mount 根文件系统和启动第一个用户进程(init 进程)
 
 
-# 2 kernel层
+# 二、kernel层
 
 Android内核与linux内核启动的方式差不多。Kernel的启动流程：
 
@@ -135,7 +135,7 @@ static void run_init_process(const char *init_filename)
 
 那么至此，我们已经对Android Kernel如何引导以及用户空间1号进程（init进程）如何启动做了详细分析。
 
-# 3 Init进程
+# 三、Init进程
 
 ## 3.1 Init Process
 
@@ -352,7 +352,7 @@ proc文件系统是一个非常重要的虚拟文件系统，它可以看作是�
 与proc文件系统类似，sysfs文件系统也是一个不占有任何磁盘空间的虚拟文件系统。它通常被挂接在/sys目录下。sysfs文件系统是Linux2.6内核引入的，它把连接在系统上的设备和总线组织成为一个分级的文件，使得它们可以在用户空间存取。
 
 
-# 4 init rc文件和语法
+# 四、init rc文件和语法
 
 init rc文件语法是以行尾单位，以空格间隔的语法，以#开始代表注释行。rc文件主要包含`Action`、`Service`、`Command`、`Options`，其中对于Action和Service的名称都是唯一的，对于重复的命名视为无效。
 
@@ -403,7 +403,7 @@ Options是Services的可选项，与service配合使用
 
 所有的Service里面只有servicemanager ，zygote ，surfaceflinger这3个service有onrestart关键字来触发其他service启动过程。
 
-# 5 Daemon守护进程
+# 五、Daemon守护进程
 
 init.rc会启动一些daemon进程，比如ueventd, adbd, servicemanager, vold, netd, debuggerd等。
 
@@ -448,7 +448,7 @@ service debuggerd /system/bin/debuggerd
     class main  
 ```
 
-# 6 ServiceManager
+# 六、ServiceManager
 
 ServiceManager也是守护进程，它是android的服务大管家，是一个很重要的服务：
 
@@ -468,7 +468,7 @@ service servicemanager /system/bin/servicemanager
 
 `service servicemanager /system/bin/servicemanager`表示服务名为servicemanager，服务运行的时候会执行`/system/bin/servicemanager`。
 
-# 7 Zygote 
+# 七、Zygote 
 
 Zygote是第一个Java进程，并且**是所有java进程的父进程**。在init.zygote32.rc文件中，zygote服务定义如下：
 
@@ -523,7 +523,7 @@ zygote进程的主要工作如下：
 7. zygote功成身退，调用runSelectLoop()，随时待命，当接收到请求创建新进程请求时立即唤醒并执行相应工作。
 
 
-# 8 system_server
+# 八、system_server
 
 上面提到Zygote启动过程中会调用startSystemServer()，可知startSystemServer()函数是system_server启动流程的起点， system_server相关类函数如下：
 

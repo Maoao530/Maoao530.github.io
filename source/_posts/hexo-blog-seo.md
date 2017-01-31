@@ -13,7 +13,7 @@ date: 2017-01-25 21:30:58
 <!-- more -->
 
 
-# 搜索服务
+# 一、搜索服务
 
 安装 `hexo-generator-searchdb`
 
@@ -33,7 +33,7 @@ search:
   limit: 10000
 ```
 
-# 开启打赏功能 
+# 二、开启打赏功能 
 
 主题的_config.yml:
 
@@ -43,7 +43,7 @@ wechatpay: /img/archives/ss.png
 alipay: /img/archives/ss.png
 ```
 
-# 字体
+# 三、字体
 
 **全局字体：**编辑 next/source/css/_variables/custom.styl,
 
@@ -51,7 +51,7 @@ alipay: /img/archives/ss.png
 $font-size-base = 16px; 
 ```
 
-# 背景图片
+# 四、背景图片
 
 next/source/css/_custom/custom.styl文件:
 
@@ -59,7 +59,7 @@ next/source/css/_custom/custom.styl文件:
 body { background:url(/images/backGround.jpg);}
 ```
 
-# 背景颜色
+# 五、背景颜色
 
 定义颜色变量：themes/next/source/css/_variables/custom.styl
 
@@ -91,7 +91,7 @@ themes/next/source/css/_schemes/Mist/sidebar/_header.styl：
 }
 ```
 
-# 代码风格
+# 六、代码风格
 
 主题_config.yml:
 
@@ -99,7 +99,7 @@ themes/next/source/css/_schemes/Mist/sidebar/_header.styl：
 highlight_theme: night blue
 ```
 
-# 内容宽度
+# 七、内容宽度
 
 themes/next/source/css/_variables/custom.styl
 
@@ -110,7 +110,7 @@ $content-desktop = 900px
 $content-desktop-large = 1100px
 ```
 
-# 文章目录序号关闭
+# 八、文章目录序号关闭
 
 主题_config.yml:
 
@@ -123,7 +123,7 @@ toc:
   number: false
 ```
 
-# 无序列表
+# 九、无序列表
 
 不喜欢空心的，我们换成实心的列表：
 
@@ -144,7 +144,7 @@ list-style-type: disc;  // 空心圆，实心圆为 disc
 
 参考：[https://github.com/iissnan/hexo-theme-next/issues/559](https://github.com/iissnan/hexo-theme-next/issues/559)
 
-# 文章访问次数
+# 十、文章访问次数
 
 主题_config.yml:
 
@@ -166,7 +166,7 @@ busuanzi_count:
   page_pv_footer: 次
 ```
 
-# 表格样式
+# 十一、表格样式
 
 这个背景色下面表格边界不太明显，我们修改为：
 

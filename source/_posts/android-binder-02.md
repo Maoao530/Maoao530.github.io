@@ -11,7 +11,7 @@ date: 2016-12-25 21:45:33
 
 <!-- more -->
 
-# 1 Native Binder
+# 一、Native Binder
 
 源码目录结构:
 > alps/frameworks/native/cmds/NativeBinderDemo/
@@ -161,6 +161,7 @@ namespace android
 ```
 
 ## 1.4 Android.mk
+
 ```
 LOCAL_PATH := $(call my-dir)
  
@@ -211,7 +212,7 @@ adb push ClientDemo /system/bin
 `adb shell system/bin/ServerDemo` ， `adb shell system/bin/ClientDemo`
 
 
-# 2 JavaFramework Binder
+# 二、JavaFramework Binder
 
 源码目录结构:
 > alps/frameworks/base/cmds/FrameworkBinderDemo/

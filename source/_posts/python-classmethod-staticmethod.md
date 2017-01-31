@@ -11,7 +11,7 @@ tags:
 
 <!-- more -->
 
-# 1. 定义
+# 一、定义
 
 python中类方法和静态方法是用装饰器`@classmethod`和`@staticmethod`来定义的。
 
@@ -54,7 +54,7 @@ print(a.static_foo)
 - class_foo是绑定在class A上的，参数cls指向class A本身
 - static_foo不绑定在a或者A上，所以没有额外的参数
 
-# 2. 使用
+# 二、使用
 
 那么使用上有什么区别呢？
 ```python
@@ -80,7 +80,7 @@ A.static_foo(2)
 - class_foo绑定在类A上，可以通过实例a或者类A去调用
 - static_foo不绑定任何参数，也可以通过实例a或者类A去调用
 
-# 3. 总结
+# 三、总结
 
 类和实例都是对象，所以它们可以有方法：
 

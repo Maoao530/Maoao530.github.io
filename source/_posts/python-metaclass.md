@@ -12,7 +12,7 @@ tags:
 
 <!-- more -->
 
-# 1. 理解python中的class
+# 一、理解python中的class
 
 
 在理解元类之前，你需要先掌握Python中的类。类同样也是一种`对象`。是的，没错，就是对象。只要你使用关键字class，Python解释器在执行的时候就会创建一个对象。
@@ -43,7 +43,7 @@ print(type(type))   # <class 'type'>
 为什么class的类型是type？？
 
 
-# 2. 理解type
+# 二、理解type
 
 
 动态语言和静态语言最大的不同，就是函数和类的定义，不是编译时定义的，而是运行时动态创建的。
@@ -92,7 +92,7 @@ s = Student()
 s.say_hello()
 ```
 
-# 3. 理解metaclass
+# 三、理解metaclass
 
 metaclass，直译为元类，metaclass允许你动态的控制类的创建行为。换句话说，你可以把类看成是metaclass创建出来的“实例”。  
 

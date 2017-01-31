@@ -12,7 +12,7 @@ I / O多路转接(I/O multiplexing),其基本思想是:先构造一张有关描�
 
 <!-- more -->
 
-# 1. 什么是I/O Multiplexing？
+# 一、什么是I/O Multiplexing？
 
 I/O multiplexing就是我们说的select，poll，epoll，有些地方也称这种IO方式为event driven IO。其好处就在于单个process就可以同时处理多个网络连接的IO。
 我们在这里仅仅来讨论select，它的基本原理就是会不断的轮询所负责的所有fdset，当某个fd有数据到达了，就通知用户进程来处理fd的读或者写事件。如果没有fd就绪，select会根据参数选择一直阻塞或者timeout。
@@ -21,7 +21,7 @@ I/O 多路复用的特点是通过一种机制一个进程能同时等待多个�
 
 ![I/O 多路复用](/img/archives/io_mul.png)
 
-# 2. select函数说明
+# 二、select函数说明
 
 ```cpp
 int select(int maxfd,fd_set *readfds,fd_set *writefds, fd_set *exceptfds,struct timeval *timeout);  
@@ -53,7 +53,7 @@ struct timeval{
 - 0：仅检测描述符集合的状态，然后立即返回，并不等待外部事件的发生
 - 特定的时间值：如果在指定的时间段里没有事件发生，select将超时返回
 
-# 3. select函数返回值
+# 三、select函数返回值
 
 执行成功则返回文件描述词状态已改变的个数，如果返回0代表在描述词状态改变前已超过timeout时间，没有返回；当有错误发生时则返回-1，错误原因存于errno，此时参数readfds，writefds，exceptfds和timeout的值变成不可预测。错误值可能为：
 ```
@@ -62,7 +62,7 @@ struct timeval{
 // EINVAL 参数n 为负值。
 // ENOMEM 核心内存不足
 ```
-# 4.理解Select模型：
+# 四、理解Select模型：
 
 例如,我们若编写下列代码:
 ```
@@ -79,7 +79,7 @@ select (4,  &readset, &writeset, NULL, NULL);
 
 ![fdset模型](/img/archives/select.png)
 
-# 5. 如何利用select设计的web服务器：
+# 五、如何利用select设计的web服务器：
 
 ```cpp
 #include <stdio.h>  

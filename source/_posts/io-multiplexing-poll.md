@@ -11,7 +11,7 @@ poll和select实现功能差不多，但poll效率比select效率高。
 
 <!-- more -->
 
-# 1. 什么是I/O Multiplexing
+# 一、什么是I/O Multiplexing
 
  I / O多路转接(I/O multiplexing),其基本思想是:先构造一张有关描述符的表,然后调用一个函数,它要到这些描述符中的一个已准备好进行 I / O时才返回。
 在返回时,它告诉进程哪一个描述符已准备好可以进行 I / O。
@@ -21,7 +21,7 @@ IO multiplexing就是我们说的select，poll，epoll，有些地方也称这�
 
 poll的机制与select类似，与select在本质上没有多大差别，管理多个描述符也是进行轮询，根据描述符的状态进行处理，但是**poll没有最大文件描述符数量的限制**。poll和select同样存在一个缺点就是，包含大量文件描述符的数组被整体复制于用户态和内核的地址空间之间，而不论这些文件描述符是否就绪，它的开销随着文件描述符数量的增加而线性增大。
 
-# 2. poll函数
+# 二、poll函数
 
 ```cpp
 # include <poll.h>  
@@ -54,7 +54,7 @@ shortr events ;         /* events that occurred on fd */
   + EINTR　　　　  请求的事件之前产生一个信号，调用可以重新发起。
   + EINVALnfds　　参数超出PLIMIT_NOFILE值。
 
-# 3. 利用poll设计的web服务器
+# 三、利用poll设计的web服务器
 
 设计一个比较简单的web服务器：
 

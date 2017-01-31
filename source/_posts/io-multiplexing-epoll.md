@@ -11,7 +11,7 @@ tags:
 
 <!-- more -->
 
-# 1. epoll的优点？
+# 一、epoll的优点？
 
 相对于select和poll来说，epoll有如下优点：
 
@@ -24,16 +24,19 @@ tags:
 - **使用mmap加速内核与用户空间的消息传递**
     无论是select,poll还是epoll都需要内核把FD消息通知给用户空间，如何避免不必要的内存拷贝就很重要，在这点上，epoll是通过内核与用户空间mmap同一块内存实现的。
 
-# 2. epoll使用说明
+# 二、epoll使用说明
 
 先来看epoll的几个函数：
+
 ```cpp
 #include <sys/epoll.h>  
 int epoll_create(int size);  
 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);  
 int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);  
 ```
+
 - **`int epoll_create(int size);`**
+
 创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大。这个参数不同于select()中的第一个参数，给出最大监听的fd+1的值。需要注意的是，当创建好epoll句柄后，它就是会占用一个fd值，在linux下如果查看/proc/进程id/fd/，是能够看到这个fd的，所以在使用完epoll后，必须调用close()关闭，否则可能导致fd被耗尽。
 
 
@@ -76,7 +79,7 @@ EPOLLONESHOT：只监听一次事件，当监听完这次事件之后，如果�
 　　
 等待事件的产生，类似于select()调用。参数events用来从内核得到事件的集合，maxevents告之内核这个events有多大，这个maxevents的值不能大于创建epoll_create()时的size，参数timeout是超时时间（毫秒，0会立即返回，-1将不确定，也有说法说是永久阻塞）。该函数返回需要处理的事件数目，如返回0表示已超时。
 
-# 3. epoll的两种模式LT和ET
+# 三、epoll的两种模式LT和ET
 
 二者的差异在于level-trigger模式下只要某个socket处于readable/writable状态，无论什么时候进行epoll_wait都会返回该socket；而edge-trigger模式下只有某个socket从unreadable变为readable或从unwritable变为writable时，epoll_wait才会返回该socket。
 LT支持阻塞和非阻塞，ET只支持非阻塞，以避免由于一个文件句柄的阻塞读/阻塞写操作把处理多个文件描述符的任务饿死。
@@ -94,7 +97,7 @@ LT支持阻塞和非阻塞，ET只支持非阻塞，以避免由于一个文件�
 > - 读：只要可读，就一直读，直到返回0，或者 errno = EAGAIN
 > - 写:只要可写，就一直写，直到数据发送完，或者 errno = EAGAIN
 
-# 4. epoll,ET模式的简单HTTP服务器代码
+# 四、epoll,ET模式的简单HTTP服务器代码
 
 ```cpp
 #include <sys/socket.h>
@@ -231,7 +234,7 @@ int main(){
 }
 ```
 
-# 5. epoll & LT 模式简单的服务器代码
+# 五、epoll & LT 模式简单的服务器代码
 
 ```cpp
 #include <stdio.h>

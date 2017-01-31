@@ -12,7 +12,7 @@ date: 2017-01-18 14:48:01
 
 <!-- more -->
 
-# 安装流程图
+# 一、安装流程图
 
 APK安装流程，总体可以下图流程，用ProcessOn画的，凑合看：
 
@@ -26,7 +26,7 @@ APK安装流程，总体可以下图流程，用ProcessOn画的，凑合看：
 
 后续的博文会根据这张图展开说明。
 
-# APK文件结构
+# 二、APK文件结构
 
 APK(Android Package)，可以看做是一个zip压缩包，可以通过解压缩工具解开，其文件结构如下：
 
@@ -40,7 +40,7 @@ APK(Android Package)，可以看做是一个zip压缩包，可以通过解压缩
 | classes.dex            | 是JAVA源码编译后生成的JAVA字节码文件。但Android使用的dalvik虚拟机与标准的JAVA虚拟机不兼容，dex文件与class文件相比，不论是文件结构还是opcode都不一样。|
 | resources.arsc         | 编译后的二进制资源文件。|
 
-# APK安装方法
+# 三、APK安装方法
 
 APK有下面4种安装方法：
 
@@ -55,7 +55,7 @@ APK有下面4种安装方法：
 - 拷贝目标apk到指定文件目录
 - 调用scanPackageLI为apk文件在系统中注册信息
 
-# 应用程序安装过程
+# 四、应用程序安装过程
 
 上述几种安装方法最终都通过PackageManagerService.scanPackageLI完成，总结起来大致有以下三种方式：
 
@@ -75,7 +75,7 @@ frameworks\base\cmds\pm\src\com\android\commands\pm\Pm.java
 
 接下来我们来分别详细说明这些安装流程：
 
-# adb push 
+# 五、adb push 
 
 Android 4.4平台，PackageManagerService的内部类AppDirObserver实现了监听app目录的功能，当把某个APK文件放到app目录下面时，PMS会收到ADD_EVENTS事件。
 如果是添加事件，则调用scanPackageLI，并使用updatePermissionsLPw授权；如果是删除事件则调用removePackageLI移除该apk的相关信息。最后都要调用writeLPr重新保存相关信息到packages.xml。
@@ -88,7 +88,7 @@ Android 4.4平台，PackageManagerService的内部类AppDirObserver实现了监�
 
 以上待填坑。
 
-# adb install 
+# 六、adb install 
 
 adb install 的安装方式，会调用system/core/adb/commandline.cpp中的adb_commandline函数：
 ```
@@ -100,7 +100,7 @@ adb_commandline
 ```
 这个过程会把apk文件copy到data/local/tmp/目录下，然后向shell服务发送pm命令安装apk，最后调用`Pm.runInstall()`方法来安装apk。
 
-## pm.runInstall
+## 6.1 pm.runInstall
 
 frameworks\base\cmds\pm\src\com\android\commands\pm\Pm.java 
 
@@ -140,16 +140,16 @@ frameworks\base\cmds\pm\src\com\android\commands\pm\Pm.java
 
 从上面的代码来看，runInstall主要进行了三件事，即创建session、对session进行写操作，最后提交session。
 
-### doCreateSession
+### 6.1.1 doCreateSession
 
 实际调用的是PackageInstallerService的createSession，这个过程主要是为APK安装做好准备工作，例如权限检查、目的临时文件的创建等， 最终创建出PackageInstallerSession对象。PackageInstallerSession可以看做是”安装APK”这个请求的封装，其中包含了处理这个请求需要的一些信息。 
 实际上PackageInstallerSession不仅是分装请求的对象，其自身还是个服务端。
 
-### doWriteSession
+### 6.1.2 doWriteSession
 
 通过PackageInstallerSession将/data/local/tmp的apk拷贝到终端目录内。
 
-### doCommitSession
+### 6.1.3 doCommitSession
 
 doWriteSession结束后，如果没有出现任何错误，那么APK源文件已经copy到目的地址了，doCommitSession最终会调用到PMS.installStage来安装apk，调用流程如下：
 
@@ -197,7 +197,7 @@ PMS.installStage()会调用sendMessage将"INIT_COPY"发送给PackageHandler：
 
 PackageHandler用于处理apk的安装请求等消息，后面分析。
 
-# ApplicationPackageManager
+# 七、ApplicationPackageManager
 
 网络下载应用安装或者通过第三方应用安装，最终都会通过ApplicationPackageManager.installPackage来安装：
 
@@ -251,12 +251,12 @@ PMS.installPackageAsUser调用sendMessage将"INIT_COPY"发送给PackageHandler:
 ```
 PackageHandler用于处理apk的安装请求等消息，后面分析。
 
-# PackageHanlder
+# 八、PackageHanlder
 
 - PMS.installStage()会调用sendMessage将"INIT_COPY"发送给PackageHandler
 - PMS.installPackageAsUser调用sendMessage将”INIT_COPY”发送给PackageHandler
 
-## INIT_COPY
+## 8.1 INIT_COPY
 
 PackageHandler用于处理apk的安装请求等消息，在PMS构造函数中有初始化。实际处理消息的函数为doHandleMessage，我们来看看INIT_COPY的处理流程：
 
@@ -310,7 +310,7 @@ class PackageHandler extends Handler {
 
 INIT_COPY主要是将新的请求加入到mPendingIntalls中，等待MCS_BOUND阶段处理。
 
-## MCS_BOUND
+## 8.2 MCS_BOUND
 
 INIT_COPY最后会发送MCS_BOUND消息触发接下来的流程，MCS_BOUND对应的处理流程同样定义于doHandleMessage中：
 
@@ -379,7 +379,7 @@ void doHandleMessage(Message msg) {
 - 如果队列为空，则等待一段时间后，发送MCS_UNBIND消息断开与安装服务的绑定。
 
 
-# startCopy
+# 九、startCopy
 
 /frameworks/base/services/core/java/com/android/server/pm/PackageManagerService.java
 
@@ -416,7 +416,7 @@ InstallParams继承HandlerParams，实际调用的是HandlerParams.startCopy:
 
 PMS将先后调用handleStartCopy和handleReturnCode来完成主要的工作。
 
-## handleStartCopy
+## 9.1 handleStartCopy
 
 handleStartCopy函数在HandleParams抽象类定义，在其子类InstallParams来实现，我们看看与实际安装相关的handleStartCopy函数：
 
@@ -469,7 +469,7 @@ handleStartCopy函数在HandleParams抽象类定义，在其子类InstallParams�
 InstallParams$handleStartCopy()主要功能是获取安装位置信息以及复制apk到指定位置。抽象类InstallArgs中的copyApk负责复制APK文件，具体实现在子类FileInstallArgs和SdInstallArgs里面。 
 
 
-## handleReturnCode
+## 9.2 handleReturnCode
 
 InstallParams$handleReturnCode()中，调用processPendingInstall方法处理安装：
 
@@ -484,7 +484,7 @@ InstallParams$handleReturnCode()中，调用processPendingInstall方法处理安
         }
 ```
 
-## processPendingInstall
+## 9.3 processPendingInstall
 
 主要的安装流程都在这个方法里面: PMS.processPendingInstall
 
@@ -533,7 +533,7 @@ private void processPendingInstall(final InstallArgs args, final int currentStat
 
 从上面我们可以知道，具体安装apk的函数是`PMS.installPackageTracedLI`。
 
-# installPackageTracedLI
+# 十、installPackageTracedLI
 
 PMS.installPackageTracedLI函数：
 
@@ -548,7 +548,7 @@ PMS.installPackageTracedLI函数：
     }
 ```
 
-# installPackageLI
+# 十一、installPackageLI
 
 继续PMS.installPackageLI：
 
@@ -636,7 +636,7 @@ PMS.installPackageTracedLI函数：
  - 不存在，否则调用`installNewPackageLIF`进行安装。
 
 
-## replacePackageLIF
+## 11.1 replacePackageLIF
 
 如果需要替换的是系统APP，则调用Settings$disableSystemPackageLPw来disable旧的APK；如果替换的是非系统APP，则调用deletePackageLI删除旧的APK。
 
@@ -672,7 +672,7 @@ replacePackageLIF
 
 关于scanPackageTracedLI和Settings.writeLPr();我有在上一篇blog讲过，可以回去看看。
 
-## installNewPackageLIF
+## 11.2 installNewPackageLIF
 
 PMS.installNewPackageLIF用于安装新的apk：
 

@@ -11,7 +11,7 @@ tags:
 
 <!-- more -->
 
-# 1 Git流程图
+# 一、Git流程图
 
 ![Git流程](/img/archives/git.png)
 
@@ -20,7 +20,7 @@ tags:
 - local repository: 本地仓库，只想最后一次提交HEAD。（记作C）
 - remote repository：远程仓库。（记作D）
 
-# 2 新建
+# 二、新建
 
 ```
 git init                 //当前目录初始化为GIT代码库
@@ -30,7 +30,7 @@ git config --global user.email "you@example.com" //配置email
 git config --global user.name "Name" //配置用户名
 ```
 
-# 3 操作
+# 三、操作
 
 ```
 git add <file> // 文件添加，A → B
@@ -46,7 +46,7 @@ git diff//查看详细修改内容
 git show//显示某次提交的内容
 ```
 
-# 4 撤销操作
+# 四、撤销操作
 
 ```
 git reset <file>//某个文件索引会回滚到最后一次提交， C → B
@@ -57,7 +57,7 @@ git checkout -- files // 文件从index复制到workspace， B → A
 git checkout HEAD -- files // 文件从local repository复制到workspace， C → A
 ```
 
-# 5 分支相关
+# 五、分支相关
 
 ```
 git checkout -b branch_name //创建名叫“branch_name”的分支，并切换过去
@@ -68,7 +68,7 @@ git merge branch_name // 合并分支branch_name到当前分支(如master)
 git rebase //衍合，线性化的自动， D → A
 ```
 
-# 6 冲突处理
+# 六、冲突处理
 
 ```
 git diff //对比workspace与index
@@ -77,7 +77,7 @@ git diff <source_branch> <target_branch> //对比差异
 git add <filename> //修改完冲突，需要add以标记合并成功
 ```
 
-# 7 其他
+# 七、其他
 
 ```
 git diff //对比workspace与index

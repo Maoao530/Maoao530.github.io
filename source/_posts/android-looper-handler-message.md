@@ -13,7 +13,7 @@ date: 2016-12-11 14:17:21
 
 <!-- more -->
 
-# 1 引言
+# 一、引言
 
 假设现在我们有这样的需求，点一下图中的button，然后去获取一些数据（假设这个步骤是一个耗时的操作），然后获取完后将得到的数据返回显示到屏幕上。
 为了避免产生`ANR(Application Not Response)`问题，通常我们会在新的线程去做耗时的操作，然后在UI线程里面更新组件，所以Handler就是类似这样子一个机制。
@@ -72,7 +72,7 @@ class MyThread extends Thread{
 ```
 这只是一种实现的方式，如果在`子线程`而不是ui线程去初始化handler，则需要初始化`handler`前调用`Looper.prepare()`，初始化结束后调用`Looper.loop()`。
 
-# 2 相关概念
+# 二、相关概念
 
 学习Android的消息处理机制，有几个概念（类）必须了解：
 
@@ -89,7 +89,7 @@ UI thread 通常就是main thread，而Android启动程序时会替它建立一�
 每一个线程里可含有一个Looper对象以及一个MessageQueue数据结构。在你的应用程序里，可以定义Handler的子类别来接收Looper所送出的消息。
 
 
-# 3 Looper
+# 三、Looper
 
 Looper被设计用来使一个普通线程变成Looper线程。所谓Looper线程就是循环工作的线程。在程序开发中（尤其是GUI开发中），我们经常会需要一个线程不断循环，一旦有新任务则执行，执行完继续等待下一个任务，这就是Looper线程。使用Looper类创建Looper线程很简单：
 
@@ -125,7 +125,7 @@ public class LooperThread extends Thread {
 
 那么，我们如何往MQ上添加消息呢？下面有请Handler
 
-# 4 Handler
+# 四、Handler
 
 Handler扮演了往MQ上添加消息和处理消息的角色（只处理由自己发出的消息），即往MQ上添加消息的时候执行sendMessage，并在loop到自己的时候处理消息执行handleMessage，整个过程是异步的。
 
@@ -166,7 +166,7 @@ public class LooperThread extends Thread {
 
 ![android-handler-send-handle-msg.PNG](/img/archives/android-handler-send-handle-msg.PNG)
 
-# 5 回顾
+# 五、回顾
 
 那么回到一开始我们举的例子，在非UI线程去做耗时的操作，然后完成后在UI线程更新UI信息。那么这种case下，我们的结构图是这样的：
 

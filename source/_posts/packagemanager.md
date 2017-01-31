@@ -31,13 +31,13 @@ frameworks/base/cmds/pm/src/com/android/commands/pm/Pm.java
 ```
 
 
-# system_server启动PMS
+# 一、system_server启动PMS
 
 Android的所有Java服务都是通过`system_server`进程启动的，并且驻留在`system_server`进程中。SystemServer进程在启动时，通过创建一个`ServerThread`线程来启动所有服务，现在先来看看Android服务中`PackageManagerService`服务启动过程。
 
 > /frameworks/base/services/java/com/android/server/SystemServer.java
 
-## startBootstrapServices()
+## 1.1 startBootstrapServices()
 
 system_server的**`startBootstrapServices()`**函数会启动一些引导服务，该方法所创建的服务：
 - ActivityManagerService, 
@@ -84,7 +84,7 @@ private void startBootstrapServices() {
 }
 ```
 
-## startOtherServices()
+## 1.2 startOtherServices()
 
 另外，system_server的`startOtherServices()`方法会启动其他服务，这个函数也会对PMS作一些操作：
 
@@ -125,7 +125,7 @@ private void startOtherServices() {
 本文主要介绍PMS.main()流程，即PackageManagerService启动流程。
 
 
-# PMS.main入口
+# 二、PMS.main入口
 
 PackageManagerService.main过程主要是创建PMS服务，并注册到ServiceManager大管家：
 
@@ -150,7 +150,7 @@ public static PackageManagerService main(Context context, Installer installer,
 }
 ```
 
-# PMS构造函数 - 分析
+# 三、PMS构造函数 - 分析
 
 > new PackageManagerService(context, installer, factoryTest, onlyCore);
 
@@ -170,7 +170,7 @@ EventLog.writeEvent(EventLogTags.BOOT_PROGRESS_PMS_START, SystemClock.uptimeMill
 
 接下来分别说说这几个阶段。
 
-## PMS_START
+## 3.1 PMS_START
 
 BOOT_PROGRESS_PMS_START阶段：
 
@@ -342,7 +342,7 @@ setprop debug.separate_processes“com.google.process.content, com.google.androi
 这个属性一般不会用到。
 
 
-## PMS_SYSTEM_SCAN_START
+## 3.2 PMS_SYSTEM_SCAN_START
 
 接下来是BOOT_PROGRESS_PMS_SYSTEM_SCAN_START阶段：
 
@@ -541,7 +541,7 @@ PMS_SYSTEM_SCAN_START阶段主要做了如下工作：
 - 删除临时文件 deleteTempPackageFiles
 - 移除不相干包中的所有共享userID
 
-## PMS_DATA_SCAN_START
+## 3.3 PMS_DATA_SCAN_START
 
 BOOT_PROGRESS_PMS_DATA_SCAN_START阶段：
 
@@ -635,8 +635,7 @@ if (!mOnlyCore) {
  + /data/app
  + /data/app-private
 
-
-## PMS_SCAN_END
+## 3.4 PMS_SCAN_END
 
 BOOT_PROGRESS_PMS_SCAN_END阶段：
 
@@ -710,7 +709,7 @@ BOOT_PROGRESS_PMS_SCAN_END阶段：
 - 信息写回packages.xml文件
 
 
-## PMS_READY
+## 3.5 PMS_READY
 
 BOOT_PROGRESS_PMS_READY阶段：
 
@@ -790,7 +789,7 @@ BOOT_PROGRESS_PMS_READY阶段：
 - 初始化PackageInstallerService
 - GC回收下内存
 
-# PMS构造函数 - 总结
+# 四、PMS构造函数 - 总结
 
 PMS初始化过程，分为5个阶段：
 
@@ -823,7 +822,7 @@ PMS初始化过程，分为5个阶段：
 - SystemConfig - readPermissions 
 - scanPackageLI
 
-# Settings
+# 五、Settings
 
 在BOOT_PROGRESS_PMS_START阶段，我们会创建Setting对象，以及一堆的addSharedUserLPw调用：
 ```java
@@ -832,7 +831,7 @@ mSettings.addSharedUserLPw("android.uid.system", Process.SYSTEM_UID,
     ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);
 ```
 
-## 创建Settings
+## 5.1 创建Settings
 
 > frameworks/base/services/core/java/com/android/server/pm/Settings.java
 
@@ -883,15 +882,15 @@ Settings的构造函数主要用于创建"data/system"目录和一些xml文件�
 - packages-stopped-backup.xml 备份文件
 - packages.list 记录非系统自带的APK的数据信息，这些APK有变化时会更新该文件
 
-## Setings.readLPw
+## 5.2 Setings.readLPw
 
 readLPw()函数，从/data/system/packages.xml或packages-backup.xml文件中获得packages、permissions相关信息，添加到相关内存列表中。packages.xml文件记录了系统的permisssions以及每个APK的name、codePath、flags、version等信息这些信息主要通过APK的AndroidManifest.xml解析获取，解析完APK后将更新信息写入这个文件，下次开机直接从里面读取相关信息添加到内存相关结构中。当有APK升级、安装或删除时会更新这个文件。
 
-## Settings.writeLPr
+## 5.3 Settings.writeLPr
 
 writeLPr函数，将解析出的每个APK的信息（mSetting.mPackages）保存到packages.xml和packages.list文件。packages.list记录了如下数据：pkgName, userId, debugFlag, dataPath(包的数据路径)。
 
-# SystemConfig - readPermissions
+# 六、SystemConfig - readPermissions
 
 同样是在BOOT_PROGRESS_PMS_START阶段，我们会初始化SystemConfig去获取系统配置信息：
 
@@ -903,7 +902,7 @@ mSystemPermissions = systemConfig.getSystemPermissions();
 mAvailableFeatures = systemConfig.getAvailableFeatures();
 ```
 
-## 创建SystemConfig
+## 6.1 创建SystemConfig
 
 > frameworks/base/services/core/java/com/android/server/SystemConfig.java
 
@@ -953,7 +952,7 @@ SystemConfig() {
 
 其中比较重要的是system/etc/permissions目录，该目录文件大多来源于代码中的`framworks/(base or native)/data/etc`，这些文件的作用是表明系统支持的feature有哪些，例如是否支持蓝牙、wifi、P2P等。
 
-## readPermissions
+## 6.2 readPermissions
 
 readPermissions会循环去读取目录下的xml文件，但是它会跳过platform.xml文件，最后再去读取platform.xml文件。
 
@@ -984,7 +983,7 @@ void readPermissions(File libraryDir, int permissionFlag) {
 
 我们发现读取函数最后都调用了readPermissionsFromXml()，函数readPermissionsFromXml最终会使用XMLPullParser的方式解析这些XML文件，然后把解析出来的数据结构保存到PMS中。
 
-### android.hardware.bluetooth.xml
+### 6.2.1 android.hardware.bluetooth.xml
 
 最终会解析并且保存到PMS的`final ArrayMap<String, FeatureInfo> mAvailableFeatures`中。
 
@@ -994,7 +993,7 @@ void readPermissions(File libraryDir, int permissionFlag) {
 </permissions> 
 ```
 
-### com.android.location.provider.xml
+### 6.2.2 com.android.location.provider.xml
 
 指明了运行一些library时，还需要加载一些java库。
 这个最终会解析并保存到PMS的`final ArrayMap<String, SharedLibraryEntry> mSharedLibraries`中。
@@ -1006,7 +1005,7 @@ void readPermissions(File libraryDir, int permissionFlag) {
 </permissions>
 ```
 
-### platform.xml
+### 6.2.3 platform.xml
 
 这个文件中定义了底层GID和app层权限名字之间的对应关系，或者直接给某一个uid赋予对应的权限：
 
@@ -1040,11 +1039,11 @@ public static final class PermissionEntry {
 
 解析`<assign-permission>`的时候表示把属性name中的字符串表示的权限赋予属性uid中的用户。uid和name则存入SystemConfig中的SparseArray> 类型的`mSystemPermissions`变量中。
 
-# scanPackageLI
+# 七、scanPackageLI
 
 scanPackageLI是比较重要的安装apk的方法，下面具体分析。
 
-## scanDirLI
+## 7.1 scanDirLI
 
 scanDirLI函数会处理目录下每一个package文件：(当然不止scanDirLI最后会调用到scanPackageLI)
 
@@ -1085,7 +1084,7 @@ private PackageParser.Package scanPackageTracedLI(File scanFile, final int parse
 }
 ```
 
-## scanPackageLI安装apk
+## 7.2 scanPackageLI安装apk
 
 PackageManagerService的scanPackageLI过程scanPackageLI()有3个重载的方法，参数稍有不同：
 
@@ -1196,7 +1195,7 @@ private PackageParser.Package scanPackageLI(PackageParser.Package pkg, final int
 }
 ```
 
-## scanPackageDirtyLI
+## 7.3 scanPackageDirtyLI
 
 
 通过上述的扫描过程，我们得到了当前apk文件对应的Package信息。不过这部分信息是存储在PackageParser中的，我们必须将这部分信息传递到PMS中。毕竟最终的目的是：**让PMS能得到所有目录下Package的信息**。
@@ -1210,11 +1209,7 @@ final ActivityIntentResolver mReceivers = new ActivityIntentResolver();`
 
 由于实际解析函数太长，粗略看下有1000来行，读者有兴趣的可以自行研究。
 
-
-
-- http://blog.csdn.net/column/details/13723.html?&page=2
-
-# 开机时间分析
+# 八、开机时间分析
 
 adb shell cat /proc/bootprof/
 ```
@@ -1293,7 +1288,8 @@ adb shell cat /proc/bootprof/
 
 一般app装的越多，那么开机时间就会越长。
 
-# 附录
+# 九、附录
+
 - [packages.xml 文件 ](/img/archives/packages.xml)
 - [packages.list 文件](/img/archives/packages.list)
 - [platform.xml 文件](/img/archives/platform.xml)

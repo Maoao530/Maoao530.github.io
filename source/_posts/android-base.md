@@ -17,7 +17,7 @@ date: 2016-08-11 09:59:38
 
 本文会总结介绍Android组件中最为常见用的四大组件：Activity，Service服务,ContentProvider内容提供者，BroadcastReceiver广播接收者。
 
-# 1 Activity
+# 一、Activity
 
 在一个android应用中，一个Activity通常就是一个单独的屏幕，它上面可以显示一些控件也可以监听并处理用户的事件做出响应。Activity之间通过Intent进行通信。
 
@@ -42,6 +42,7 @@ activity在android里面是以栈的形式管理的，处于前台的 Activity �
 ![activity管理](/img/archives/activity-stack.png)
 
 ## 1.5 通信
+
 1. activity之间通过Intent进行通信，可以将数据放入Bundle中，再将Bundle放入intent中，实现数据通信。
 2. 可以通过intent去启动一个activity，方式有显示Intent和隐式Intent。
 2.1 显示
@@ -52,7 +53,7 @@ activity在android里面是以栈的形式管理的，处于前台的 Activity �
 
 ![intent通信](/img/archives/activity-intent.png)
 
-# 2 Service
+# 二、Service
 
 Service作为Android四大组件之一，在每一个应用程序中都扮演着非常重要的角色。它主要用于在后台处理一些耗时的逻辑，或者去执行某些需要长期运行的任务。必要的时候我们甚至可以在程序退出的情况下，让Service在后台继续保持运行状态。
 
@@ -78,7 +79,7 @@ Service生命周期函数比较简单：
 
 关于Service其他本文不做过多说明，都是一些比较常用的知识。
 
-# 3 BroadcastReceiver
+# 三、BroadcastReceiver
 
 BroadcastReceiver即广播接受者，是一种全局的监听器，可以用来作为不同组件之间的通信，比如说activity和service之间的通信可以借助其实现。
 
@@ -131,7 +132,7 @@ Bundle bundle = getResultExtras(true);
 String info = bundle.getString(“info”);
 ```
 
-# 4 ContentProvider
+# 四、ContentProvider
 
 ContentProvider即内容提供者，简单来讲它的作用就是将一个app的数据提供给其它app进行操作，比如增删改查等。
 一个典型的例子，比如说我们会经常遇到有应用软件需要读取手机的联系人，这时候就需要联系人应用的ContentProvider功能提供数据的crud操作。

@@ -11,7 +11,7 @@ date: 2016-12-21 21:29:35
 
 <!-- more -->
 
-# 1 为什么需要Binder机制？
+# 一、为什么需要Binder机制？
 
 Android系统中，每个应用程序是由Android的Activity，Service，Broadcast，ContentProvider这四剑客的中一个或多个组合而成，这四剑客所涉及的多进程间的通信底层都是依赖于Binder IPC机制。例如当进程A中的Activity要向进程B中的Service通信，这便需要依赖于Binder IPC。
 如果熟悉Android源码，其实可以知道整个Android系统架构中，也大量采用了Binder机制作为IPC（进程间通信）方案。
@@ -35,7 +35,7 @@ Client-Server通信过程中，Binder内核会为每个Client进程分配了UID/
 知乎上有一位答主讲得很好，可以看看:
 > **[为什么 Android 要采用 Binder 作为 IPC 机制?](https://www.zhihu.com/question/39440766)**
 
-# 2 Binder原理
+# 二、Binder原理
 
 ![binder-ipc](/img/archives/binder-01.jpg)
 
@@ -43,7 +43,7 @@ Client-Server通信过程中，Binder内核会为每个Client进程分配了UID/
 2. **应用程序都运行在用户空间，每个应用程序都有它自己独立的内存空间**；若不同的应用程序之间涉及到通信，需要通过内核进行中转，因为需要用到内核的`copy_from_user()`和`copy_to_user()`等函数
 3. Server进程要先注册Service到ServiceManager，Client进程使用某Server的Service前，须先向ServiceManager中获取相应的Service，然后使用Service。
 
-# 3 Binder驱动层
+# 三、Binder驱动层
 <center>
 ![binder-driver](/img/archives/binder-02.png)
 </center>
@@ -51,13 +51,21 @@ Client-Server通信过程中，Binder内核会为每个Client进程分配了UID/
 当用户空间调用open()方法，最终会调用binder驱动的binder_open()方法；mmap()/ioctl()方法也是同理，从用户态进入内核态，都依赖于系统调用过程。
 
 ## 3.1 binder_init
+
 注册misc设备，指定相应文件操作的方法。
+
 ## 3.2 binder_open
+
 创建binder_proc对象，并把当前进程等信息保存到binder_proc对象，该对象管理IPC所需的各种信息并拥有其他结构体的根结构体；再把binder_proc对象保存到文件指针filp，以及把binder_proc加入到全局链表binder_procs。
+
 ## 3.3 binder_mmap
+
 在内核虚拟地址空间，申请一块与用户虚拟内存相同大小的内存；然后再申请1个page大小的物理内存，再将同一块物理内存分别映射到内核虚拟地址空间和用户虚拟内存空间，从而实现了用户空间的Buffer和内核空间的Buffer同步操作的功能。
+
 ## 3.4 binder_ioctl
+
 负责在两个进程间收发IPC数据和IPC reply数据。调用流程比如：
+
 ```c
 //step 1:
 binder_write_read bwr;
@@ -78,7 +86,7 @@ ioctl(mProcess->mDriverFD, BINDER_WRITE_READ, &bwr)
 
 ![binder-04](/img/archives/binder-04.jpg)
 
-# 4 Binder通信流程
+# 四、Binder通信流程
 
 例如当名为`BatteryStatsService`的Client向`ServiceManager`注册服务的过程中，IPC层的数据组成为：
 **Handle=0，RPC代码为ADD_SERVICE_TRANSACTION，RPC数据为BatteryStatsService，Binder协议为BC_TRANSACTION。**
@@ -89,7 +97,7 @@ ioctl(mProcess->mDriverFD, BINDER_WRITE_READ, &bwr)
 
 handle为0正是指向ServiceManager。
 
-# 5 启动ServiceManager
+# 五、启动ServiceManager
 
 ServiceManager启动时序图：
 
@@ -100,7 +108,7 @@ ServiceManager启动时序图：
 3. 验证selinux权限，判断进程是否有权注册或查看指定服务；
 4. 进入循环状态，等待Client端的请求：binder_loop()。
 
-# 6 获取ServiceManager
+# 六、获取ServiceManager
 
 获取Service Manager是通过defaultServiceManager()方法来完成，当进程注册服务(addService)或 获取服务(getService)的过程之前，都需要先调用defaultServiceManager()方法来获取gDefaultServiceManager对象。
 
@@ -110,7 +118,7 @@ ServiceManager启动时序图：
 2. 调用gProcess->getContextObject函数来获得一个句柄值为0的Binder引用，即BpBinder；
 3. 通过`interface_cast`构造一个BpServiceManager对象，所以gDefaultServiceManager最终为`new BpServiceManager(new BpBinder(0))`。
 
-# 7 addService
+# 七、addService
 
 以Native层的服务以media服务为例，注册MediaPlayerService的时序图如下：
 
@@ -124,7 +132,7 @@ ServiceManager启动时序图：
 
 获取服务的流程基本也是差不多的，不再累述。
 
-# 8 Binder架构
+# 八、Binder架构
 
 binder在framework层，采用JNI技术来调用native(C/C++)层的binder架构，从而为上层应用程序提供服务。 我们知道native层中，binder是C/S架构，分为Bn端(Server)和Bp端(Client)。对于java层在命名与架构上非常相近，同样实现了一套IPC通信架构。
 
@@ -137,7 +145,7 @@ binder在framework层，采用JNI技术来调用native(C/C++)层的binder架构�
 1.java层通过getIServiceManager获得ServiceManagerProxy对象，通过该对象的BinderProxy，最终会调用BpBinder对象，由BpBinder来完成通信。
 2.Binder驱动将Client端的请求转发给BBinder的transact方法，然后由其子类JavaBBinder调用。后者会调用指定Service的方法，并返回给驱动。
 
-# 9 Binder类图
+# 九、Binder类图
 
 ## 9.1 Native Binder类图
 
@@ -147,7 +155,7 @@ binder在framework层，采用JNI技术来调用native(C/C++)层的binder架构�
 
 ![class_ServiceManager.jpg](/img/archives/class_ServiceManager.jpg)
 
-# 10 Binder其他
+# 十、Binder其他
 
 介绍一些Binder其他比较重要的点，方便理清Binder的一些疑问。比如Binder实体和引用，比如ProcessState和IPCThreadState，比如数据结构怎么传递等。
 
@@ -194,7 +202,7 @@ Server都是以服务的形式注册到ServiceManager中进行管理的。如果
 3. 这层是有效数据。如果该请求是传递给ServiceManager进行处理的，则有效数据是：消息头+"Server的相关信息"。消息头是用来进行有效性检查的，而"Server的相关信息"则是请求要处理的信息。
 
 
-# 11 源码目录
+# 十一、源码目录
 
 从上之下, 整个Binder架构所涉及的总共有以下5个目录:
 ```
