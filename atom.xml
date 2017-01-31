@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://maoao530.github.io/"/>
-  <updated>2017-01-31T09:06:49.959Z</updated>
+  <updated>2017-01-31T11:36:17.384Z</updated>
   <id>https://maoao530.github.io/</id>
   
   <author>
@@ -14,6 +14,89 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>APK签名机制</title>
+    <link href="https://maoao530.github.io/2017/01/31/apk-sign/"/>
+    <id>https://maoao530.github.io/2017/01/31/apk-sign/</id>
+    <published>2017-01-31T10:50:34.000Z</published>
+    <updated>2017-01-31T11:36:17.384Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文介绍apk的签名机制。</p>
+<a id="more"></a>
+<h1 id="一、APK签名"><a href="#一、APK签名" class="headerlink" title="一、APK签名"></a>一、APK签名</h1><p>apk发布者需要使用android 密钥生成工具创建的keystore对apk进行签名。</p>
+<h1 id="二、APK升级"><a href="#二、APK升级" class="headerlink" title="二、APK升级"></a>二、APK升级</h1><p>用于升级的新版本的apk必须使用原有的keystore进行签名，这样才能保证顺利升级。</p>
+<h1 id="三、android签名文件"><a href="#三、android签名文件" class="headerlink" title="三、android签名文件"></a>三、android签名文件</h1><p>采用RSA密钥机制对APK进行签名。<br>对比已签名和未签名的apk包，签名的apk包多了一个名为META-INF的文件夹，里面有三个文件：MANIFEST.MF、CERT.SF和CERT.RSA。这三个文件就是签名相关的文件。</p>
+<h2 id="3-1-MANIFEST-MF"><a href="#3-1-MANIFEST-MF" class="headerlink" title="3.1 MANIFEST.MF"></a>3.1 MANIFEST.MF</h2><p>遍历apk包中所有文件，对非文件夹、非签名文件的文件，逐个生成SHA1数字签名信息，再用Base64进行编码。之后生成的签名写入MANIFEST.MF文件。</p>
+<h2 id="3-2-CERT-SF"><a href="#3-2-CERT-SF" class="headerlink" title="3.2 CERT.SF"></a>3.2 CERT.SF</h2><p>对生成的MANIFEST.MF签名信息，使用SHA1-RSA算法，用私钥进行签名。</p>
+<h2 id="3-3-CERT-RSA"><a href="#3-3-CERT-RSA" class="headerlink" title="3.3 CERT.RSA"></a>3.3 CERT.RSA</h2><p>在CERT.RSA文件中保存公钥、所采用的加密算法等信息。</p>
+<h1 id="四、Android签名验证"><a href="#四、Android签名验证" class="headerlink" title="四、Android签名验证"></a>四、Android签名验证</h1><p>android原本的签名验证是怎么样的呢？在安装过程中，系统会读取apk包中的MANIFEST.MF、CERT.SF和CERT.RSA：</p>
+<ol>
+<li>用MANIFEST.MF验证apk包的完整性。</li>
+<li>用CERT.SF验证MANIFEST.MF的完整性。</li>
+<li>用CERT.RSA验证CERT.SF的签名。</li>
+</ol>
+<h1 id="五、总结APK的签名流程"><a href="#五、总结APK的签名流程" class="headerlink" title="五、总结APK的签名流程"></a>五、总结APK的签名流程</h1><p>Apk包加密的公钥就打包在apk包内，且不同的私钥对应不同的公钥。公钥一致，则私钥一致。可以通过公钥的对比来判断私钥是否一致。(公钥与私钥是一一对应的关系，这种对应关系是怎么形成的？？谁分配私钥公钥。Answer：是由加密算法生成的)</p>
+<h1 id="六、tool-instruction"><a href="#六、tool-instruction" class="headerlink" title="六、tool instruction"></a>六、tool instruction</h1><ul>
+<li>Keytool是一个java数据证书的管理工具。</li>
+<li>jarsigner  是apk签名工具。</li>
+</ul>
+<p>jdk包提供以上工具，需自行安装jdk包。</p>
+<h1 id="七、keystore生成"><a href="#七、keystore生成" class="headerlink" title="七、keystore生成"></a>七、keystore生成</h1><p>keystore就是用来保存密钥对的，比如公钥和私钥。用jdk的keytool工具生成keystore：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">keytool -genkey -alias test.keystore -keyalg RSA -validity 20000 -keystore test.keystore</div></pre></td></tr></table></figure>
+<p><img src="/img/archives/keystore-generate.png" alt="keystore-generate.png"></p>
+<p>Note：</p>
+<ul>
+<li>alias test.keystore 生成别名为test.keystore的keystore</li>
+<li>keyalg RSA 加密和数字签名的算法</li>
+<li>validity 20000 有效天数</li>
+</ul>
+<p><font color="red">输入keystore password后经过加密算法和加密工具生成私钥和公钥，要保护好password，因为只能用password打开keystore，然后访问key。</font></p>
+<p>用私钥证书签名，用公钥证书验证。输入密码和developer信息后，使用一些算法生成相应的数字证书，其他人可以用这个数字证书来验证这个apk是不是该developer开发的。</p>
+<h1 id="八、证书的生成"><a href="#八、证书的生成" class="headerlink" title="八、证书的生成"></a>八、证书的生成</h1><p>通过.keystore文件生成*.cer证书文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Keytool -export -keystore test.keystore -alias test.keystore -file test.cer</div></pre></td></tr></table></figure>
+<p><img src="/img/archives/keystore-export.png" alt="keystore-export.png"></p>
+<p>Note：<br>将把证书库 test.keystore 中的别名为 test.keystore的证书导出到 test.cer 。证书文件中，它包含证书主体的信息及证书的公钥，不包括私钥，可以公开。 </p>
+<h1 id="九、使用Keystore-签名apk"><a href="#九、使用Keystore-签名apk" class="headerlink" title="九、使用Keystore 签名apk"></a>九、使用Keystore 签名apk</h1><p>使用jarsigner工具对apk进行签名：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">jarsigner -verbose -keystore test.keystore  -signedjar HelloWorld_sign.apk Hello_un_sign.apk test.keystore</div></pre></td></tr></table></figure>
+<p><img src="/img/archives/apk-sign.png" alt="apk-sign.png"></p>
+<p>Note：</p>
+<ul>
+<li>keystore  test.keystore指定密钥库的位置</li>
+<li>signedjar  HelloWorld_signed.apk HelloWorld_unsign.apk test.keystore  依次是签名后的文件HelloWorld_signed.apk，要签名的文件HelloWorld_unsign.apk和密钥库test.keystore  </li>
+</ul>
+<h1 id="十、相关问题"><a href="#十、相关问题" class="headerlink" title="十、相关问题"></a>十、相关问题</h1><h2 id="10-1-证书有效期"><a href="#10-1-证书有效期" class="headerlink" title="10.1 证书有效期"></a>10.1 证书有效期</h2><p>只在程序安装时才检查证书的有效期：</p>
+<ul>
+<li>证书的有效期包含程序的生命周期，只在程序安装时才检查证书的有效期.</li>
+<li>一旦证书失效，程序将不能正常升级，但已安装的程序可以继续使用；</li>
+<li>Android Market强制要求所有应用程序证书的有效期要持续到2033年10月22日以后。</li>
+</ul>
+<p>已过期的key是无法再对apk进行签名的.</p>
+<h2 id="10-2-对已签名Apk的再签名"><a href="#10-2-对已签名Apk的再签名" class="headerlink" title="10.2 对已签名Apk的再签名"></a>10.2 对已签名Apk的再签名</h2><ul>
+<li>追加签名.</li>
+<li>升级时,需要验证所有签名一致.</li>
+</ul>
+<h2 id="10-3-平台里的证书"><a href="#10-3-平台里的证书" class="headerlink" title="10.3 平台里的证书"></a>10.3 平台里的证书</h2><ul>
+<li>平台并没有特别存放证书.</li>
+<li>当系统扫描系统apk,发现是system uid 时,就会将其签名再存放到 system uid对应的签名中.(一对一)</li>
+<li>当用户在此安装apk使用system uid 时, 就会通过system uid 索引找到签名进行对比.</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文介绍apk的签名机制。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Android进阶" scheme="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
+    
+    
+      <category term="签名" scheme="https://maoao530.github.io/tags/%E7%AD%BE%E5%90%8D/"/>
+    
+      <category term="apk" scheme="https://maoao530.github.io/tags/apk/"/>
+    
+  </entry>
   
   <entry>
     <title>Android系统build阶段签名机制</title>
@@ -596,7 +679,7 @@
     <link href="https://maoao530.github.io/2017/01/06/android-start/"/>
     <id>https://maoao530.github.io/2017/01/06/android-start/</id>
     <published>2017-01-06T13:29:35.000Z</published>
-    <updated>2017-01-31T09:07:50.331Z</updated>
+    <updated>2017-01-31T09:09:58.190Z</updated>
     
     <content type="html"><![CDATA[<p>本文介绍android的启动流程。</p>
 <a id="more"></a>
@@ -1843,56 +1926,6 @@
     <summary type="html">
     
       &lt;p&gt;什么是epoll？epoll是在2.6内核中提出的，是之前的select和poll的增强版本。它能显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Linux" scheme="https://maoao530.github.io/categories/Linux/"/>
-    
-    
-      <category term="Linux" scheme="https://maoao530.github.io/tags/Linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>I/O Multiplexing-poll</title>
-    <link href="https://maoao530.github.io/2016/03/18/io-multiplexing-poll/"/>
-    <id>https://maoao530.github.io/2016/03/18/io-multiplexing-poll/</id>
-    <published>2016-03-18T15:46:00.000Z</published>
-    <updated>2017-01-31T06:01:50.843Z</updated>
-    
-    <content type="html"><![CDATA[<p>poll和select实现功能差不多，但poll效率比select效率高。</p>
-<a id="more"></a>
-<h1 id="一、什么是I-O-Multiplexing"><a href="#一、什么是I-O-Multiplexing" class="headerlink" title="一、什么是I/O Multiplexing"></a>一、什么是I/O Multiplexing</h1><p> I / O多路转接(I/O multiplexing),其基本思想是:先构造一张有关描述符的表,然后调用一个函数,它要到这些描述符中的一个已准备好进行 I / O时才返回。<br>在返回时,它告诉进程哪一个描述符已准备好可以进行 I / O。<br>IO multiplexing就是我们说的select，poll，epoll，有些地方也称这种IO方式为event driven IO。其好处就在于单个process就可以同时处理多个网络连接的IO。</p>
-<p><img src="/img/archives/io_mul.png" alt="I/O 多路复用"></p>
-<p>poll的机制与select类似，与select在本质上没有多大差别，管理多个描述符也是进行轮询，根据描述符的状态进行处理，但是<strong>poll没有最大文件描述符数量的限制</strong>。poll和select同样存在一个缺点就是，包含大量文件描述符的数组被整体复制于用户态和内核的地址空间之间，而不论这些文件描述符是否就绪，它的开销随着文件描述符数量的增加而线性增大。</p>
-<h1 id="二、poll函数"><a href="#二、poll函数" class="headerlink" title="二、poll函数"></a>二、poll函数</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta"># <span class="meta-keyword">include</span> <span class="meta-string">&lt;poll.h&gt;</span>  </span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">poll</span> <span class="params">( <span class="keyword">struct</span> pollfd * fds, <span class="keyword">unsigned</span> <span class="keyword">int</span> nfds, <span class="keyword">int</span> timeout)</span></span>;</div></pre></td></tr></table></figure>
-<ul>
-<li>timeout == INFTIM 永远等待(INFTIM 通常等于-1)</li>
-<li>timeout == 0 不等待</li>
-<li>timeout &gt; 0 等待ttimeout毫秒</li>
-</ul>
-<p>与select不同,poll不是为每个条件构造一个描述符集,而是构造一个pollfd结构数组,每个数组元素指定一个描述符编号以及对其所关心的条件。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> pollfd &#123;  </div><div class="line"><span class="keyword">int</span> fd ;                <span class="comment">/* file descriptor to check, or &lt; 0 to ignore */</span>  </div><div class="line"><span class="keyword">short</span> events ;          <span class="comment">/* events of interest on fd */</span>  </div><div class="line">shortr events ;         <span class="comment">/* events that occurred on fd */</span>  </div><div class="line">&#125; ;</div></pre></td></tr></table></figure>
-<p>简单点儿说，fd对应要监视的文件描述符，events对应需要监视的事件，revents对应实际发生的事件。</p>
-<p><img src="/img/archives/poll-events-revents.png" alt="poll-events-revents"></p>
-<p>返回值和错误代码:</p>
-<ul>
-<li>成功时，poll()返回结构体中revents域不为0的文件描述符个数</li>
-<li>如果在超时前没有任何事件发生，poll()返回0；</li>
-<li>失败时，poll()返回-1，并设置errno为下列值之一：<ul>
-<li>EBADF　　       一个或多个结构体中指定的文件描述符无效。</li>
-<li>EFAULTfds　　 指针指向的地址超出进程的地址空间。</li>
-<li>EINTR　　　　  请求的事件之前产生一个信号，调用可以重新发起。</li>
-<li>EINVALnfds　　参数超出PLIMIT_NOFILE值。</li>
-</ul>
-</li>
-</ul>
-<h1 id="三、利用poll设计的web服务器"><a href="#三、利用poll设计的web服务器" class="headerlink" title="三、利用poll设计的web服务器"></a>三、利用poll设计的web服务器</h1><p>设计一个比较简单的web服务器：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;poll.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MYPORT 8008    <span class="comment">// the port users will be connecting to</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BACKLOG 10     <span class="comment">// how many pending connections queue will hold</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BUF_SIZE 200</span></div><div class="line"></div><div class="line"><span class="keyword">struct</span> pollfd pollfds[BACKLOG + <span class="number">1</span>];</div><div class="line"><span class="keyword">int</span> nfds = <span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">showclient</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> i;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"client count: %d\n"</span>, nfds <span class="number">-1</span>);</div><div class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; BACKLOG + <span class="number">1</span>; i++) &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"[%d]:%d  "</span>, i, pollfds[i].fd);</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"\n\n"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> sock_fd, new_fd;  <span class="comment">// listen on sock_fd, new connection on new_fd</span></div><div class="line">    <span class="keyword">struct</span> sockaddr_in server_addr;    <span class="comment">// server address information</span></div><div class="line">    <span class="keyword">struct</span> sockaddr_in client_addr; <span class="comment">// connector's address information</span></div><div class="line">    <span class="keyword">socklen_t</span> sin_size;</div><div class="line">    <span class="keyword">int</span> yes = <span class="number">1</span>;</div><div class="line">    <span class="keyword">char</span> buf[BUF_SIZE];</div><div class="line">    <span class="keyword">int</span> ret;</div><div class="line">    <span class="keyword">int</span> i;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> ((sock_fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>)) == <span class="number">-1</span>) &#123;</div><div class="line">        perror(<span class="string">"socket"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &amp;yes, <span class="keyword">sizeof</span>(<span class="keyword">int</span>)) == <span class="number">-1</span>) &#123;</div><div class="line">        perror(<span class="string">"setsockopt"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    server_addr.sin_family = AF_INET;         <span class="comment">// host byte order</span></div><div class="line">    server_addr.sin_port = htons(MYPORT);     <span class="comment">// short, network byte order</span></div><div class="line">    server_addr.sin_addr.s_addr = INADDR_ANY; <span class="comment">// automatically fill with my IP</span></div><div class="line">    <span class="built_in">memset</span>(server_addr.sin_zero, <span class="string">'\0'</span>, <span class="keyword">sizeof</span>(server_addr.sin_zero));</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (bind(sock_fd, (<span class="keyword">struct</span> sockaddr *)&amp;server_addr, <span class="keyword">sizeof</span>(server_addr)) == <span class="number">-1</span>) &#123;</div><div class="line">        perror(<span class="string">"bind"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (listen(sock_fd, BACKLOG) == <span class="number">-1</span>) &#123;</div><div class="line">        perror(<span class="string">"listen"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"listen port %d\n"</span>, MYPORT);</div><div class="line"></div><div class="line">    sin_size = <span class="keyword">sizeof</span>(client_addr);</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; BACKLOG + <span class="number">1</span>; i++)</div><div class="line">    &#123;</div><div class="line">        pollfds[i].fd = <span class="number">-1</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    pollfds[<span class="number">0</span>].fd = sock_fd;</div><div class="line">    pollfds[<span class="number">0</span>].events = POLLIN;</div><div class="line">    nfds++;</div><div class="line"></div><div class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</div><div class="line">    &#123;</div><div class="line">        ret = poll(pollfds, nfds, <span class="number">-1</span>);</div><div class="line">        <span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</div><div class="line">        &#123;</div><div class="line">            perror(<span class="string">"poll"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (ret == <span class="number">0</span>)</div><div class="line">        &#123;</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"timeout.\n"</span>);</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// add a new client</span></div><div class="line">        <span class="keyword">if</span> (pollfds[<span class="number">0</span>].revents &amp; POLLIN)</div><div class="line">        &#123;</div><div class="line">            new_fd = accept(sock_fd, (<span class="keyword">struct</span> sockaddr *)&amp;client_addr, &amp;sin_size);</div><div class="line">            <span class="keyword">if</span> (new_fd &lt;= <span class="number">0</span>) &#123;</div><div class="line">                perror(<span class="string">"accept"</span>);</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; BACKLOG + <span class="number">1</span>; i++)</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">if</span> (pollfds[i].fd == <span class="number">-1</span>)</div><div class="line">                &#123;</div><div class="line">                    pollfds[i].fd = new_fd;</div><div class="line">                    pollfds[i].events = POLLIN;</div><div class="line">                    <span class="built_in">printf</span>(<span class="string">"add a new client: pollfds[%d] = %d \n"</span>,i,new_fd);</div><div class="line">                    nfds++;</div><div class="line">                    <span class="keyword">break</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// check every client</span></div><div class="line">        <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; nfds; i++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span> (pollfds[i].revents &amp; POLLIN)</div><div class="line">            &#123;</div><div class="line">                ret = recv(pollfds[i].fd, buf, <span class="keyword">sizeof</span>(buf), <span class="number">0</span>);</div><div class="line">                <span class="keyword">char</span> str[] = <span class="string">"Good,very nice!\n"</span>;</div><div class="line"></div><div class="line">                send(pollfds[i].fd, str, <span class="keyword">sizeof</span>(str) + <span class="number">1</span>, <span class="number">0</span>);</div><div class="line">                <span class="keyword">if</span> (ret &lt;= <span class="number">0</span>) &#123;        <span class="comment">// client close</span></div><div class="line">                    <span class="built_in">printf</span>(<span class="string">"client[%d] close\n"</span>, i);</div><div class="line">                    close(pollfds[i].fd);</div><div class="line">                    pollfds[i].fd = <span class="number">-1</span>;</div><div class="line">                    nfds--;</div><div class="line">                &#125; <span class="keyword">else</span> &#123;        <span class="comment">// receive data</span></div><div class="line">                    <span class="keyword">if</span> (ret &lt; BUF_SIZE)</div><div class="line">                        <span class="built_in">memset</span>(&amp;buf[ret], <span class="string">'\0'</span>, <span class="number">1</span>);</div><div class="line">                    <span class="built_in">printf</span>(<span class="string">"client[%d] send:%s\n"</span>, i, buf);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">        showclient();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// close other connections</span></div><div class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nfds; i++) &#123;</div><div class="line">        <span class="keyword">if</span> (pollfds[i].fd != <span class="number">0</span>) &#123;</div><div class="line">            close(pollfds[i].fd);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;poll和select实现功能差不多，但poll效率比select效率高。&lt;/p&gt;
     
     </summary>
     
