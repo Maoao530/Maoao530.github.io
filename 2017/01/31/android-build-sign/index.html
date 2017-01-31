@@ -72,7 +72,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="签名,android," />
 
 
 
@@ -90,15 +90,19 @@
 
 
 
-<meta name="description" content="不积跬步，无以至千里；不积小流，无以成江海">
-<meta property="og:type" content="website">
-<meta property="og:title" content="风中老狼的博客">
-<meta property="og:url" content="https://maoao530.github.io/archives/index.html">
+<meta name="description" content="本文介绍Android系统build阶段的签名机制。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android系统build阶段签名机制">
+<meta property="og:url" content="https://maoao530.github.io/2017/01/31/android-build-sign/index.html">
 <meta property="og:site_name" content="风中老狼的博客">
-<meta property="og:description" content="不积跬步，无以至千里；不积小流，无以成江海">
+<meta property="og:description" content="本文介绍Android系统build阶段的签名机制。">
+<meta property="og:image" content="https://maoao530.github.io/img/archives/cd-dev-tool.png">
+<meta property="og:image" content="https://maoao530.github.io/img/archives/release-key.png">
+<meta property="og:updated_time" content="2017-01-31T09:06:49.959Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="风中老狼的博客">
-<meta name="twitter:description" content="不积跬步，无以至千里；不积小流，无以成江海">
+<meta name="twitter:title" content="Android系统build阶段签名机制">
+<meta name="twitter:description" content="本文介绍Android系统build阶段的签名机制。">
+<meta name="twitter:image" content="https://maoao530.github.io/img/archives/cd-dev-tool.png">
 
 
 
@@ -116,7 +120,7 @@
   };
 </script>
 
-  <title> 归档 | 风中老狼的博客 </title>
+  <title> Android系统build阶段签名机制 | 风中老狼的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -137,7 +141,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  page-archive  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -248,408 +252,224 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
-
-    <span class="archive-page-counter">
-      
-      
-      
-        
-      
-      嗯..! 目前共计 22 篇日志。 继续努力。
-    </span>
-
+  <div id="posts" class="posts-expand">
     
-
-      
-      
-      
-
-      
-        
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2017">2017</h2>
-        </div>
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/01/31/android-build-sign/" itemprop="url">
-              
-                <span itemprop="name">Android系统build阶段签名机制</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-01-31T15:48:29+08:00"
-              content="2017-01-31" >
-          01-31
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/01/25/hexo-blog-seo/" itemprop="url">
-              
-                <span itemprop="name">Hexo Next博客优化</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-01-25T21:30:58+08:00"
-              content="2017-01-25" >
-          01-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/01/18/package-install/" itemprop="url">
-              
-                <span itemprop="name">应用程序安装流程</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-01-18T14:48:01+08:00"
-              content="2017-01-18" >
-          01-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/01/10/packagemanager/" itemprop="url">
-              
-                <span itemprop="name">PackageManagerService启动流程</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-01-10T22:04:59+08:00"
-              content="2017-01-10" >
-          01-10
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/01/06/android-start/" itemprop="url">
-              
-                <span itemprop="name">Android系统启动流程</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-01-06T21:29:35+08:00"
-              content="2017-01-06" >
-          01-06
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-        
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2016">2016</h2>
-        </div>
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2016/12/25/android-binder-02/" itemprop="url">
-              
-                <span itemprop="name">Binder实用指南（二） - 实战篇</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-12-25T21:45:33+08:00"
-              content="2016-12-25" >
-          12-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2016/12/21/android-binder-01/" itemprop="url">
-              
-                <span itemprop="name">Binder实用指南（一） - 理解篇</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-12-21T21:29:35+08:00"
-              content="2016-12-21" >
-          12-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2016/12/11/android-looper-handler-message/" itemprop="url">
-              
-                <span itemprop="name">Android消息机制</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-12-11T14:17:21+08:00"
-              content="2016-12-11" >
-          12-11
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2016/12/10/cpp-ref-count/" itemprop="url">
-              
-                <span itemprop="name">引用计数 Android智能指针</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-12-10T11:48:56+08:00"
-              content="2016-12-10" >
-          12-10
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2016/11/20/python-rsa/" itemprop="url">
-              
-                <span itemprop="name">Python RSA文件加密</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-11-20T21:51:47+08:00"
-              content="2016-11-20" >
-          11-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-  </section>
 
   
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="page-number" href="/archives/page/3/">3</a><a class="extend next" rel="next" href="/archives/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android系统build阶段签名机制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-01-31T15:48:29+08:00" content="2017-01-31">
+              2017-01-31
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android进阶/" itemprop="url" rel="index">
+                    <span itemprop="name">Android进阶</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/01/31/android-build-sign/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/31/android-build-sign/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>浏览
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+              </span>
+          
+        </div>
+      </header>
+    
 
 
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文介绍Android系统build阶段的签名机制。</p>
+<a id="more"></a>
+<h1 id="一、系统build阶段签名机制"><a href="#一、系统build阶段签名机制" class="headerlink" title="一、系统build阶段签名机制"></a>一、系统build阶段签名机制</h1><p>1、系统中有4组key用于build阶段对apk进行签名：</p>
+<ul>
+<li>Media</li>
+<li>Platform</li>
+<li>Shared</li>
+<li>Testkey</li>
+</ul>
+<p>default key是放在Android源码的/build/target/product/security目录下:</p>
+<ul>
+<li>media.pk8与media.x509.pem；</li>
+<li>platform.pk8与platform.x509.pem；</li>
+<li>shared.pk8与shared.x509.pem；</li>
+<li>testkey.pk8与testkey.x509.pem；</li>
+</ul>
+<p>其中，<code>*.pk8</code>文件为私钥，<code>*.x509.pem</code>文件为公钥，这需要去了解非对称加密方式。</p>
+<p>2、在apk的android.mk文件中会指定LOCAL_CERTIFICATE 变量：</p>
+<p>LOCAL_CERTIFICATE可设置的值如下：   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">LOCAL_CERTIFICATE := testkey   # 普通APK，默认情况下使用</div><div class="line">LOCAL_CERTIFICATE := platform  # 该APK完成一些系统的核心功能,这种方式编译出来的APK所在进程的UID为system</div><div class="line">LOCAL_CERTIFICATE := shared    # 该APK是media/download系统中的一环</div><div class="line">LOCAL_CERTIFICATE := media     # 该APK是media/download系统中的一环</div></pre></td></tr></table></figure>
+<p>如果不指定，默认使用testkey。</p>
+<p>对应的，除了在Android.mk指定上述的值，还需要在APK源码的AndroidManifest.xml文件的manifest节点里面申明权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">android:sharedUserId=&quot;android.uid.system&quot;</div><div class="line">android:sharedUserId=&quot;android.uid.shared&quot;</div><div class="line">android:sharedUserId=&quot;android.media&quot;</div></pre></td></tr></table></figure>
+<p>3、Build规则是Build/core/prebuilt.mk。<br>4、在build/core/config.mk中，<code>DEFAULT_SYSTEM_DEV_CERTIFICATE</code>可以通过<code>PRODUCT_DEFAULT_DEV_CERTIFICATE</code>去指定各家厂商的key path。</p>
+<p>我们可以看到，默认为build/target/product/security/testkey。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># The default key if not set as LOCAL_CERTIFICATE</div><div class="line">ifdef PRODUCT_DEFAULT_DEV_CERTIFICATE</div><div class="line">  DEFAULT_SYSTEM_DEV_CERTIFICATE := $(PRODUCT_DEFAULT_DEV_CERTIFICATE)</div><div class="line">else</div><div class="line">  DEFAULT_SYSTEM_DEV_CERTIFICATE := build/target/product/security/testkey</div><div class="line">endif</div></pre></td></tr></table></figure></p>
+<h1 id="二、自定义系统签名的key"><a href="#二、自定义系统签名的key" class="headerlink" title="二、自定义系统签名的key"></a>二、自定义系统签名的key</h1><p>上面介绍了系统有默认四组key，那么如果我们要制作自己的key，需要怎么做呢？<br>在build/target/product/security/目录下有一个README，里面有说明怎么制作这些key并且使用。</p>
+<p>1、进入Development/tools/ 目录 </p>
+<p><img src="/img/archives/cd-dev-tool.png" alt="cd-dev-tool.png"></p>
+<p>2、使用make_key工具生成签名文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sh make_key releasekey  &apos;/C=CN/ST=Guangdong/L=Shenzhen/O=Mediatek/OU=MTK/CN=fzll/emailAddress=maoao530@foxmail.com&apos;</div></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li>C  : Country Name (2 letter code)</li>
+<li>ST : State or Province Name (full name)</li>
+<li>L  : Locality Name (eg, city)</li>
+<li>O  : Organization Name (eg, company)</li>
+<li>OU : Organizational Unit Name (eg, section)</li>
+<li>CN : Common Name (eg, your name or your server’s hostname)</li>
+<li>emailAddress : Contact email address</li>
+</ul>
+<p>3、用ls命令发现目录下多了两个文件：releasekey.x509.pem 和 releasekey.pk8</p>
+<p><img src="/img/archives/release-key.png" alt="release-key.png"></p>
+<p>4、同样的步骤生成platform / shared /  media </p>
+<p>5、用自定义的key替换build/target/product/security/目录下面的key。</p>
+<h1 id="三、对APK进行系统签名"><a href="#三、对APK进行系统签名" class="headerlink" title="三、对APK进行系统签名"></a>三、对APK进行系统签名</h1><p>为了使apk有system权限，通常我们需要对其进行系统签名：</p>
+<p>1、在应用程序的AndroidManifest.xml中的manifest节点中加入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android:sharedUserId=&quot;android.uid.system&quot;这个属性。</div></pre></td></tr></table></figure>
+<p>2、修改它的Android.mk文件，加入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">LOCAL_CERTIFICATE := platform</div></pre></td></tr></table></figure>
+<p>重新编译，生成的apk就有修改system权限了,我们通过<code>ps</code>命令查看APK所在进程的UID，发现值为system。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/img/archives/weixin.jpg" alt="风中老狼 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/img/archives/zhifubao.jpg" alt="风中老狼 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/签名/" rel="tag">#签名</a>
+          
+            <a href="/tags/android/" rel="tag">#android</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/25/hexo-blog-seo/" rel="next" title="Hexo Next博客优化">
+                <i class="fa fa-chevron-left"></i> Hexo Next博客优化
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -657,6 +477,14 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/31/android-build-sign/"
+           data-title="Android系统build阶段签名机制" data-url="https://maoao530.github.io/2017/01/31/android-build-sign/">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -676,8 +504,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
@@ -763,6 +600,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、系统build阶段签名机制"><span class="nav-text">一、系统build阶段签名机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、自定义系统签名的key"><span class="nav-text">二、自定义系统签名的key</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、对APK进行系统签名"><span class="nav-text">三、对APK进行系统签名</span></a></li></ol></div>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -875,11 +723,9 @@
   
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
 
 
   

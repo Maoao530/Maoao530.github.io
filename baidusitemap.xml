@@ -4,6 +4,48 @@
 
     
   <url>
+    <loc>https://maoao530.github.io/2017/01/06/android-start/</loc>
+    <lastmod>2017-01-31T09:07:50.331Z</lastmod>
+    <data>
+        <display>
+        <title>Android系统启动流程</title>
+        <pubTime>2017-01-06T13:29:35.000Z</pubTime>
+        
+        <tag>Android启动</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android进阶" url="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://maoao530.github.io/2017/01/31/android-build-sign/</loc>
+    <lastmod>2017-01-31T09:06:49.959Z</lastmod>
+    <data>
+        <display>
+        <title>Android系统build阶段签名机制</title>
+        <pubTime>2017-01-31T07:48:29.000Z</pubTime>
+        
+        <tag>签名</tag>
+         
+        <tag>android</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android进阶" url="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://maoao530.github.io/2016/08/10/python-show-me-the-code/</loc>
     <lastmod>2017-01-31T07:19:12.487Z</lastmod>
     <data>
@@ -322,26 +364,6 @@
         <pubTime>2016-12-10T03:48:56.000Z</pubTime>
         
         <tag>Android智能指针</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android进阶" url="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://maoao530.github.io/2017/01/06/android-start/</loc>
-    <lastmod>2017-01-31T05:51:09.608Z</lastmod>
-    <data>
-        <display>
-        <title>Android系统启动流程</title>
-        <pubTime>2017-01-06T13:29:35.000Z</pubTime>
-        
-        <tag>Android启动</tag>
          
          
            
