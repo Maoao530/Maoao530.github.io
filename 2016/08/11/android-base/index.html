@@ -103,7 +103,7 @@
 <meta property="og:image" content="https://maoao530.github.io/img/archives/activity-intent.png">
 <meta property="og:image" content="https://maoao530.github.io/img/archives/service-shengming-zhouqi.png">
 <meta property="og:image" content="https://maoao530.github.io/img/archives/contentprovider-model.png">
-<meta property="og:updated_time" content="2017-01-18T13:18:32.073Z">
+<meta property="og:updated_time" content="2017-01-31T05:45:19.488Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android四大组件">
 <meta name="twitter:description" content="复习Android四大组件内容。">
@@ -352,7 +352,7 @@
         <p>复习Android四大组件内容。</p>
 <a id="more"></a>
 <p>本文会总结介绍Android组件中最为常见用的四大组件：Activity，Service服务,ContentProvider内容提供者，BroadcastReceiver广播接收者。</p>
-<h1 id="1-Activity"><a href="#1-Activity" class="headerlink" title="1 Activity"></a>1 Activity</h1><p>在一个android应用中，一个Activity通常就是一个单独的屏幕，它上面可以显示一些控件也可以监听并处理用户的事件做出响应。Activity之间通过Intent进行通信。</p>
+<h1 id="一、Activity"><a href="#一、Activity" class="headerlink" title="一、Activity"></a>一、Activity</h1><p>在一个android应用中，一个Activity通常就是一个单独的屏幕，它上面可以显示一些控件也可以监听并处理用户的事件做出响应。Activity之间通过Intent进行通信。</p>
 <h2 id="1-1-主要函数"><a href="#1-1-主要函数" class="headerlink" title="1.1 主要函数"></a>1.1 主要函数</h2><p><img src="/img/archives/activity-main.png" alt="主要函数"></p>
 <h2 id="1-2-生命周期"><a href="#1-2-生命周期" class="headerlink" title="1.2 生命周期"></a>1.2 生命周期</h2><p><img src="/img/archives/activity-shengming-zhouqi.png" alt="生命周期"></p>
 <h2 id="1-3-AndroidManifest-xml文件配置"><a href="#1-3-AndroidManifest-xml文件配置" class="headerlink" title="1.3 AndroidManifest.xml文件配置"></a>1.3 AndroidManifest.xml文件配置</h2><p>需要在apk的AndroidManifest配置文件中进行配置：</p>
@@ -364,7 +364,7 @@
 <li>可以通过intent去启动一个activity，方式有显示Intent和隐式Intent。<br>2.1 显示<br>直接指明启动的Activity类：Context.startActivity(new Intent(this,xxx.class))<br>2.2 隐式<br>需要在Activity对应的AndroidManifest.xml中配置对应的Intent-Filter中的action和category，一般默认category属性需要有一个default属性(如果有其它category则不用添加此属性)：<code>&lt;category android:name=”android.Intent.Category.DEFAULT” /&gt;</code><br>这是因为Android把所有传给startActivity()的隐式意图当作他们包含至少一个类别<code>&quot;android.intent.category.DEFAULT&quot;</code> </li>
 </ol>
 <p><img src="/img/archives/activity-intent.png" alt="intent通信"></p>
-<h1 id="2-Service"><a href="#2-Service" class="headerlink" title="2 Service"></a>2 Service</h1><p>Service作为Android四大组件之一，在每一个应用程序中都扮演着非常重要的角色。它主要用于在后台处理一些耗时的逻辑，或者去执行某些需要长期运行的任务。必要的时候我们甚至可以在程序退出的情况下，让Service在后台继续保持运行状态。</p>
+<h1 id="二、Service"><a href="#二、Service" class="headerlink" title="二、Service"></a>二、Service</h1><p>Service作为Android四大组件之一，在每一个应用程序中都扮演着非常重要的角色。它主要用于在后台处理一些耗时的逻辑，或者去执行某些需要长期运行的任务。必要的时候我们甚至可以在程序退出的情况下，让Service在后台继续保持运行状态。</p>
 <h2 id="2-1-生命周期"><a href="#2-1-生命周期" class="headerlink" title="2.1 生命周期"></a>2.1 生命周期</h2><p>Service生命周期函数比较简单：</p>
 <p><img src="/img/archives/service-shengming-zhouqi.png" alt="service生命周期"></p>
 <h2 id="2-2-Local-Remote-Service"><a href="#2-2-Local-Remote-Service" class="headerlink" title="2.2 Local/Remote Service"></a>2.2 Local/Remote Service</h2><ol>
@@ -380,7 +380,7 @@
 </li>
 </ol>
 <p>关于Service其他本文不做过多说明，都是一些比较常用的知识。</p>
-<h1 id="3-BroadcastReceiver"><a href="#3-BroadcastReceiver" class="headerlink" title="3 BroadcastReceiver"></a>3 BroadcastReceiver</h1><p>BroadcastReceiver即广播接受者，是一种全局的监听器，可以用来作为不同组件之间的通信，比如说activity和service之间的通信可以借助其实现。</p>
+<h1 id="三、BroadcastReceiver"><a href="#三、BroadcastReceiver" class="headerlink" title="三、BroadcastReceiver"></a>三、BroadcastReceiver</h1><p>BroadcastReceiver即广播接受者，是一种全局的监听器，可以用来作为不同组件之间的通信，比如说activity和service之间的通信可以借助其实现。</p>
 <h2 id="3-1-启动方式"><a href="#3-1-启动方式" class="headerlink" title="3.1 启动方式"></a>3.1 启动方式</h2><p>Context.sendBroadcast() 或者Context.sendOrderedBroadcast()</p>
 <h2 id="3-2-接收方式"><a href="#3-2-接收方式" class="headerlink" title="3.2 接收方式"></a>3.2 接收方式</h2><p>重写BroadcastReceiver的onReceive()方法</p>
 <h2 id="3-3-实现方式"><a href="#3-3-实现方式" class="headerlink" title="3.3 实现方式"></a>3.3 实现方式</h2><p>BoradcastReceiver实现方式有两种，一是通过代码注册，二是通过Androidmanifest.xml方式配置：</p>
@@ -395,7 +395,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Bundle bundle = <span class="keyword">new</span> Bundle();</div><div class="line">bundle.putString(“info”,”优先级高的就是爽！！”);</div><div class="line">setResultExtras(bundle);</div><div class="line"><span class="comment">// 甚至可以取消广播继续传递</span></div><div class="line"><span class="comment">// abortBroadcast()</span></div><div class="line">优先级低的接收信息：</div><div class="line">Bundle bundle = getResultExtras(<span class="keyword">true</span>);</div><div class="line">String info = bundle.getString(“info”);</div></pre></td></tr></table></figure>
 </li>
 </ol>
-<h1 id="4-ContentProvider"><a href="#4-ContentProvider" class="headerlink" title="4 ContentProvider"></a>4 ContentProvider</h1><p>ContentProvider即内容提供者，简单来讲它的作用就是将一个app的数据提供给其它app进行操作，比如增删改查等。<br>一个典型的例子，比如说我们会经常遇到有应用软件需要读取手机的联系人，这时候就需要联系人应用的ContentProvider功能提供数据的crud操作。<br>ContentProvider的功能是提供数据的增删改查，而其它应用想访问ContentProvider的crud操作，则需要通过ContentResolver的增删改查功能实现，通过uri作为媒介，比如其它应用想去读取联系人，则模型如下：</p>
+<h1 id="四、ContentProvider"><a href="#四、ContentProvider" class="headerlink" title="四、ContentProvider"></a>四、ContentProvider</h1><p>ContentProvider即内容提供者，简单来讲它的作用就是将一个app的数据提供给其它app进行操作，比如增删改查等。<br>一个典型的例子，比如说我们会经常遇到有应用软件需要读取手机的联系人，这时候就需要联系人应用的ContentProvider功能提供数据的crud操作。<br>ContentProvider的功能是提供数据的增删改查，而其它应用想访问ContentProvider的crud操作，则需要通过ContentResolver的增删改查功能实现，通过uri作为媒介，比如其它应用想去读取联系人，则模型如下：</p>
 <p><img src="/img/archives/contentprovider-model.png" alt="ContentProvider-Model"></p>
 <h2 id="4-1-URI"><a href="#4-1-URI" class="headerlink" title="4.1 URI"></a>4.1 URI</h2><p>uri由三部分组成，协议+主机名+路径：</p>
 <ul>
@@ -441,10 +441,15 @@
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="/img/archives/weixin.png" alt="风中老狼 WeChat Pay"/>
+          <img id="wechat_qr" src="/img/archives/weixin.jpg" alt="风中老狼 WeChat Pay"/>
           <p>微信打赏</p>
         </div>
       
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/img/archives/zhifubao.jpg" alt="风中老狼 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
       
     </div>
   </div>
@@ -638,7 +643,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Activity"><span class="nav-number">1.</span> <span class="nav-text">1 Activity</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-主要函数"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 主要函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-生命周期"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-AndroidManifest-xml文件配置"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 AndroidManifest.xml文件配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-Activity管理"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 Activity管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-通信"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 通信</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Service"><span class="nav-number">2.</span> <span class="nav-text">2 Service</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-生命周期"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Local-Remote-Service"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Local/Remote Service</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-BroadcastReceiver"><span class="nav-number">3.</span> <span class="nav-text">3 BroadcastReceiver</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-启动方式"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 启动方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-接收方式"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 接收方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-实现方式"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 实现方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-普通广播和有序广播"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 普通广播和有序广播</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-ContentProvider"><span class="nav-number">4.</span> <span class="nav-text">4 ContentProvider</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-URI"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 URI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-实现ContentProvider"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 实现ContentProvider</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-ContentResolver"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 ContentResolver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-ContentObserver"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 ContentObserver</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、Activity"><span class="nav-text">一、Activity</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-主要函数"><span class="nav-text">1.1 主要函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-生命周期"><span class="nav-text">1.2 生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-AndroidManifest-xml文件配置"><span class="nav-text">1.3 AndroidManifest.xml文件配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-Activity管理"><span class="nav-text">1.4 Activity管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-通信"><span class="nav-text">1.5 通信</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、Service"><span class="nav-text">二、Service</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-生命周期"><span class="nav-text">2.1 生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Local-Remote-Service"><span class="nav-text">2.2 Local/Remote Service</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、BroadcastReceiver"><span class="nav-text">三、BroadcastReceiver</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-启动方式"><span class="nav-text">3.1 启动方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-接收方式"><span class="nav-text">3.2 接收方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-实现方式"><span class="nav-text">3.3 实现方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-普通广播和有序广播"><span class="nav-text">3.4 普通广播和有序广播</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、ContentProvider"><span class="nav-text">四、ContentProvider</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-URI"><span class="nav-text">4.1 URI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-实现ContentProvider"><span class="nav-text">4.2 实现ContentProvider</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-ContentResolver"><span class="nav-text">4.3 ContentResolver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-ContentObserver"><span class="nav-text">4.4 ContentObserver</span></a></li></ol></li></ol></div>
             
           </div>
         </section>

@@ -96,7 +96,7 @@
 <meta property="og:url" content="https://maoao530.github.io/2016/05/17/python-classmethod-staticmethod/index.html">
 <meta property="og:site_name" content="风中老狼的博客">
 <meta property="og:description" content="花两分钟了解什么是实例方法，类方法，静态方法。">
-<meta property="og:updated_time" content="2016-12-10T05:40:10.449Z">
+<meta property="og:updated_time" content="2017-01-31T07:13:33.435Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python中的@classmethod和@staticmethod">
 <meta name="twitter:description" content="花两分钟了解什么是实例方法，类方法，静态方法。">
@@ -343,7 +343,7 @@
       
         <p>花两分钟了解什么是实例方法，类方法，静态方法。</p>
 <a id="more"></a>
-<h1 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. 定义</h1><p>python中类方法和静态方法是用装饰器<code>@classmethod</code>和<code>@staticmethod</code>来定义的。</p>
+<h1 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h1><p>python中类方法和静态方法是用装饰器<code>@classmethod</code>和<code>@staticmethod</code>来定义的。</p>
 <p><a href="https://maoao530.github.io/2016/05/17/python-decorator/">点我学习什么是装饰器</a></p>
 <p>我们先来看一个简单的实例：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(self,x)</span>:</span></div><div class="line">        <span class="keyword">print</span> (<span class="string">"executing foo(%s,%s)"</span>%(self,x))</div><div class="line"></div><div class="line"><span class="meta">    @classmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">class_foo</span><span class="params">(cls,x)</span>:</span></div><div class="line">        <span class="keyword">print</span> (<span class="string">"executing class_foo(%s,%s)"</span>%(cls,x))</div><div class="line"></div><div class="line"><span class="meta">    @staticmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">static_foo</span><span class="params">(x)</span>:</span></div><div class="line">        <span class="keyword">print</span> (<span class="string">"executing static_foo(%s)"</span>%x)</div></pre></td></tr></table></figure>
@@ -355,14 +355,14 @@
 <li>class_foo是绑定在class A上的，参数cls指向class A本身</li>
 <li>static_foo不绑定在a或者A上，所以没有额外的参数</li>
 </ul>
-<h1 id="2-使用"><a href="#2-使用" class="headerlink" title="2. 使用"></a>2. 使用</h1><p>那么使用上有什么区别呢？<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">a = A()</div><div class="line">a.foo(<span class="number">1</span>)</div><div class="line">a.class_foo(<span class="number">1</span>)</div><div class="line">a.static_foo(<span class="number">1</span>)</div><div class="line"></div><div class="line"><span class="comment"># A.foo(2) #error</span></div><div class="line">A.class_foo(<span class="number">2</span>)</div><div class="line">A.static_foo(<span class="number">2</span>)</div><div class="line"></div><div class="line"><span class="comment"># 输出结果</span></div><div class="line"><span class="comment"># executing foo(&lt;__main__.A object at 0x0121B950&gt;,1)</span></div><div class="line"><span class="comment"># executing class_foo(&lt;class '__main__.A'&gt;,1)</span></div><div class="line"><span class="comment"># executing static_foo(1)</span></div><div class="line"><span class="comment"># executing class_foo(&lt;class '__main__.A'&gt;,2)</span></div><div class="line"><span class="comment"># executing static_foo(2)</span></div></pre></td></tr></table></figure></p>
+<h1 id="二、使用"><a href="#二、使用" class="headerlink" title="二、使用"></a>二、使用</h1><p>那么使用上有什么区别呢？<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">a = A()</div><div class="line">a.foo(<span class="number">1</span>)</div><div class="line">a.class_foo(<span class="number">1</span>)</div><div class="line">a.static_foo(<span class="number">1</span>)</div><div class="line"></div><div class="line"><span class="comment"># A.foo(2) #error</span></div><div class="line">A.class_foo(<span class="number">2</span>)</div><div class="line">A.static_foo(<span class="number">2</span>)</div><div class="line"></div><div class="line"><span class="comment"># 输出结果</span></div><div class="line"><span class="comment"># executing foo(&lt;__main__.A object at 0x0121B950&gt;,1)</span></div><div class="line"><span class="comment"># executing class_foo(&lt;class '__main__.A'&gt;,1)</span></div><div class="line"><span class="comment"># executing static_foo(1)</span></div><div class="line"><span class="comment"># executing class_foo(&lt;class '__main__.A'&gt;,2)</span></div><div class="line"><span class="comment"># executing static_foo(2)</span></div></pre></td></tr></table></figure></p>
 <p>从上面的代码我们可以看到，使用上的区别：</p>
 <ul>
 <li>foo是绑定在实例a上的，只能通过实例去调用</li>
 <li>class_foo绑定在类A上，可以通过实例a或者类A去调用</li>
 <li>static_foo不绑定任何参数，也可以通过实例a或者类A去调用</li>
 </ul>
-<h1 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h1><p>类和实例都是对象，所以它们可以有方法：</p>
+<h1 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h1><p>类和实例都是对象，所以它们可以有方法：</p>
 <ul>
 <li>实例的方法就叫实例方法。</li>
 <li>类的方法就叫类方法。</li>
@@ -394,10 +394,15 @@
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="/img/archives/weixin.png" alt="风中老狼 WeChat Pay"/>
+          <img id="wechat_qr" src="/img/archives/weixin.jpg" alt="风中老狼 WeChat Pay"/>
           <p>微信打赏</p>
         </div>
       
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/img/archives/zhifubao.jpg" alt="风中老狼 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
       
     </div>
   </div>
@@ -583,7 +588,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-定义"><span class="nav-number">1.</span> <span class="nav-text">1. 定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-使用"><span class="nav-number">2.</span> <span class="nav-text">2. 使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-总结"><span class="nav-number">3.</span> <span class="nav-text">3. 总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、定义"><span class="nav-text">一、定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、使用"><span class="nav-text">二、使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、总结"><span class="nav-text">三、总结</span></a></li></ol></div>
             
           </div>
         </section>

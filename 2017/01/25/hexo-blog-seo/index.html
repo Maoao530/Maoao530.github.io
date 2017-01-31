@@ -96,7 +96,7 @@
 <meta property="og:url" content="https://maoao530.github.io/2017/01/25/hexo-blog-seo/index.html">
 <meta property="og:site_name" content="风中老狼的博客">
 <meta property="og:description" content="进一步打造自己的Blog。">
-<meta property="og:updated_time" content="2017-01-25T14:25:21.908Z">
+<meta property="og:updated_time" content="2017-01-31T05:56:57.181Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo Next博客优化">
 <meta name="twitter:description" content="进一步打造自己的Blog。">
@@ -343,18 +343,18 @@
       
         <p>进一步打造自己的Blog。</p>
 <a id="more"></a>
-<h1 id="搜索服务"><a href="#搜索服务" class="headerlink" title="搜索服务"></a>搜索服务</h1><p>安装 <code>hexo-generator-searchdb</code></p>
+<h1 id="一、搜索服务"><a href="#一、搜索服务" class="headerlink" title="一、搜索服务"></a>一、搜索服务</h1><p>安装 <code>hexo-generator-searchdb</code></p>
 <p>在站点的根目录下执行以下命令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install hexo-generator-searchdb --save</div></pre></td></tr></table></figure>
 <p>编辑主题配置文件_config.yml，新增以下内容到任意位置：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">search:</div><div class="line">  path: search.xml</div><div class="line">  field: post</div><div class="line">  format: html</div><div class="line">  limit: 10000</div></pre></td></tr></table></figure>
-<h1 id="开启打赏功能"><a href="#开启打赏功能" class="headerlink" title="开启打赏功能"></a>开启打赏功能</h1><p>主题的_config.yml:</p>
+<h1 id="二、开启打赏功能"><a href="#二、开启打赏功能" class="headerlink" title="二、开启打赏功能"></a>二、开启打赏功能</h1><p>主题的_config.yml:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">reward_comment: 坚持原创技术分享，您的支持将鼓励我继续创作！</div><div class="line">wechatpay: /img/archives/ss.png</div><div class="line">alipay: /img/archives/ss.png</div></pre></td></tr></table></figure>
-<h1 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h1><p><strong>全局字体：</strong>编辑 next/source/css/_variables/custom.styl,</p>
+<h1 id="三、字体"><a href="#三、字体" class="headerlink" title="三、字体"></a>三、字体</h1><p><strong>全局字体：</strong>编辑 next/source/css/_variables/custom.styl,</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$font-size-base = 16px;</div></pre></td></tr></table></figure>
-<h1 id="背景图片"><a href="#背景图片" class="headerlink" title="背景图片"></a>背景图片</h1><p>next/source/css/_custom/custom.styl文件:</p>
+<h1 id="四、背景图片"><a href="#四、背景图片" class="headerlink" title="四、背景图片"></a>四、背景图片</h1><p>next/source/css/_custom/custom.styl文件:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">body &#123; background:url(/images/backGround.jpg);&#125;</div></pre></td></tr></table></figure>
-<h1 id="背景颜色"><a href="#背景颜色" class="headerlink" title="背景颜色"></a>背景颜色</h1><p>定义颜色变量：themes/next/source/css/_variables/custom.styl</p>
+<h1 id="五、背景颜色"><a href="#五、背景颜色" class="headerlink" title="五、背景颜色"></a>五、背景颜色</h1><p>定义颜色变量：themes/next/source/css/_variables/custom.styl</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// 背景颜色</div><div class="line">$body-bg-color = #f5f5d5;</div><div class="line">$header-bg-color = #f5f5d5;</div><div class="line">$footer-bg-color = #f5f5d5;</div></pre></td></tr></table></figure>
 <p>定义完后，其实body的背景已经换了。</p>
 <p><strong>头部背景色：</strong></p>
@@ -362,20 +362,20 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">.header &#123; background: $header-bg-color; &#125;</div></pre></td></tr></table></figure>
 <p><strong>footer背景色：</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">.footer &#123;</div><div class="line">  margin-top: 80px;</div><div class="line">  padding: 10px 0;</div><div class="line">  background: $footer-bg-color;</div><div class="line">  color: $grey-dim;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="代码风格"><a href="#代码风格" class="headerlink" title="代码风格"></a>代码风格</h1><p>主题_config.yml:</p>
+<h1 id="六、代码风格"><a href="#六、代码风格" class="headerlink" title="六、代码风格"></a>六、代码风格</h1><p>主题_config.yml:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">highlight_theme: night blue</div></pre></td></tr></table></figure>
-<h1 id="内容宽度"><a href="#内容宽度" class="headerlink" title="内容宽度"></a>内容宽度</h1><p>themes/next/source/css/_variables/custom.styl</p>
+<h1 id="七、内容宽度"><a href="#七、内容宽度" class="headerlink" title="七、内容宽度"></a>七、内容宽度</h1><p>themes/next/source/css/_variables/custom.styl</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// 修改成你期望的宽度</div><div class="line">$content-desktop = 900px</div><div class="line">// 当视窗超过 1600px 后的宽度</div><div class="line">$content-desktop-large = 1100px</div></pre></td></tr></table></figure>
-<h1 id="文章目录序号关闭"><a href="#文章目录序号关闭" class="headerlink" title="文章目录序号关闭"></a>文章目录序号关闭</h1><p>主题_config.yml:</p>
+<h1 id="八、文章目录序号关闭"><a href="#八、文章目录序号关闭" class="headerlink" title="八、文章目录序号关闭"></a>八、文章目录序号关闭</h1><p>主题_config.yml:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#Table Of Contents in the Sidebar</div><div class="line">toc:</div><div class="line">  enable: true</div><div class="line"></div><div class="line">  # Automatically add list number to toc.</div><div class="line">  number: false</div></pre></td></tr></table></figure>
-<h1 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h1><p>不喜欢空心的，我们换成实心的列表：</p>
+<h1 id="九、无序列表"><a href="#九、无序列表" class="headerlink" title="九、无序列表"></a>九、无序列表</h1><p>不喜欢空心的，我们换成实心的列表：</p>
 <p>文章列表：<br>source/css/_common/components/post/post-expand.styl:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ul li &#123; list-style: disc; &#125;</div></pre></td></tr></table></figure></p>
 <p>页面列表：<br>next/source/css/_custom/custom.styl:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ul &#123;</div><div class="line">list-style-type: disc;  // 空心圆，实心圆为 disc</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>参考：<a href="https://github.com/iissnan/hexo-theme-next/issues/559" target="_blank" rel="external">https://github.com/iissnan/hexo-theme-next/issues/559</a></p>
-<h1 id="文章访问次数"><a href="#文章访问次数" class="headerlink" title="文章访问次数"></a>文章访问次数</h1><p>主题_config.yml:</p>
+<h1 id="十、文章访问次数"><a href="#十、文章访问次数" class="headerlink" title="十、文章访问次数"></a>十、文章访问次数</h1><p>主题_config.yml:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">busuanzi_count:</div><div class="line">  # count values only if the other configs are false</div><div class="line">  enable: true</div><div class="line">  # custom uv span for the whole site</div><div class="line">  site_uv: true</div><div class="line">  site_uv_header: &lt;i class=&quot;fa fa-user&quot;&gt;&lt;/i&gt;访问人数</div><div class="line">  site_uv_footer:</div><div class="line">  # custom pv span for the whole site</div><div class="line">  site_pv: true</div><div class="line">  site_pv_header: &lt;i class=&quot;fa fa-eye&quot;&gt;&lt;/i&gt;总访问量</div><div class="line">  site_pv_footer: 次</div><div class="line">  # custom pv span for one page only</div><div class="line">  page_pv: true</div><div class="line">  page_pv_header: &lt;i class=&quot;fa fa-file-o&quot;&gt;&lt;/i&gt;浏览</div><div class="line">  page_pv_footer: 次</div></pre></td></tr></table></figure>
-<h1 id="表格样式"><a href="#表格样式" class="headerlink" title="表格样式"></a>表格样式</h1><p>这个背景色下面表格边界不太明显，我们修改为：</p>
+<h1 id="十一、表格样式"><a href="#十一、表格样式" class="headerlink" title="十一、表格样式"></a>十一、表格样式</h1><p>这个背景色下面表格边界不太明显，我们修改为：</p>
 <p>next/source/css/_variables/base.styl</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">// Table</div><div class="line">// --------------------------------------------------</div><div class="line">$table-width                    = 100%</div><div class="line">$table-border-color             = $grey-dark</div><div class="line">$table-font-size                = 14px</div><div class="line">$table-content-alignment        = left</div><div class="line">$table-content-vertical         = middle</div><div class="line">$table-th-font-weight           = 700</div><div class="line">$table-cell-padding             = 8px</div><div class="line">$table-cell-border-right-color  = $grey-dark</div><div class="line">$table-cell-border-bottom-color = $grey-dark</div><div class="line">$table-row-odd-bg-color         = #f9f9f9</div><div class="line">$table-row-hover-bg-color       = $whitesmoke</div></pre></td></tr></table></figure>
 
@@ -399,10 +399,15 @@
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="/img/archives/weixin.png" alt="风中老狼 WeChat Pay"/>
+          <img id="wechat_qr" src="/img/archives/weixin.jpg" alt="风中老狼 WeChat Pay"/>
           <p>微信打赏</p>
         </div>
       
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/img/archives/zhifubao.jpg" alt="风中老狼 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
       
     </div>
   </div>
@@ -586,7 +591,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#搜索服务"><span class="nav-number">1.</span> <span class="nav-text">搜索服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开启打赏功能"><span class="nav-number">2.</span> <span class="nav-text">开启打赏功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字体"><span class="nav-number">3.</span> <span class="nav-text">字体</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#背景图片"><span class="nav-number">4.</span> <span class="nav-text">背景图片</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#背景颜色"><span class="nav-number">5.</span> <span class="nav-text">背景颜色</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码风格"><span class="nav-number">6.</span> <span class="nav-text">代码风格</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#内容宽度"><span class="nav-number">7.</span> <span class="nav-text">内容宽度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文章目录序号关闭"><span class="nav-number">8.</span> <span class="nav-text">文章目录序号关闭</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#无序列表"><span class="nav-number">9.</span> <span class="nav-text">无序列表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文章访问次数"><span class="nav-number">10.</span> <span class="nav-text">文章访问次数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#表格样式"><span class="nav-number">11.</span> <span class="nav-text">表格样式</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、搜索服务"><span class="nav-text">一、搜索服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、开启打赏功能"><span class="nav-text">二、开启打赏功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、字体"><span class="nav-text">三、字体</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、背景图片"><span class="nav-text">四、背景图片</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、背景颜色"><span class="nav-text">五、背景颜色</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、代码风格"><span class="nav-text">六、代码风格</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#七、内容宽度"><span class="nav-text">七、内容宽度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#八、文章目录序号关闭"><span class="nav-text">八、文章目录序号关闭</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#九、无序列表"><span class="nav-text">九、无序列表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#十、文章访问次数"><span class="nav-text">十、文章访问次数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#十一、表格样式"><span class="nav-text">十一、表格样式</span></a></li></ol></div>
             
           </div>
         </section>

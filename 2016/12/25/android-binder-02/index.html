@@ -98,7 +98,7 @@
 <meta property="og:description" content="本章的内容主要说明如何在JavaFramework层和Native层自定义Client-Server组件，并且使用Binder进行通信。">
 <meta property="og:image" content="https://maoao530.github.io/img/archives/native_binder_demo.jpg">
 <meta property="og:image" content="https://maoao530.github.io/img/archives/MyServer_framework_binder.jpg">
-<meta property="og:updated_time" content="2016-12-25T14:53:54.729Z">
+<meta property="og:updated_time" content="2017-01-31T05:48:11.003Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Binder实用指南（二） - 实战篇">
 <meta name="twitter:description" content="本章的内容主要说明如何在JavaFramework层和Native层自定义Client-Server组件，并且使用Binder进行通信。">
@@ -346,7 +346,7 @@
       
         <p>本章的内容主要说明如何在JavaFramework层和Native层自定义Client-Server组件，并且使用Binder进行通信。</p>
 <a id="more"></a>
-<h1 id="1-Native-Binder"><a href="#1-Native-Binder" class="headerlink" title="1 Native Binder"></a>1 Native Binder</h1><p>源码目录结构:</p>
+<h1 id="一、Native-Binder"><a href="#一、Native-Binder" class="headerlink" title="一、Native Binder"></a>一、Native Binder</h1><p>源码目录结构:</p>
 <blockquote>
 <p>alps/frameworks/native/cmds/NativeBinderDemo/</p>
 </blockquote>
@@ -375,7 +375,7 @@
 <h2 id="1-6-运行"><a href="#1-6-运行" class="headerlink" title="1.6 运行"></a>1.6 运行</h2><p><strong>编译：</strong><br>mm alps/frameworks/native/cmds/NativeBinderDemo目录，然后到alps/out/target/product/{Project}/system/bin/会生成<code>ClientDemo</code>和<code>ServerDemo</code></p>
 <p><strong>执行：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">adb remount</div><div class="line">adb push ServerDemo /system/bin</div><div class="line">adb push ClientDemo /system/bin</div></pre></td></tr></table></figure></p>
 <p>开两个窗口分别执行下面两个命令便可以看到结果了：<br><code>adb shell system/bin/ServerDemo</code> ， <code>adb shell system/bin/ClientDemo</code></p>
-<h1 id="2-JavaFramework-Binder"><a href="#2-JavaFramework-Binder" class="headerlink" title="2 JavaFramework Binder"></a>2 JavaFramework Binder</h1><p>源码目录结构:</p>
+<h1 id="二、JavaFramework-Binder"><a href="#二、JavaFramework-Binder" class="headerlink" title="二、JavaFramework Binder"></a>二、JavaFramework Binder</h1><p>源码目录结构:</p>
 <blockquote>
 <p>alps/frameworks/base/cmds/FrameworkBinderDemo/</p>
 </blockquote>
@@ -430,10 +430,15 @@
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="/img/archives/weixin.png" alt="风中老狼 WeChat Pay"/>
+          <img id="wechat_qr" src="/img/archives/weixin.jpg" alt="风中老狼 WeChat Pay"/>
           <p>微信打赏</p>
         </div>
       
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/img/archives/zhifubao.jpg" alt="风中老狼 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
       
     </div>
   </div>
@@ -619,7 +624,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Native-Binder"><span class="nav-number">1.</span> <span class="nav-text">1 Native Binder</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-服务端"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 服务端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-客户端"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-MyService"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 MyService</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-Android-mk"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 Android.mk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-原理图"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 原理图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-运行"><span class="nav-number">1.6.</span> <span class="nav-text">1.6 运行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-JavaFramework-Binder"><span class="nav-number">2.</span> <span class="nav-text">2 JavaFramework Binder</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Server端"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Server端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Client端"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Client端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-原理图"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 原理图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-运行"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 运行</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、Native-Binder"><span class="nav-text">一、Native Binder</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-服务端"><span class="nav-text">1.1 服务端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-客户端"><span class="nav-text">1.2 客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-MyService"><span class="nav-text">1.3 MyService</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-Android-mk"><span class="nav-text">1.4 Android.mk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-原理图"><span class="nav-text">1.5 原理图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-运行"><span class="nav-text">1.6 运行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、JavaFramework-Binder"><span class="nav-text">二、JavaFramework Binder</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Server端"><span class="nav-text">2.1 Server端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Client端"><span class="nav-text">2.2 Client端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-原理图"><span class="nav-text">2.3 原理图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-运行"><span class="nav-text">2.4 运行</span></a></li></ol></li></ol></div>
             
           </div>
         </section>

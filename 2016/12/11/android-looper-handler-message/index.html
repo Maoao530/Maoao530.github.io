@@ -102,7 +102,7 @@
 <meta property="og:image" content="https://maoao530.github.io/img/archives/android-looper-handler-2.png">
 <meta property="og:image" content="https://maoao530.github.io/img/archives/android-handler-send-handle-msg.PNG">
 <meta property="og:image" content="https://maoao530.github.io/img/archives/android-ui-thread-handler.PNG">
-<meta property="og:updated_time" content="2016-12-25T15:05:24.946Z">
+<meta property="og:updated_time" content="2017-01-31T05:49:15.546Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android消息机制">
 <meta name="twitter:description" content="本文介绍Android的消息机制。">
@@ -350,12 +350,12 @@
       
         <p>本文介绍Android的消息机制。</p>
 <a id="more"></a>
-<h1 id="1-引言"><a href="#1-引言" class="headerlink" title="1 引言"></a>1 引言</h1><p>假设现在我们有这样的需求，点一下图中的button，然后去获取一些数据（假设这个步骤是一个耗时的操作），然后获取完后将得到的数据返回显示到屏幕上。<br>为了避免产生<code>ANR(Application Not Response)</code>问题，通常我们会在新的线程去做耗时的操作，然后在UI线程里面更新组件，所以Handler就是类似这样子一个机制。</p>
+<h1 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h1><p>假设现在我们有这样的需求，点一下图中的button，然后去获取一些数据（假设这个步骤是一个耗时的操作），然后获取完后将得到的数据返回显示到屏幕上。<br>为了避免产生<code>ANR(Application Not Response)</code>问题，通常我们会在新的线程去做耗时的操作，然后在UI线程里面更新组件，所以Handler就是类似这样子一个机制。</p>
 <p><img src="/img/archives/android-looper-handler-message-01.png" alt="android-looper-handler-message-01.png"></p>
 <p>那么我们会怎么去实现呢？可以参考如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestDriverActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line"></div><div class="line">        tv = (TextView)findViewById(R.id.tv);</div><div class="line">        btn = (Button)findViewById(R.id.btn);</div><div class="line"></div><div class="line">        <span class="comment">// 接收并处理消息</span></div><div class="line">        mHandler = <span class="keyword">new</span> Handler()&#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span></span>&#123;</div><div class="line">                <span class="keyword">if</span> (message.what == <span class="number">0x11</span>)&#123;</div><div class="line">                    Toast.makeText(getApplicationContext(), <span class="string">"mHandler handleMessage"</span> );</div><div class="line">                    tv.setText(<span class="string">"mHandler is receive message"</span>)</div><div class="line">                &#125;</div><div class="line">                </div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line"></div><div class="line">        <span class="comment">// 监听</span></div><div class="line">        btn.setOnClickListener(<span class="keyword">new</span> View.onClickListener()&#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span></span>&#123;</div><div class="line">                MyThread t = <span class="keyword">new</span> MyThread(mHandler);</div><div class="line">                t.start();</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">    Handler handler;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyThread</span><span class="params">(Handler handler)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">        <span class="keyword">this</span>.handler = handler;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>.run();</div><div class="line">        mHandler.sendEmptyMessage(<span class="number">0x11</span>);  <span class="comment">//发送消息</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这只是一种实现的方式，如果在<code>子线程</code>而不是ui线程去初始化handler，则需要初始化<code>handler</code>前调用<code>Looper.prepare()</code>，初始化结束后调用<code>Looper.loop()</code>。</p>
-<h1 id="2-相关概念"><a href="#2-相关概念" class="headerlink" title="2 相关概念"></a>2 相关概念</h1><p>学习Android的消息处理机制，有几个概念（类）必须了解：</p>
+<h1 id="二、相关概念"><a href="#二、相关概念" class="headerlink" title="二、相关概念"></a>二、相关概念</h1><p>学习Android的消息处理机制，有几个概念（类）必须了解：</p>
 <ol>
 <li><strong>Message</strong><br>消息，理解为线程间通讯的数据单元。例如后台线程在处理数据完毕后需要更新UI，则可发送一条包含更新信息的Message给UI线程。</li>
 <li><strong>Message Queue</strong><br>消息队列，用来存放通过Handler发布的消息，按照先进先出执行。</li>
@@ -363,7 +363,7 @@
 <li><strong>Looper</strong><br>循环器，扮演Message Queue和Handler之间桥梁的角色，循环取出Message Queue里面的Message，并交付给相应的Handler进行处理。</li>
 <li><strong>Thread</strong><br>UI thread 通常就是main thread，而Android启动程序时会替它建立一个Message Queue。<br>每一个线程里可含有一个Looper对象以及一个MessageQueue数据结构。在你的应用程序里，可以定义Handler的子类别来接收Looper所送出的消息。</li>
 </ol>
-<h1 id="3-Looper"><a href="#3-Looper" class="headerlink" title="3 Looper"></a>3 Looper</h1><p>Looper被设计用来使一个普通线程变成Looper线程。所谓Looper线程就是循环工作的线程。在程序开发中（尤其是GUI开发中），我们经常会需要一个线程不断循环，一旦有新任务则执行，执行完继续等待下一个任务，这就是Looper线程。使用Looper类创建Looper线程很简单：</p>
+<h1 id="三、Looper"><a href="#三、Looper" class="headerlink" title="三、Looper"></a>三、Looper</h1><p>Looper被设计用来使一个普通线程变成Looper线程。所谓Looper线程就是循环工作的线程。在程序开发中（尤其是GUI开发中），我们经常会需要一个线程不断循环，一旦有新任务则执行，执行完继续等待下一个任务，这就是Looper线程。使用Looper类创建Looper线程很简单：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LooperThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 将当前线程初始化为Looper线程</span></div><div class="line">        Looper.prepare();</div><div class="line">        </div><div class="line">        <span class="comment">// ...其他处理，如实例化handler</span></div><div class="line">        </div><div class="line">        <span class="comment">// 开始循环处理消息队列</span></div><div class="line">        Looper.loop();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="3-1-Looper-prepare"><a href="#3-1-Looper-prepare" class="headerlink" title="3.1 Looper.prepare()"></a>3.1 Looper.prepare()</h2><p>当执行了<code>Looper.prepare()</code>后，当前线程就会升级为Looper线程：</p>
 <p><img src="/img/archives/android-looper-prepare.png" alt="android-looper-prepare.png"></p>
@@ -374,7 +374,7 @@
 <h2 id="3-2-Looper-loop"><a href="#3-2-Looper-loop" class="headerlink" title="3.2 Looper.loop()"></a>3.2 Looper.loop()</h2><p>当调用loop方法后，Looper线程就开始真正工作了，它不断从自己的MQ中取出队头的消息(也叫任务)执行。</p>
 <p><img src="/img/archives/android-looper-loop.png" alt="android-looper-loop.png"></p>
 <p>那么，我们如何往MQ上添加消息呢？下面有请Handler</p>
-<h1 id="4-Handler"><a href="#4-Handler" class="headerlink" title="4 Handler"></a>4 Handler</h1><p>Handler扮演了往MQ上添加消息和处理消息的角色（只处理由自己发出的消息），即往MQ上添加消息的时候执行sendMessage，并在loop到自己的时候处理消息执行handleMessage，整个过程是异步的。</p>
+<h1 id="四、Handler"><a href="#四、Handler" class="headerlink" title="四、Handler"></a>四、Handler</h1><p>Handler扮演了往MQ上添加消息和处理消息的角色（只处理由自己发出的消息），即往MQ上添加消息的时候执行sendMessage，并在loop到自己的时候处理消息执行handleMessage，整个过程是异步的。</p>
 <p><strong>Handler创建时会关联一个looper，默认关联当前线程的looper。</strong></p>
 <pre><code class="java"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LooperThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>{
     <span class="keyword">private</span> Handler handler1;
@@ -404,7 +404,7 @@
 <li>mHandler.handleMessage()处理消息</li>
 </ol>
 <p><img src="/img/archives/android-handler-send-handle-msg.PNG" alt="android-handler-send-handle-msg.PNG"></p>
-<h1 id="5-回顾"><a href="#5-回顾" class="headerlink" title="5 回顾"></a>5 回顾</h1><p>那么回到一开始我们举的例子，在非UI线程去做耗时的操作，然后完成后在UI线程更新UI信息。那么这种case下，我们的结构图是这样的：</p>
+<h1 id="五、回顾"><a href="#五、回顾" class="headerlink" title="五、回顾"></a>五、回顾</h1><p>那么回到一开始我们举的例子，在非UI线程去做耗时的操作，然后完成后在UI线程更新UI信息。那么这种case下，我们的结构图是这样的：</p>
 <p><img src="/img/archives/android-ui-thread-handler.PNG" alt="android-ui-thread-handler.PNG"></p>
 <p>至此，本文介绍的内容已经完成，本文内容大部分非原创，更多的是基于其他博客的和自己理解的总结，好记性不如烂笔头。如果需要了解源码的同学，可以继续深入阅读研究，包括Java层Looper，Handler，Message，MessageQueue的源码和Native层Looper，NativeMessageQueue的源码实现。</p>
 
@@ -428,10 +428,15 @@
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="/img/archives/weixin.png" alt="风中老狼 WeChat Pay"/>
+          <img id="wechat_qr" src="/img/archives/weixin.jpg" alt="风中老狼 WeChat Pay"/>
           <p>微信打赏</p>
         </div>
       
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/img/archives/zhifubao.jpg" alt="风中老狼 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
       
     </div>
   </div>
@@ -621,7 +626,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-引言"><span class="nav-number">1.</span> <span class="nav-text">1 引言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-相关概念"><span class="nav-number">2.</span> <span class="nav-text">2 相关概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Looper"><span class="nav-number">3.</span> <span class="nav-text">3 Looper</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-Looper-prepare"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 Looper.prepare()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-Looper-loop"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Looper.loop()</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-Handler"><span class="nav-number">4.</span> <span class="nav-text">4 Handler</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-1-Handler发送消息和处理消息"><span class="nav-number">5.</span> <span class="nav-text">4.1 Handler发送消息和处理消息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-回顾"><span class="nav-number">6.</span> <span class="nav-text">5 回顾</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、引言"><span class="nav-text">一、引言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、相关概念"><span class="nav-text">二、相关概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、Looper"><span class="nav-text">三、Looper</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-Looper-prepare"><span class="nav-text">3.1 Looper.prepare()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-Looper-loop"><span class="nav-text">3.2 Looper.loop()</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、Handler"><span class="nav-text">四、Handler</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-1-Handler发送消息和处理消息"><span class="nav-text">4.1 Handler发送消息和处理消息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、回顾"><span class="nav-text">五、回顾</span></a></li></ol></div>
             
           </div>
         </section>
