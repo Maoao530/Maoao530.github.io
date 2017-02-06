@@ -264,6 +264,34 @@
 
       <h1 class="post-title">
         
+            <a class="post-title-link" href="/2017/02/06/android-study/" itemprop="url">
+              
+                <span itemprop="name">Android源码学习指南 - 【置顶】</span>
+              
+            </a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2017-02-06T21:31:21+08:00"
+              content="2017-02-06" >
+          02-06
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h1 class="post-title">
+        
             <a class="post-title-link" href="/2017/01/31/android-build-sign/" itemprop="url">
               
                 <span itemprop="name">Android系统build阶段签名机制</span>
@@ -343,7 +371,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
@@ -653,41 +681,6 @@
                 if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
                 if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
                 $resultContent.innerHTML = str;
-            });
-            proceedsearch();
-        }
-    });}
-
-    // handle and trigger popup window;
-    $('.popup-trigger').mousedown(function(e) {
-      e.stopPropagation();
-      if (isfetched == false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-
-    });
-
-    $('.popup-btn-close').click(function(e){
-      $('.popup').hide();
-      $(".popoverlay").remove();
-      $('body').css('overflow', '');
-    });
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-  </script>
-
-  
-
-  
-
-  
-
-</body>
-</html>
-ultContent.innerHTML = str;
             });
             proceedsearch();
         }

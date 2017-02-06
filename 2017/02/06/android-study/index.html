@@ -72,7 +72,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="android,source," />
 
 
 
@@ -90,16 +90,18 @@
 
 
 
-<meta name="description" content="不积跬步，无以至千里；不积小流，无以成江海">
+<meta name="description" content="Android源码的正确打开方式。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="<font color="red">【置顶】</font> Android学习计划">
+<meta property="og:title" content="Android源码学习指南 - 【置顶】">
 <meta property="og:url" content="https://maoao530.github.io/2017/02/06/android-study/index.html">
 <meta property="og:site_name" content="风中老狼的博客">
-<meta property="og:description" content="不积跬步，无以至千里；不积小流，无以成江海">
-<meta property="og:updated_time" content="2017-02-06T13:35:47.897Z">
+<meta property="og:description" content="Android源码的正确打开方式。">
+<meta property="og:image" content="https://maoao530.github.io/img/archives/android-framework.png">
+<meta property="og:updated_time" content="2017-02-06T15:15:11.161Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="<font color="red">【置顶】</font> Android学习计划">
-<meta name="twitter:description" content="不积跬步，无以至千里；不积小流，无以成江海">
+<meta name="twitter:title" content="Android源码学习指南 - 【置顶】">
+<meta name="twitter:description" content="Android源码的正确打开方式。">
+<meta name="twitter:image" content="https://maoao530.github.io/img/archives/android-framework.png">
 
 
 
@@ -117,7 +119,7 @@
   };
 </script>
 
-  <title> <font color="red">【置顶】</font> Android学习计划 | 风中老狼的博客 </title>
+  <title> Android源码学习指南 - 【置顶】 | 风中老狼的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -270,7 +272,7 @@
             
             
               
-                <font color="red">【置顶】</font> Android学习计划
+                Android源码学习指南 - 【置顶】
               
             
           </h1>
@@ -341,7 +343,32 @@
       
 
       
-        
+        <p>Android源码的正确打开方式。</p>
+<a id="more"></a>
+<h1 id="一、准备"><a href="#一、准备" class="headerlink" title="一、准备"></a>一、准备</h1><ul>
+<li>Java/C/C++基础，Java Framework和C++ Framework，一部分Lib则采用C。 </li>
+<li>Linux相关知识，Android是基于Linux内核。</li>
+<li>Makefile知识，Android采用make编译，可以看到有很多Android.mk类似的文件。</li>
+<li>Source insight，源码阅读工具神器。</li>
+<li>StarUML，类图工具。</li>
+<li>ProcessOn/Visio，流程图工具。</li>
+</ul>
+<h1 id="二、入门学习"><a href="#二、入门学习" class="headerlink" title="二、入门学习"></a>二、入门学习</h1><p>入门学习建议可以参考如下：</p>
+<ul>
+<li><a href="https://developer.android.com/training/index.html" target="_blank" rel="external">Android training</a></li>
+<li>胡凯发起的 <a href="http://hukai.me/android-training-course-in-chinese/index.html" target="_blank" rel="external">Android官方培训课程中文版</a></li>
+</ul>
+<h1 id="三、进阶学习"><a href="#三、进阶学习" class="headerlink" title="三、进阶学习"></a>三、进阶学习</h1><p>作为一名合格的码农，肯定不仅仅限于使用API文档，因为浮于表面是远远不够的。进阶学习的阶段，需要我们保持一颗好奇的心，深入阅读Android源码，学习优秀的代码风格和设计思想，知其然并且知其所以然。</p>
+<p>引用Google的一张框架图：</p>
+<p><img src="/img/archives/android-framework.png" alt="android-framework"></p>
+<ul>
+<li>Applications层了，和用户直接交互的就是这些应用程序，它们都是用Java开发的。</li>
+<li>Java Framework层，这一层大部分用Java语言编写。它是Android平台上Java世界的基石。</li>
+<li>C++ Framework/Libraries层，这一层提供动态库（也叫共享库）、Android运行时库、Dalvik虚拟机等。从编程语言上来说，这一层大部分都是用C或C++写的，所以也可以简单地把它看成是Native层。</li>
+<li>Linux内核层，Android是基于Linux内核，其核心系统服务如安全性、内存管理、进程管理、网路协议以及驱动模型都依赖于Linux内核。</li>
+</ul>
+<p><a href="http://wiki.jikexueyuan.com/project/deep-android-v1/prepare.html" target="_blank" rel="external">http://wiki.jikexueyuan.com/project/deep-android-v1/prepare.html</a></p>
+
       
     </div>
 
@@ -381,6 +408,14 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag">#android</a>
+          
+            <a href="/tags/source/" rel="tag">#source</a>
+          
+        </div>
+      
 
       
         <div class="post-nav">
@@ -419,7 +454,7 @@
   <div class="comments" id="comments">
     
       <div class="ds-thread" data-thread-key="2017/02/06/android-study/"
-           data-title="<font color="red">【置顶】</font> Android学习计划" data-url="https://maoao530.github.io/2017/02/06/android-study/">
+           data-title="Android源码学习指南 - 【置顶】" data-url="https://maoao530.github.io/2017/02/06/android-study/">
       </div>
     
   </div>
@@ -481,7 +516,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
@@ -546,7 +581,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、准备"><span class="nav-text">一、准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、入门学习"><span class="nav-text">二、入门学习</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、进阶学习"><span class="nav-text">三、进阶学习</span></a></li></ol></div>
             
           </div>
         </section>

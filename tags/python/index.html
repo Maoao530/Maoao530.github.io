@@ -93,7 +93,7 @@
 <meta name="description" content="不积跬步，无以至千里；不积小流，无以成江海">
 <meta property="og:type" content="website">
 <meta property="og:title" content="风中老狼的博客">
-<meta property="og:url" content="https://maoao530.github.io/tags/Python/index.html">
+<meta property="og:url" content="https://maoao530.github.io/tags/python/index.html">
 <meta property="og:site_name" content="风中老狼的博客">
 <meta property="og:description" content="不积跬步，无以至千里；不积小流，无以成江海">
 <meta name="twitter:card" content="summary">
@@ -116,7 +116,7 @@
   };
 </script>
 
-  <title> 标签: Python | 风中老狼的博客 </title>
+  <title> 标签: python | 风中老狼的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -251,7 +251,7 @@
   <div id="posts" class="posts-collapse">
     <div class="collection-title">
       <h2 >
-        Python
+        python
         <small>标签</small>
       </h2>
     </div>
@@ -264,37 +264,9 @@
 
       <h1 class="post-title">
         
-            <a class="post-title-link" href="/2016/08/10/python-show-me-the-code/" itemprop="url">
+            <a class="post-title-link" href="/2016/05/17/python-decorator/" itemprop="url">
               
-                <span itemprop="name">python每日编程训练</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-08-10T13:47:00+08:00"
-              content="2016-08-10" >
-          08-10
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2016/05/17/python-classmethod-staticmethod/" itemprop="url">
-              
-                <span itemprop="name">python中的@classmethod和@staticmethod</span>
+                <span itemprop="name">python 装饰器decorator</span>
               
             </a>
         
@@ -302,65 +274,9 @@
 
       <div class="post-meta">
         <time class="post-time" itemprop="dateCreated"
-              datetime="2016-05-17T23:58:59+08:00"
+              datetime="2016-05-17T23:08:59+08:00"
               content="2016-05-17" >
           05-17
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2016/04/25/python-orm/" itemprop="url">
-              
-                <span itemprop="name">如何构建一个orm框架？</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-04-25T23:54:48+08:00"
-              content="2016-04-25" >
-          04-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2016/04/12/python-metaclass/" itemprop="url">
-              
-                <span itemprop="name">从Python Metaclass说起...</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-04-12T23:50:27+08:00"
-              content="2016-04-12" >
-          04-12
         </time>
       </div>
 
@@ -427,7 +343,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
@@ -711,6 +627,67 @@
                         if (first_occur >= 0) {
                             // cut out 100 characters
                             var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+
+</body>
+</html>
+tart = first_occur - 20;
                             var end = first_occur + 80;
                             if(start < 0){
                                 start = 0;
