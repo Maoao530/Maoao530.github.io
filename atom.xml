@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://maoao530.github.io/"/>
-  <updated>2017-01-31T11:36:17.384Z</updated>
+  <updated>2017-02-06T13:35:47.897Z</updated>
   <id>https://maoao530.github.io/</id>
   
   <author>
@@ -14,6 +14,352 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>&lt;font color=&quot;red&quot;&gt;【置顶】&lt;/font&gt; Android学习计划</title>
+    <link href="https://maoao530.github.io/2017/02/06/android-study/"/>
+    <id>https://maoao530.github.io/2017/02/06/android-study/</id>
+    <published>2017-02-06T13:31:21.000Z</published>
+    <updated>2017-02-06T13:35:47.897Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+      <category term="Android进阶" scheme="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>理解和使用systrace</title>
+    <link href="https://maoao530.github.io/2017/02/06/systrace/"/>
+    <id>https://maoao530.github.io/2017/02/06/systrace/</id>
+    <published>2017-02-06T03:25:51.000Z</published>
+    <updated>2017-02-06T13:25:40.030Z</updated>
+    
+    <content type="html"><![CDATA[<p>理解和使用systrace。</p>
+<a id="more"></a>
+<h1 id="一、介绍systrace"><a href="#一、介绍systrace" class="headerlink" title="一、介绍systrace"></a>一、介绍systrace</h1><p>systrace是Android4.1版本之后推出的，对系统Performance分析的工具。</p>
+<p>systrace的功能包括跟踪系统的I/O操作、内核工作队列、CPU负载以及Android各个子系统的运行状况等。在Android平台中，它主要由3部分组成：</p>
+<ul>
+<li><strong>内核部分：</strong>Systrace利用了Linux Kernel中的<code>ftrace</code>功能。所以，如果要使用systrace的话，必须开启kernel中和ftrace相关的模块。</li>
+<li><strong>数据采集部分</strong>：Android定义了一个Trace类。应用程序可利用该类把统计信息输出给ftrace。同时，Android还有一个<code>atrace</code>程序，它可以从ftrace中读取统计信息然后交给数据分析工具来处理。</li>
+<li><strong>数据分析工具</strong>：Android提供一个<code>systrace.py</code>（python脚本文件，位于Android SDK目录<code>/sdk/platform-tools/systrace</code>中，其内部将调用atrace程序）用来配置数据采集的方式（如采集数据的标签、输出文件名等）和收集ftrace统计数据并生成一个结果网页文件供用户查看。</li>
+</ul>
+<h1 id="二、抓取systrace"><a href="#二、抓取systrace" class="headerlink" title="二、抓取systrace"></a>二、抓取systrace</h1><p>有三种方式抓取systrace：</p>
+<h2 id="2-1-systrace-py工具"><a href="#2-1-systrace-py工具" class="headerlink" title="2.1 systrace.py工具"></a>2.1 systrace.py工具</h2><p>命令行的用法是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python systrace.py [options] [category1] [category2] ... [categoryN]</div></pre></td></tr></table></figure>
+<p>需要装python，最好是2.7版本，避免出现问题，示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd android-sdk/platform-tools/systrace</div><div class="line">python systrace.py --time=10 -o mynewtrace.html sched gfx view wm</div></pre></td></tr></table></figure>
+<h3 id="2-1-1-options"><a href="#2-1-1-options" class="headerlink" title="2.1.1 options"></a>2.1.1 options</h3><p>其中options可取值：</p>
+<table>
+<thead>
+<tr>
+<th>options</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-o  &lt; FILE &gt;</td>
+<td style="text-align:left">输出的目标文件</td>
+</tr>
+<tr>
+<td>-t N, –time=N</td>
+<td style="text-align:left">执行时间，默认5s</td>
+</tr>
+<tr>
+<td>-b N, –buf-size=N</td>
+<td style="text-align:left">buffer大小（单位kB),用于限制trace总大小，默认无上限</td>
+</tr>
+<tr>
+<td>-k &lt; KFUNCS &gt;，–ktrace=&lt; KFUNCS &gt;</td>
+<td style="text-align:left">追踪kernel函数，用逗号分隔</td>
+</tr>
+<tr>
+<td>-a &lt; APP_NAME &gt;,–app=&lt; APP_NAME &gt;</td>
+<td style="text-align:left">追踪应用包名，用逗号分隔</td>
+</tr>
+<tr>
+<td>–from-file=&lt; FROM_FILE &gt;</td>
+<td style="text-align:left">从文件中创建互动的systrace</td>
+</tr>
+<tr>
+<td>-e &lt; DEVICE_SERIAL &gt;,–serial=&lt; DEVICE_SERIAL &gt;</td>
+<td style="text-align:left">指定设备</td>
+</tr>
+<tr>
+<td>-l, –list-categories</td>
+<td style="text-align:left">列举可用的tags</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-1-2-category"><a href="#2-1-2-category" class="headerlink" title="2.1.2 category"></a>2.1.2 category</h3><p>其中category可取值：</p>
+<table>
+<thead>
+<tr>
+<th>category</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gfx</td>
+<td style="text-align:left">Graphics</td>
+</tr>
+<tr>
+<td>input</td>
+<td style="text-align:left">Input</td>
+</tr>
+<tr>
+<td>view</td>
+<td style="text-align:left">View System</td>
+</tr>
+<tr>
+<td>webview</td>
+<td style="text-align:left">WebView</td>
+</tr>
+<tr>
+<td>wm</td>
+<td style="text-align:left">Window Manager</td>
+</tr>
+<tr>
+<td>am</td>
+<td style="text-align:left">Activity Manager</td>
+</tr>
+<tr>
+<td>sm</td>
+<td style="text-align:left">Sync Manager</td>
+</tr>
+<tr>
+<td>audio</td>
+<td style="text-align:left">Audio</td>
+</tr>
+<tr>
+<td>video</td>
+<td style="text-align:left">Video</td>
+</tr>
+<tr>
+<td>camera</td>
+<td style="text-align:left">Camera</td>
+</tr>
+<tr>
+<td>hal</td>
+<td style="text-align:left">Hardware Modules</td>
+</tr>
+<tr>
+<td>app</td>
+<td style="text-align:left">Application</td>
+</tr>
+<tr>
+<td>res</td>
+<td style="text-align:left">Resource Loading</td>
+</tr>
+<tr>
+<td>dalvik</td>
+<td style="text-align:left">Dalvik VM</td>
+</tr>
+<tr>
+<td>rs</td>
+<td style="text-align:left">RenderScript</td>
+</tr>
+<tr>
+<td>bionic</td>
+<td style="text-align:left">Bionic C Library</td>
+</tr>
+<tr>
+<td>power</td>
+<td style="text-align:left">Power Management</td>
+</tr>
+<tr>
+<td>sched</td>
+<td style="text-align:left">CPU Scheduling</td>
+</tr>
+<tr>
+<td>irq IRQ</td>
+<td style="text-align:left">Events</td>
+</tr>
+<tr>
+<td>freq</td>
+<td style="text-align:left">CPU Frequency</td>
+</tr>
+<tr>
+<td>idle</td>
+<td style="text-align:left">CPU Idle</td>
+</tr>
+<tr>
+<td>disk</td>
+<td style="text-align:left">Disk I/O</td>
+</tr>
+<tr>
+<td>mmc</td>
+<td style="text-align:left">eMMC commands</td>
+</tr>
+<tr>
+<td>load</td>
+<td style="text-align:left">CPU Load</td>
+</tr>
+<tr>
+<td>sync</td>
+<td style="text-align:left">Synchronization</td>
+</tr>
+<tr>
+<td>workq</td>
+<td style="text-align:left">Kernel Workqueues</td>
+</tr>
+<tr>
+<td>memreclaim</td>
+<td style="text-align:left">Kernel Memory Reclaim</td>
+</tr>
+<tr>
+<td>regulators</td>
+<td style="text-align:left">Voltage and Current Regulators</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-2-Device-Monitor（DDMS）"><a href="#2-2-Device-Monitor（DDMS）" class="headerlink" title="2.2 Device Monitor（DDMS）"></a>2.2 Device Monitor（DDMS）</h2><p>可以使用Eclipse或者Android Studio集成开发工具，切换到DDMS，点击devices，点击Systrace按钮：</p>
+<center><br><img src="/img/archives/ddms-capture-systrace.png" alt="ddms-capture-systrace.png"><br></center>
+
+<p>补充说明：</p>
+<ul>
+<li>Destionation file ：trace输出的文件路径</li>
+<li>Trace duration : 配置抓取systrace的时间，通常设置5秒，并在5秒内重现问题，时间太短会导致问题重现时没有被抓到，时间太长会导致Java Heap不够而无法保存，因此在能抓到问题点的情况下，时间越小越好。</li>
+<li>Trace Buffer Size : Buffer Size是存储systrace的size，同样的，太小会导致信息丢失，时间太长会导致Java Heap不够而无法保存，建议20480。</li>
+<li>Enable Application Traces from :如果用户有自己在应用程序中加入自己的systrace log:<br><code>Trace.beginSection(&quot;newInstance&quot;);
+Trace.endSection();</code><br>那么此处必须选择这个应用对应的进程名字，否则新加的systrace log不会被抓到。</li>
+</ul>
+<h1 id="三、自定义systrace"><a href="#三、自定义systrace" class="headerlink" title="三、自定义systrace"></a>三、自定义systrace</h1><p>有时候为了debug方便，那么我们需要自己在apk或者framework层添加trace信息：</p>
+<h2 id="3-1-app层"><a href="#3-1-app层" class="headerlink" title="3.1 app层"></a>3.1 app层</h2><p>app可以使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">import android.os.Trace;</div><div class="line">Trace.beginSection(String sectionName)</div><div class="line">Trace.EndSection()</div></pre></td></tr></table></figure>
+<p>然后通过<code>python systrace.py --app=sectionName</code> 指定apk，或者通过ddms选择指定apk，抓取systrace分析。</p>
+<h2 id="3-2-Java-framework层"><a href="#3-2-Java-framework层" class="headerlink" title="3.2 Java framework层"></a>3.2 Java framework层</h2><p>Java Framework可以使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">import android.os.Trace;</div><div class="line">Trace.traceBegin(long traceTag, String methodName)</div><div class="line">Trace.traceEnd(long traceTag)</div></pre></td></tr></table></figure>
+<p>抓取systrace分析。</p>
+<h2 id="3-3-Native-framework层"><a href="#3-3-Native-framework层" class="headerlink" title="3.3 Native framework层"></a>3.3 Native framework层</h2><p>Native Framework可以使用：最好在函数开头声明定义</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#include &lt;cutils/trace.h&gt;</div><div class="line">ATRACE_CALL()</div></pre></td></tr></table></figure>
+<p>抓取systrace分析。</p>
+<h1 id="四、分析systrace"><a href="#四、分析systrace" class="headerlink" title="四、分析systrace"></a>四、分析systrace</h1><p>Google Chrome浏览器可以打开systrace，如果打不开，可以通过<code>chrome://tracing/</code>，然后load systrace。</p>
+<p>以分析UI Performance为例：</p>
+<h2 id="4-1-Frame"><a href="#4-1-Frame" class="headerlink" title="4.1 Frame"></a>4.1 Frame</h2><p>每个应用都有一行专门显示frame，每一帧就显示为圆圈，正常绘制是1秒60帧，大约一帧16.6毫秒，在这个值以下是正常颜色绿色，如果超过它就会变成红色、黄色。非绿色的都说明有问题。这时需要通过’w’键放大那一帧，然后按‘m’键高亮，进一步分析问题。</p>
+<p>对于Android 5.0(API level 21)或者更高的设备，该问题主要聚焦在<code>UI Thread</code>和<code>Render Thread</code>这两个线程当中。对于更早的版本，则所有工作在<code>UI Thread</code>。</p>
+<p><img src="/img/archives/systrace-fenxi.png" alt="systrace-fenxi.png"></p>
+<h2 id="4-2-Alerts"><a href="#4-2-Alerts" class="headerlink" title="4.2 Alerts"></a>4.2 Alerts</h2><p>Systrace能自动分析trace中的事件，并能自动高亮性能问题作为一个Alerts，建议调试人员下一步该怎么做。</p>
+<p>比如对于丢帧是，点击黄色或红色的Frames圆点便会有相关的提示信息；另外，在systrace的最右上方，有一个Alerts tab可以展开，这里记录着所有的的警告提示信息。</p>
+<h1 id="五、快捷操作"><a href="#五、快捷操作" class="headerlink" title="五、快捷操作"></a>五、快捷操作</h1><h2 id="5-1-导航操作"><a href="#5-1-导航操作" class="headerlink" title="5.1 导航操作"></a>5.1 导航操作</h2><table>
+<thead>
+<tr>
+<th>导航操作</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>放大，[+shift]速度更快</td>
+</tr>
+<tr>
+<td>s</td>
+<td>缩小，[+shift]速度更快</td>
+</tr>
+<tr>
+<td>a</td>
+<td>左移，[+shift]速度更快</td>
+</tr>
+<tr>
+<td>d</td>
+<td>右移，[+shift]速度更快</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-2-快捷操作"><a href="#5-2-快捷操作" class="headerlink" title="5.2 快捷操作"></a>5.2 快捷操作</h2><table>
+<thead>
+<tr>
+<th>常用操作</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f</td>
+<td>放大当前选定区域</td>
+</tr>
+<tr>
+<td>m</td>
+<td>标记当前选定区域</td>
+</tr>
+<tr>
+<td>v</td>
+<td>高亮VSync</td>
+</tr>
+<tr>
+<td>g</td>
+<td>切换是否显示60hz的网格线</td>
+</tr>
+<tr>
+<td>0</td>
+<td>恢复trace到初始态，这里是数字0而非字母o</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>一般操作</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>h</td>
+<td>切换是否显示详情</td>
+</tr>
+<tr>
+<td>/</td>
+<td>搜索关键字</td>
+</tr>
+<tr>
+<td>enter</td>
+<td>显示搜索结果，可通过← →定位搜索结果</td>
+</tr>
+<tr>
+<td>`</td>
+<td>显示/隐藏脚本控制台</td>
+</tr>
+<tr>
+<td>?</td>
+<td>显示帮助功能</td>
+</tr>
+</tbody>
+</table>
+<p>对于脚本控制台，除了能当做记事本的功能，目前还不清楚有啥功能，或许还在开发中。</p>
+<h2 id="5-3-模式切换"><a href="#5-3-模式切换" class="headerlink" title="5.3 模式切换"></a>5.3 模式切换</h2><ul>
+<li>Select mode: 双击已选定区能将所有相同的块高亮选中；（对应数字1）</li>
+<li>Pan mode: 拖动平移视图（对应数字2）</li>
+<li>Zoom mode:通过上/下拖动鼠标来实现放大/缩小功能；（对应数字3）</li>
+<li>Timing mode:拖动来创建或移除时间窗口线。（对应数字4）</li>
+</ul>
+<p>可通过按数字1~4，用于切换鼠标模式； 另外，按住alt键，再滚动鼠标滚轮能实现放大/缩小功能。</p>
+<p><strong>Reference:</strong></p>
+<ul>
+<li><a href="https://developer.android.com/studio/profile/systrace-commandline.html" target="_blank" rel="external">https://developer.android.com/studio/profile/systrace-commandline.html</a></li>
+<li><a href="https://developer.android.com/studio/profile/systrace.html" target="_blank" rel="external">https://developer.android.com/studio/profile/systrace.html</a></li>
+<li><a href="http://gityuan.com/2016/01/17/systrace/" target="_blank" rel="external">http://gityuan.com/2016/01/17/systrace/</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;理解和使用systrace。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Android进阶" scheme="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
+    
+    
+      <category term="systrace" scheme="https://maoao530.github.io/tags/systrace/"/>
+    
+  </entry>
   
   <entry>
     <title>APK签名机制</title>
@@ -1794,145 +2140,6 @@
     
     
       <category term="Python" scheme="https://maoao530.github.io/tags/Python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>从Python Metaclass说起...</title>
-    <link href="https://maoao530.github.io/2016/04/12/python-metaclass/"/>
-    <id>https://maoao530.github.io/2016/04/12/python-metaclass/</id>
-    <published>2016-04-12T15:50:27.000Z</published>
-    <updated>2017-01-31T07:16:07.782Z</updated>
-    
-    <content type="html"><![CDATA[<p>在Python中，所有数据类型都可以视为对象，当然也可以自定义对象。自定义的对象数据类型就是面向对象中的类（’Class’）的概念。<br>类也是对象，可以把类看成是元类（’Metaclass’）创建出来的对象。</p>
-<a id="more"></a>
-<h1 id="一、理解python中的class"><a href="#一、理解python中的class" class="headerlink" title="一、理解python中的class"></a>一、理解python中的class</h1><p>在理解元类之前，你需要先掌握Python中的类。类同样也是一种<code>对象</code>。是的，没错，就是对象。只要你使用关键字class，Python解释器在执行的时候就会创建一个对象。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">S</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"></div><div class="line">s = S()</div><div class="line"><span class="keyword">print</span> (s) <span class="comment"># &lt;__main__.S object at 0x00F3B390&gt;</span></div><div class="line"><span class="keyword">print</span> (S) <span class="comment"># &lt;class '__main__.S'&gt;</span></div></pre></td></tr></table></figure>
-<p>通过以上片段我们可以知道，’s’是一个对象实例，而’S’是一个类。而通过type()我们可以查看它的类型：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">print</span> (type(s)) <span class="comment"># &lt;class '__main__.S'&gt;</span></div><div class="line"><span class="keyword">print</span> (type(S)) <span class="comment"># &lt;class 'type'&gt;</span></div></pre></td></tr></table></figure>
-<p>可以看到s的类型是<code>Class S</code>，而S的类型是<code>type</code>，那么type是什么呢？</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">print(type(S)       <span class="comment"># &lt;class 'type'&gt;</span></div><div class="line">print(type(type))   <span class="comment"># &lt;class 'type'&gt;</span></div></pre></td></tr></table></figure>
-<p>为什么class的类型是type？？</p>
-<h1 id="二、理解type"><a href="#二、理解type" class="headerlink" title="二、理解type"></a>二、理解type</h1><p>动态语言和静态语言最大的不同，就是函数和类的定义，不是编译时定义的，而是运行时动态创建的。<br>事实上，我们说class也是对象，而这个对象是运行时动态创建的，创建class的方法就是使用type()函数。</p>
-<p>我们可以打印出<strong><code>help(type)</code></strong> :<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">Help on class type in module builtins:</div><div class="line"></div><div class="line">class type(object)</div><div class="line"> |  type(object_or_name, bases, dict)</div><div class="line"> |  type(object) -&gt; the object's type</div><div class="line"> |  type(name, bases, dict) -&gt; a new type</div><div class="line"> |</div><div class="line"> |  Methods defined here:</div><div class="line"> |</div><div class="line"> |  __call__(self, /, *args, **kwargs)</div><div class="line"> |      Call self as a function.</div><div class="line"> |</div><div class="line"> |  __delattr__(self, name, /)</div><div class="line"> |      Implement delattr(self, name).</div><div class="line"> |</div></pre></td></tr></table></figure></p>
-<p>我们主要看<code>type(name, bases, dict)</code>这个方法，事实上当我们定义class的时候，就是调用此方法来创建class对象的。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">say_hello</span><span class="params">(self)</span>:</span></div><div class="line">    print(<span class="string">"say hello"</span>)</div><div class="line"></div><div class="line">name = <span class="string">'Student'</span>                    <span class="comment"># 类名</span></div><div class="line">bases = (object,)                   <span class="comment"># 父类集合</span></div><div class="line">attrs = &#123;<span class="string">'say_hello'</span> : say_hello&#125;   <span class="comment"># 类属性和方法</span></div><div class="line"></div><div class="line">Student = type(name, bases, attrs)</div><div class="line">s = Student()</div><div class="line">s.say_hello()</div></pre></td></tr></table></figure>
-<p>等价于</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">say_hello</span><span class="params">(self)</span>:</span></div><div class="line">        print(<span class="string">"say hello"</span>)</div><div class="line">s = Student()</div><div class="line">s.say_hello()</div></pre></td></tr></table></figure>
-<h1 id="三、理解metaclass"><a href="#三、理解metaclass" class="headerlink" title="三、理解metaclass"></a>三、理解metaclass</h1><p>metaclass，直译为元类，metaclass允许你动态的控制类的创建行为。换句话说，你可以把类看成是metaclass创建出来的“实例”。  </p>
-<p>因此我们可以<strong><code>先定义metaclass</code>，然后用<code>metaclass创建类</code>，最后用<code>类创建实例</code></strong>。  </p>
-<p>我们先看一个简单的例子，这个metaclass可以给我们自定义的MyList增加一个add方法：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 1. metaclass是类的模板，所以必须从`type`类型派生：</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ListMetaclass</span><span class="params">(type)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, name, bases, attrs)</span>:</span></div><div class="line">        attrs[<span class="string">'add'</span>] = <span class="keyword">lambda</span> self, value: self.append(value)</div><div class="line">        <span class="keyword">return</span> type.__new__(cls, name, bases, attrs)</div><div class="line"></div><div class="line"><span class="comment"># 2. 定义了metaclass，接下来我们要定义类，并指定用metaclass来创建：</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyList</span><span class="params">(list, metaclass=ListMetaclass)</span>:</span></div><div class="line">    <span class="keyword">pass</span></div></pre></td></tr></table></figure>
-<p>当我们传入关键字参数metaclass时，它指示Python解释器在创建MyList时，要通过<code>ListMetaclass.__new__()</code>来创建，因此我们在<code>__new__()</code>函数里面修改类的定义，比如，加上新的方法，然后，返回修改后的定义。<br><code>__new__()</code>方法接收到的参数依次是：</p>
-<ul>
-<li>当前准备创建的类的对象</li>
-<li>类的名字           </li>
-<li>类继承的父类集合       </li>
-<li>类的方法集合<br>即：<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">cls ==&gt; `&lt;class '__main__.ListMetaclass'&gt;`</div><div class="line">name ==&gt; `MyList`</div><div class="line">bases ==&gt; (&lt;class 'list'&gt;,) </div><div class="line">attrs ==&gt; &#123;'__qualname__': 'MyList', '__module__': '__main__'&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>当返回后，我们可以测试一下MyList类是否有add()方法：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">L = MyList()</div><div class="line">L.add(<span class="number">1</span>)</div><div class="line">print(L)  </div><div class="line"></div><div class="line"><span class="comment">###### 输出 ######</span></div><div class="line">[<span class="number">1</span>]</div></pre></td></tr></table></figure></p>
-<p>动态修改类行为有什么意义？直接在MyList定义中写上add()方法不是更简单吗？ 正常情况下，确实应该直接写，通过metaclass修改纯属变态。  </p>
-<p>但是，总会遇到需要通过metaclass修改类定义的。ORM就是一个典型的例子。ORM全称“Object Relational Mapping”，即对象-关系映射。</p>
-<p>如果做过java web的同学应当知道，<strong><code>Hibernate</code></strong>就是一个对象关系映射的框架。就是把关系数据库的一行映射为一个对象，也就是<strong>一个类对应一个表</strong>，这样，写代码更简单，不用直接操作SQL语句。</p>
-<p>下一节，我们会学习如何用python来构建一个ORM框架。  </p>
-<p>References:</p>
-<ul>
-<li><a href="http://stackoverflow.com/questions/100003/what-is-a-metaclass-in-python?answertab=active#tab-top" target="_blank" rel="external">StackOverflow</a></li>
-<li><a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000" target="_blank" rel="external">廖雪峰的教程</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;在Python中，所有数据类型都可以视为对象，当然也可以自定义对象。自定义的对象数据类型就是面向对象中的类（’Class’）的概念。&lt;br&gt;类也是对象，可以把类看成是元类（’Metaclass’）创建出来的对象。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Python进阶" scheme="https://maoao530.github.io/categories/Python%E8%BF%9B%E9%98%B6/"/>
-    
-    
-      <category term="Python" scheme="https://maoao530.github.io/tags/Python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>io-multiplexing-epoll</title>
-    <link href="https://maoao530.github.io/2016/03/23/io-multiplexing-epoll/"/>
-    <id>https://maoao530.github.io/2016/03/23/io-multiplexing-epoll/</id>
-    <published>2016-03-22T16:31:00.000Z</published>
-    <updated>2017-01-31T06:01:06.765Z</updated>
-    
-    <content type="html"><![CDATA[<p>什么是epoll？epoll是在2.6内核中提出的，是之前的select和poll的增强版本。它能显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率。</p>
-<a id="more"></a>
-<h1 id="一、epoll的优点？"><a href="#一、epoll的优点？" class="headerlink" title="一、epoll的优点？"></a>一、epoll的优点？</h1><p>相对于select和poll来说，epoll有如下优点：</p>
-<ul>
-<li><p><strong>支持一个进程打开大数目的socket描述符</strong><br>  select 最不能忍受的是一个进程所打开的FD是有一定限制的，由FD_SETSIZE设置，默认值是1024。对于那些需要支持的上万连接数目的IM服务器来说显然太少了。这时候你一是可以选择修改这个宏然后重新编译服务器代码，不过资料也同时指出这样会带来网络效率的下降。</p>
-</li>
-<li><p><strong>IO效率不随FD数目增加而线性下降</strong><br>  传统的select/poll另一个致命弱点就是当你拥有一个很大的socket集合，不过由于网络延时，任一时间只有部分的socket是“活跃”的，但是select/poll每次调用都会线性扫描全部的集合，导致效率呈现线性下降。但是epoll不存在这个问题，它只会对“活跃”的socket进行操作—这是因为在内核实现中epoll是根据每个fd上面的callback函数实现的。那么，只有“活跃”的socket才会主动的去调用 callback函数，其他idle状态socket则不会</p>
-</li>
-<li><p><strong>使用mmap加速内核与用户空间的消息传递</strong><br>  无论是select,poll还是epoll都需要内核把FD消息通知给用户空间，如何避免不必要的内存拷贝就很重要，在这点上，epoll是通过内核与用户空间mmap同一块内存实现的。</p>
-</li>
-</ul>
-<h1 id="二、epoll使用说明"><a href="#二、epoll使用说明" class="headerlink" title="二、epoll使用说明"></a>二、epoll使用说明</h1><p>先来看epoll的几个函数：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/epoll.h&gt;</span>  </span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_create</span><span class="params">(<span class="keyword">int</span> size)</span></span>;  </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_ctl</span><span class="params">(<span class="keyword">int</span> epfd, <span class="keyword">int</span> op, <span class="keyword">int</span> fd, <span class="keyword">struct</span> epoll_event *event)</span></span>;  </div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_wait</span><span class="params">(<span class="keyword">int</span> epfd, <span class="keyword">struct</span> epoll_event * events, <span class="keyword">int</span> maxevents, <span class="keyword">int</span> timeout)</span></span>;</div></pre></td></tr></table></figure>
-<ul>
-<li><strong><code>int epoll_create(int size);</code></strong></li>
-</ul>
-<p>创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大。这个参数不同于select()中的第一个参数，给出最大监听的fd+1的值。需要注意的是，当创建好epoll句柄后，它就是会占用一个fd值，在linux下如果查看/proc/进程id/fd/，是能够看到这个fd的，所以在使用完epoll后，必须调用close()关闭，否则可能导致fd被耗尽。</p>
-<ul>
-<li><strong><code>int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);</code></strong></li>
-</ul>
-<p>epoll的事件注册函数，它不同与select()是在监听事件时告诉内核要监听什么类型的事件，而是在这里先注册要监听的事件类型。</p>
-<ul>
-<li>第一个参数是epoll_create()的返回值</li>
-<li>第二个参数表示动作,用三个宏来表示:<ul>
-<li>EPOLL_CTL_ADD：注册新的fd到epfd中；</li>
-<li>EPOLL_CTL_MOD：修改已经注册的fd的监听事件；</li>
-<li>EPOLL_CTL_DEL：从epfd中删除一个fd；</li>
-</ul>
-</li>
-</ul>
-<p>第三个参数是需要监听的fd，第四个参数是告诉内核需要监听什么事。struct epoll_event结构如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">union</span> epoll_data &#123;  </div><div class="line">    <span class="keyword">void</span> *ptr;  </div><div class="line">    <span class="keyword">int</span> fd;  </div><div class="line">    <span class="keyword">__uint32_t</span> u32;  </div><div class="line">    <span class="keyword">__uint64_t</span> u64;  </div><div class="line">&#125; <span class="keyword">epoll_data_t</span>;  </div><div class="line">  </div><div class="line"><span class="keyword">struct</span> epoll_event &#123;  </div><div class="line">  <span class="keyword">__uint32_t</span> events;  <span class="comment">/* Epoll events */</span>  </div><div class="line">  <span class="keyword">epoll_data_t</span> data;  <span class="comment">/* User data variable */</span>  </div><div class="line">&#125;;  </div><div class="line">  </div><div class="line"><span class="comment">//events可以是以下几个宏的集合：  </span></div><div class="line">EPOLLIN ：表示对应的文件描述符可以读（包括对端SOCKET正常关闭）；  </div><div class="line">EPOLLOUT：表示对应的文件描述符可以写；  </div><div class="line">EPOLLPRI：表示对应的文件描述符有紧急的数据可读（这里应该表示有带外数据到来）；  </div><div class="line">EPOLLERR：表示对应的文件描述符发生错误；  </div><div class="line">EPOLLHUP：表示对应的文件描述符被挂断；  </div><div class="line">EPOLLET： 将EPOLL设为边缘触发(Edge Triggered)模式，这是相对于水平触发(Level Triggered)来说的。  </div><div class="line">EPOLLONESHOT：只监听一次事件，当监听完这次事件之后，如果还需要继续监听这个socket的话，需要再次把这个socket加入到EPOLL队列里</div></pre></td></tr></table></figure>
-<ul>
-<li><strong><code>int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);</code></strong><br>　　<br>等待事件的产生，类似于select()调用。参数events用来从内核得到事件的集合，maxevents告之内核这个events有多大，这个maxevents的值不能大于创建epoll_create()时的size，参数timeout是超时时间（毫秒，0会立即返回，-1将不确定，也有说法说是永久阻塞）。该函数返回需要处理的事件数目，如返回0表示已超时。</li>
-</ul>
-<h1 id="三、epoll的两种模式LT和ET"><a href="#三、epoll的两种模式LT和ET" class="headerlink" title="三、epoll的两种模式LT和ET"></a>三、epoll的两种模式LT和ET</h1><p>二者的差异在于level-trigger模式下只要某个socket处于readable/writable状态，无论什么时候进行epoll_wait都会返回该socket；而edge-trigger模式下只有某个socket从unreadable变为readable或从unwritable变为writable时，epoll_wait才会返回该socket。<br>LT支持阻塞和非阻塞，ET只支持非阻塞，以避免由于一个文件句柄的阻塞读/阻塞写操作把处理多个文件描述符的任务饿死。</p>
-<p><strong>返回EAGAIN或者EWOULDBLOCK错误，这个错误表示资源暂时不够，能read时，读缓冲区没有数据，或者write时，写缓冲区满了。</strong></p>
-<p><strong>如果是阻塞socket，则会一直阻塞，直到能read或者能write。（当然如果你通过setsockopt设置了读写超时，超时时间到了还是会返回-1和EAGAIN，如果没有设置还是返回-1，则表示网络出错了）</strong></p>
-<p><strong>如果是非阻塞socket，则会直接返回-1， 同时errno设置为EAGAIN</strong></p>
-<p>所以，在epoll的ET模式下，正确的读写方式为:</p>
-<blockquote>
-<ul>
-<li>读：只要可读，就一直读，直到返回0，或者 errno = EAGAIN</li>
-<li>写:只要可写，就一直写，直到数据发送完，或者 errno = EAGAIN</li>
-</ul>
-</blockquote>
-<h1 id="四、epoll-ET模式的简单HTTP服务器代码"><a href="#四、epoll-ET模式的简单HTTP服务器代码" class="headerlink" title="四、epoll,ET模式的简单HTTP服务器代码"></a>四、epoll,ET模式的简单HTTP服务器代码</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/tcp.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/epoll.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/sendfile.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;strings.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span> </span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_EVENTS 10</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PORT 8080</span></div><div class="line"></div><div class="line"><span class="comment">//设置socket连接为非阻塞模式</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">setnonblocking</span><span class="params">(<span class="keyword">int</span> sockfd)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> opts;</div><div class="line"></div><div class="line">    opts = fcntl(sockfd, F_GETFL);</div><div class="line">    <span class="keyword">if</span>(opts &lt; <span class="number">0</span>) &#123;</div><div class="line">        perror(<span class="string">"fcntl(F_GETFL)\n"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">    opts = (opts | O_NONBLOCK);</div><div class="line">    <span class="keyword">if</span>(fcntl(sockfd, F_SETFL, opts) &lt; <span class="number">0</span>) &#123;</div><div class="line">        perror(<span class="string">"fcntl(F_SETFL)\n"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">struct</span> epoll_event ev, events[MAX_EVENTS];</div><div class="line">    <span class="keyword">int</span> addrlen, listenfd, conn_sock, nfds, epfd, fd, i, nread, n;</div><div class="line">    <span class="keyword">struct</span> sockaddr_in local, remote;</div><div class="line">    <span class="keyword">char</span> buf[BUFSIZ];</div><div class="line"></div><div class="line">    <span class="comment">//创建listen socket</span></div><div class="line">    <span class="keyword">if</span>( (listenfd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>)) &lt; <span class="number">0</span>) &#123;</div><div class="line">        perror(<span class="string">"sockfd\n"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">    setnonblocking(listenfd);</div><div class="line">    bzero(&amp;local, <span class="keyword">sizeof</span>(local));</div><div class="line">    local.sin_family = AF_INET;</div><div class="line">    local.sin_addr.s_addr = htonl(INADDR_ANY);;</div><div class="line">    local.sin_port = htons(PORT);</div><div class="line">    <span class="keyword">if</span>( bind(listenfd, (<span class="keyword">struct</span> sockaddr *) &amp;local, <span class="keyword">sizeof</span>(local)) &lt; <span class="number">0</span>) &#123;</div><div class="line">        perror(<span class="string">"bind\n"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">    listen(listenfd, <span class="number">20</span>);</div><div class="line"></div><div class="line">    epfd = epoll_create(MAX_EVENTS);</div><div class="line">    <span class="keyword">if</span> (epfd == <span class="number">-1</span>) &#123;</div><div class="line">        perror(<span class="string">"epoll_create"</span>);</div><div class="line">        <span class="built_in">exit</span>(EXIT_FAILURE);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ev.events = EPOLLIN;</div><div class="line">    ev.data.fd = listenfd;</div><div class="line">    <span class="keyword">if</span> (epoll_ctl(epfd, EPOLL_CTL_ADD, listenfd, &amp;ev) == <span class="number">-1</span>) &#123;</div><div class="line">        perror(<span class="string">"epoll_ctl: listen_sock"</span>);</div><div class="line">        <span class="built_in">exit</span>(EXIT_FAILURE);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (;;) &#123;</div><div class="line">        nfds = epoll_wait(epfd, events, MAX_EVENTS, <span class="number">-1</span>);</div><div class="line">        <span class="keyword">if</span> (nfds == <span class="number">-1</span>) &#123;</div><div class="line">            perror(<span class="string">"epoll_pwait"</span>);</div><div class="line">            <span class="built_in">exit</span>(EXIT_FAILURE);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nfds; ++i) &#123;</div><div class="line">            fd = events[i].data.fd;</div><div class="line">            <span class="keyword">if</span> (fd == listenfd) &#123;</div><div class="line">                <span class="keyword">while</span> ((conn_sock = accept(listenfd,(<span class="keyword">struct</span> sockaddr *) &amp;remote, </div><div class="line">                                (<span class="keyword">size_t</span> *)&amp;addrlen)) &gt; <span class="number">0</span>) &#123;</div><div class="line">                    setnonblocking(conn_sock);</div><div class="line">                    ev.events = EPOLLIN | EPOLLET;</div><div class="line">                    ev.data.fd = conn_sock;</div><div class="line">                    <span class="keyword">if</span> (epoll_ctl(epfd, EPOLL_CTL_ADD, conn_sock,</div><div class="line">                                &amp;ev) == <span class="number">-1</span>) &#123;</div><div class="line">                        perror(<span class="string">"epoll_ctl: add"</span>);</div><div class="line">                        <span class="built_in">exit</span>(EXIT_FAILURE);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">if</span> (conn_sock == <span class="number">-1</span>) &#123;</div><div class="line">                    <span class="keyword">if</span> (errno != EAGAIN &amp;&amp; errno != ECONNABORTED </div><div class="line">                            &amp;&amp; errno != EPROTO &amp;&amp; errno != EINTR) </div><div class="line">                        perror(<span class="string">"accept"</span>);</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            &#125;  </div><div class="line">            <span class="keyword">if</span> (events[i].events &amp; EPOLLIN) &#123;</div><div class="line">                n = <span class="number">0</span>;</div><div class="line">                <span class="keyword">while</span> ((nread = read(fd, buf + n, BUFSIZ<span class="number">-1</span>)) &gt; <span class="number">0</span>) &#123;</div><div class="line">                    n += nread;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">if</span> (nread == <span class="number">-1</span> &amp;&amp; errno != EAGAIN) &#123;</div><div class="line">                    perror(<span class="string">"read error"</span>);</div><div class="line">                &#125;</div><div class="line">                ev.data.fd = fd;</div><div class="line">                ev.events = events[i].events | EPOLLOUT;</div><div class="line">                <span class="keyword">if</span> (epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &amp;ev) == <span class="number">-1</span>) &#123;</div><div class="line">                    perror(<span class="string">"epoll_ctl: mod"</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (events[i].events &amp; EPOLLOUT) &#123;</div><div class="line">                <span class="built_in">sprintf</span>(buf, <span class="string">"HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\nHello World"</span>, <span class="number">11</span>);</div><div class="line">                <span class="keyword">int</span> nwrite, data_size = <span class="built_in">strlen</span>(buf);</div><div class="line">                n = data_size;</div><div class="line">                <span class="keyword">while</span> (n &gt; <span class="number">0</span>) &#123;</div><div class="line">                    nwrite = write(fd, buf + data_size - n, n);</div><div class="line">                    <span class="keyword">if</span> (nwrite &lt; n) &#123;</div><div class="line">                        <span class="keyword">if</span> (nwrite == <span class="number">-1</span> &amp;&amp; errno != EAGAIN) &#123;</div><div class="line">                            perror(<span class="string">"write error"</span>);</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    &#125;</div><div class="line">                    n -= nwrite;</div><div class="line">                &#125;</div><div class="line">                close(fd);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="五、epoll-amp-LT-模式简单的服务器代码"><a href="#五、epoll-amp-LT-模式简单的服务器代码" class="headerlink" title="五、epoll &amp; LT 模式简单的服务器代码"></a>五、epoll &amp; LT 模式简单的服务器代码</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/epoll.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> IPADDRESS   <span class="meta-string">"127.0.0.1"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PORT        8787</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MAXSIZE     1024</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> LISTENQ     5</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> FDSIZE      1000</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> EPOLLEVENTS 100</span></div><div class="line"></div><div class="line"><span class="comment">//函数声明</span></div><div class="line"><span class="comment">//创建套接字并进行绑定</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">socket_bind</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* ip,<span class="keyword">int</span> port)</span></span>;</div><div class="line"><span class="comment">//IO多路复用epoll</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">do_epoll</span><span class="params">(<span class="keyword">int</span> listenfd)</span></span>;</div><div class="line"><span class="comment">//事件处理函数</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span></span></div><div class="line"><span class="title">handle_events</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">struct</span> epoll_event *events,<span class="keyword">int</span> num,<span class="keyword">int</span> listenfd,<span class="keyword">char</span> *buf)</span>;</div><div class="line"><span class="comment">//处理接收到的连接</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">handle_accpet</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">int</span> listenfd)</span></span>;</div><div class="line"><span class="comment">//读处理</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">do_read</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">int</span> fd,<span class="keyword">char</span> *buf)</span></span>;</div><div class="line"><span class="comment">//写处理</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">do_write</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">int</span> fd,<span class="keyword">char</span> *buf)</span></span>;</div><div class="line"><span class="comment">//添加事件</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">add_event</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">int</span> fd,<span class="keyword">int</span> state)</span></span>;</div><div class="line"><span class="comment">//修改事件</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">modify_event</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">int</span> fd,<span class="keyword">int</span> state)</span></span>;</div><div class="line"><span class="comment">//删除事件</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">delete_event</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">int</span> fd,<span class="keyword">int</span> state)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span> *argv[])</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span>  listenfd;</div><div class="line">    listenfd = socket_bind(IPADDRESS,PORT);</div><div class="line">    listen(listenfd,LISTENQ);</div><div class="line">    do_epoll(listenfd);</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">socket_bind</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* ip,<span class="keyword">int</span> port)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span>  listenfd;</div><div class="line">    <span class="keyword">struct</span> sockaddr_in servaddr;</div><div class="line">    listenfd = socket(AF_INET,SOCK_STREAM,<span class="number">0</span>);</div><div class="line">    <span class="keyword">if</span> (listenfd == <span class="number">-1</span>)</div><div class="line">    &#123;</div><div class="line">        perror(<span class="string">"socket error:"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">    bzero(&amp;servaddr,<span class="keyword">sizeof</span>(servaddr));</div><div class="line">    servaddr.sin_family = AF_INET;</div><div class="line">    inet_pton(AF_INET,ip,&amp;servaddr.sin_addr);</div><div class="line">    servaddr.sin_port = htons(port);</div><div class="line">    <span class="keyword">if</span> (bind(listenfd,(<span class="keyword">struct</span> sockaddr*)&amp;servaddr,<span class="keyword">sizeof</span>(servaddr)) == <span class="number">-1</span>)</div><div class="line">    &#123;</div><div class="line">        perror(<span class="string">"bind error: "</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> listenfd;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">do_epoll</span><span class="params">(<span class="keyword">int</span> listenfd)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> epollfd;</div><div class="line">    <span class="keyword">struct</span> epoll_event events[EPOLLEVENTS];</div><div class="line">    <span class="keyword">int</span> ret;</div><div class="line">    <span class="keyword">char</span> buf[MAXSIZE];</div><div class="line">    <span class="built_in">memset</span>(buf,<span class="number">0</span>,MAXSIZE);</div><div class="line">    <span class="comment">//创建一个描述符</span></div><div class="line">    epollfd = epoll_create(FDSIZE);</div><div class="line">    <span class="comment">//添加监听描述符事件</span></div><div class="line">    add_event(epollfd,listenfd,EPOLLIN);</div><div class="line">    <span class="keyword">for</span> ( ; ; )</div><div class="line">    &#123;</div><div class="line">        <span class="comment">//获取已经准备好的描述符事件</span></div><div class="line">        ret = epoll_wait(epollfd,events,EPOLLEVENTS,<span class="number">-1</span>);</div><div class="line">        handle_events(epollfd,events,ret,listenfd,buf);</div><div class="line">    &#125;</div><div class="line">    close(epollfd);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span></span></div><div class="line"><span class="title">handle_events</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">struct</span> epoll_event *events,<span class="keyword">int</span> num,<span class="keyword">int</span> listenfd,<span class="keyword">char</span> *buf)</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> i;</div><div class="line">    <span class="keyword">int</span> fd;</div><div class="line">    <span class="comment">//进行选好遍历</span></div><div class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>;i &lt; num;i++)</div><div class="line">    &#123;</div><div class="line">        fd = events[i].data.fd;</div><div class="line">        <span class="comment">//根据描述符的类型和事件类型进行处理</span></div><div class="line">        <span class="keyword">if</span> ((fd == listenfd) &amp;&amp;(events[i].events &amp; EPOLLIN))</div><div class="line">            handle_accpet(epollfd,listenfd);</div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (events[i].events &amp; EPOLLIN)</div><div class="line">            do_read(epollfd,fd,buf);</div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (events[i].events &amp; EPOLLOUT)</div><div class="line">            do_write(epollfd,fd,buf);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">handle_accpet</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">int</span> listenfd)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> clifd;</div><div class="line">    <span class="keyword">struct</span> sockaddr_in cliaddr;</div><div class="line">    <span class="keyword">socklen_t</span>  cliaddrlen;</div><div class="line">    clifd = accept(listenfd,(<span class="keyword">struct</span> sockaddr*)&amp;cliaddr,&amp;cliaddrlen);</div><div class="line">    <span class="keyword">if</span> (clifd == <span class="number">-1</span>)</div><div class="line">        perror(<span class="string">"accpet error:"</span>);</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"accept a new client: %s:%d\n"</span>,inet_ntoa(cliaddr.sin_addr),cliaddr.sin_port);</div><div class="line">        <span class="comment">//添加一个客户描述符和事件</span></div><div class="line">        add_event(epollfd,clifd,EPOLLIN);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">do_read</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">int</span> fd,<span class="keyword">char</span> *buf)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> nread;</div><div class="line">    nread = read(fd,buf,MAXSIZE);</div><div class="line">    <span class="keyword">if</span> (nread == <span class="number">-1</span>)</div><div class="line">    &#123;</div><div class="line">        perror(<span class="string">"read error:"</span>);</div><div class="line">        close(fd);</div><div class="line">        delete_event(epollfd,fd,EPOLLIN);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (nread == <span class="number">0</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>,<span class="string">"client close.\n"</span>);</div><div class="line">        close(fd);</div><div class="line">        delete_event(epollfd,fd,EPOLLIN);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"read message is : %s"</span>,buf);</div><div class="line">        <span class="comment">//修改描述符对应的事件，由读改为写</span></div><div class="line">        modify_event(epollfd,fd,EPOLLOUT);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">do_write</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">int</span> fd,<span class="keyword">char</span> *buf)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> nwrite;</div><div class="line">    nwrite = write(fd,buf,<span class="built_in">strlen</span>(buf));</div><div class="line">    <span class="keyword">if</span> (nwrite == <span class="number">-1</span>)</div><div class="line">    &#123;</div><div class="line">        perror(<span class="string">"write error:"</span>);</div><div class="line">        close(fd);</div><div class="line">        delete_event(epollfd,fd,EPOLLOUT);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">        modify_event(epollfd,fd,EPOLLIN);</div><div class="line">    <span class="built_in">memset</span>(buf,<span class="number">0</span>,MAXSIZE);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">add_event</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">int</span> fd,<span class="keyword">int</span> state)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">struct</span> epoll_event ev;</div><div class="line">    ev.events = state;</div><div class="line">    ev.data.fd = fd;</div><div class="line">    epoll_ctl(epollfd,EPOLL_CTL_ADD,fd,&amp;ev);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">delete_event</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">int</span> fd,<span class="keyword">int</span> state)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">struct</span> epoll_event ev;</div><div class="line">    ev.events = state;</div><div class="line">    ev.data.fd = fd;</div><div class="line">    epoll_ctl(epollfd,EPOLL_CTL_DEL,fd,&amp;ev);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">modify_event</span><span class="params">(<span class="keyword">int</span> epollfd,<span class="keyword">int</span> fd,<span class="keyword">int</span> state)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">struct</span> epoll_event ev;</div><div class="line">    ev.events = state;</div><div class="line">    ev.data.fd = fd;</div><div class="line">    epoll_ctl(epollfd,EPOLL_CTL_MOD,fd,&amp;ev);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>至此，epoll的内容介绍完了。</p>
-<p>References：</p>
-<ul>
-<li><p><a href="http://www.ccvita.com/515.html" target="_blank" rel="external">Epoll在LT和ET模式下的读写方式</a></p>
-</li>
-<li><p><a href="http://www.cnblogs.com/Anker/p/3263780.html" target="_blank" rel="external">IO多路复用之epoll总结</a></p>
-</li>
-<li><p><a href="http://blog.csdn.net/ljx0305/article/details/4065058" target="_blank" rel="external">epoll使用详解</a></p>
-</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;什么是epoll？epoll是在2.6内核中提出的，是之前的select和poll的增强版本。它能显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Linux" scheme="https://maoao530.github.io/categories/Linux/"/>
-    
-    
-      <category term="Linux" scheme="https://maoao530.github.io/tags/Linux/"/>
     
   </entry>
   
