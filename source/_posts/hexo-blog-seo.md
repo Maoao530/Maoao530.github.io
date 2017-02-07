@@ -187,3 +187,22 @@ $table-cell-border-bottom-color = $grey-dark
 $table-row-odd-bg-color         = #f9f9f9
 $table-row-hover-bg-color       = $whitesmoke
 ```
+
+# 十二、修改文章内链接文本样式
+
+将链接文本设置为蓝色，鼠标划过时文字颜色加深，并显示下划线。
+修改文件themes\next\source\css\_common\components\post\post.styl，添加如下css样式，：
+
+```
+.post-body a{
+  color: #0593d3;
+  border-bottom: none;
+
+  &:hover {
+    color: #0477ab;
+    text-decoration: underline;
+  }
+}
+```
+
+选择.post-body是为了不影响标题，选择p是为了不影响首页“阅读全文”的显示样式。
