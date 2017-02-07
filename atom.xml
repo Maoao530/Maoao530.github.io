@@ -172,9 +172,9 @@
       <category term="Android进阶" scheme="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
     
     
-      <category term="android" scheme="https://maoao530.github.io/tags/android/"/>
-    
       <category term="source" scheme="https://maoao530.github.io/tags/source/"/>
+    
+      <category term="android" scheme="https://maoao530.github.io/tags/android/"/>
     
   </entry>
   
@@ -659,9 +659,9 @@ Trace.endSection();</code><br>那么此处必须选择这个应用对应的进�
       <category term="Android进阶" scheme="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
     
     
-      <category term="签名" scheme="https://maoao530.github.io/tags/%E7%AD%BE%E5%90%8D/"/>
-    
       <category term="android" scheme="https://maoao530.github.io/tags/android/"/>
+    
+      <category term="签名" scheme="https://maoao530.github.io/tags/%E7%AD%BE%E5%90%8D/"/>
     
   </entry>
   
@@ -670,7 +670,7 @@ Trace.endSection();</code><br>那么此处必须选择这个应用对应的进�
     <link href="https://maoao530.github.io/2017/01/25/hexo-blog-seo/"/>
     <id>https://maoao530.github.io/2017/01/25/hexo-blog-seo/</id>
     <published>2017-01-25T13:30:58.000Z</published>
-    <updated>2017-02-07T13:18:37.420Z</updated>
+    <updated>2017-02-07T14:45:09.335Z</updated>
     
     <content type="html"><![CDATA[<p>进一步打造自己的Blog。</p>
 <a id="more"></a>
@@ -709,9 +709,10 @@ Trace.endSection();</code><br>那么此处必须选择这个应用对应的进�
 <h1 id="十一、表格样式"><a href="#十一、表格样式" class="headerlink" title="十一、表格样式"></a>十一、表格样式</h1><p>这个背景色下面表格边界不太明显，我们修改为：</p>
 <p>next/source/css/_variables/base.styl</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">// Table</div><div class="line">// --------------------------------------------------</div><div class="line">$table-width                    = 100%</div><div class="line">$table-border-color             = $grey-dark</div><div class="line">$table-font-size                = 14px</div><div class="line">$table-content-alignment        = left</div><div class="line">$table-content-vertical         = middle</div><div class="line">$table-th-font-weight           = 700</div><div class="line">$table-cell-padding             = 8px</div><div class="line">$table-cell-border-right-color  = $grey-dark</div><div class="line">$table-cell-border-bottom-color = $grey-dark</div><div class="line">$table-row-odd-bg-color         = #f9f9f9</div><div class="line">$table-row-hover-bg-color       = $whitesmoke</div></pre></td></tr></table></figure>
-<h1 id="十二、修改文章内链接文本样式"><a href="#十二、修改文章内链接文本样式" class="headerlink" title="十二、修改文章内链接文本样式"></a>十二、修改文章内链接文本样式</h1><p>将链接文本设置为蓝色，鼠标划过时文字颜色加深，并显示下划线。<br>修改文件themes\next\source\css_common\components\post\post.styl，添加如下css样式，：</p>
+<h1 id="十二、修改文章内链接文本样式"><a href="#十二、修改文章内链接文本样式" class="headerlink" title="十二、修改文章内链接文本样式"></a>十二、修改文章内链接文本样式</h1><p>将链接文本设置为蓝色，鼠标划过时文字颜色加深，并显示下划线。<br>修改文件themes\next\source\css_common\components\post\post.styl，添加如下css样式：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">.post-body a&#123;</div><div class="line">  color: #0593d3;</div><div class="line">  border-bottom: none;</div><div class="line"></div><div class="line">  &amp;:hover &#123;</div><div class="line">    color: #0477ab;</div><div class="line">    text-decoration: underline;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>选择.post-body是为了不影响标题，选择p是为了不影响首页“阅读全文”的显示样式。</p>
+<h1 id="十三、修改Pages链接文本样式"><a href="#十三、修改Pages链接文本样式" class="headerlink" title="十三、修改Pages链接文本样式"></a>十三、修改Pages链接文本样式</h1><p>修改文件themes\next\source\css_common\components\post\post-expand.styl，添加如下css样式，：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">.posts-expand a&#123;</div><div class="line">  color: #0593d3;</div><div class="line">  border-bottom: none;</div><div class="line"></div><div class="line">  &amp;:hover &#123;</div><div class="line">    color: #0477ab;</div><div class="line">    text-decoration: underline;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 ]]></content>
     
     <summary type="html">

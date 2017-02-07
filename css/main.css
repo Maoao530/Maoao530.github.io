@@ -1104,6 +1104,14 @@ pre .javascript .function {
 .posts-expand .fancybox img {
   margin: 0 auto;
 }
+.posts-expand a {
+  color: #0593d3;
+  border-bottom: none;
+}
+.posts-expand a:hover {
+  color: #0477ab;
+  text-decoration: underline;
+}
 @media (max-width: 767px) {
   .posts-collapse {
     margin: 0 20px;
@@ -1671,7 +1679,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #c31c69;
+  background: #ff67ff;
 }
 .links-of-blogroll {
   font-size: 13px;
