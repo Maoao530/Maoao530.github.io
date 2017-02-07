@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://maoao530.github.io/"/>
-  <updated>2017-02-06T15:15:11.161Z</updated>
+  <updated>2017-02-07T13:18:11.446Z</updated>
   <id>https://maoao530.github.io/</id>
   
   <author>
@@ -20,9 +20,9 @@
     <link href="https://maoao530.github.io/2017/02/06/android-study/"/>
     <id>https://maoao530.github.io/2017/02/06/android-study/</id>
     <published>2017-02-06T13:31:21.000Z</published>
-    <updated>2017-02-06T15:15:11.161Z</updated>
+    <updated>2017-02-07T13:18:11.446Z</updated>
     
-    <content type="html"><![CDATA[<p>Android源码的正确打开方式。</p>
+    <content type="html"><![CDATA[<p>深入学习Android源码，知其然而知其所以然。计划整理一系列源码分析文章。</p>
 <a id="more"></a>
 <h1 id="一、准备"><a href="#一、准备" class="headerlink" title="一、准备"></a>一、准备</h1><ul>
 <li>Java/C/C++基础，Java Framework和C++ Framework，一部分Lib则采用C。 </li>
@@ -34,24 +34,138 @@
 </ul>
 <h1 id="二、入门学习"><a href="#二、入门学习" class="headerlink" title="二、入门学习"></a>二、入门学习</h1><p>入门学习建议可以参考如下：</p>
 <ul>
-<li><a href="https://developer.android.com/training/index.html" target="_blank" rel="external">Android training</a></li>
+<li>Android官方培训 <a href="https://developer.android.com/training/index.html" target="_blank" rel="external">Android training</a></li>
 <li>胡凯发起的 <a href="http://hukai.me/android-training-course-in-chinese/index.html" target="_blank" rel="external">Android官方培训课程中文版</a></li>
 </ul>
 <h1 id="三、进阶学习"><a href="#三、进阶学习" class="headerlink" title="三、进阶学习"></a>三、进阶学习</h1><p>作为一名合格的码农，肯定不仅仅限于使用API文档，因为浮于表面是远远不够的。进阶学习的阶段，需要我们保持一颗好奇的心，深入阅读Android源码，学习优秀的代码风格和设计思想，知其然并且知其所以然。</p>
 <p>引用Google的一张框架图：</p>
 <p><img src="/img/archives/android-framework.png" alt="android-framework"></p>
 <ul>
-<li>Applications层了，和用户直接交互的就是这些应用程序，它们都是用Java开发的。</li>
-<li>Java Framework层，这一层大部分用Java语言编写。它是Android平台上Java世界的基石。</li>
-<li>C++ Framework/Libraries层，这一层提供动态库（也叫共享库）、Android运行时库、Dalvik虚拟机等。从编程语言上来说，这一层大部分都是用C或C++写的，所以也可以简单地把它看成是Native层。</li>
-<li>Linux内核层，Android是基于Linux内核，其核心系统服务如安全性、内存管理、进程管理、网路协议以及驱动模型都依赖于Linux内核。</li>
+<li><strong>Applications层</strong>，和用户直接交互的就是这些应用程序，它们都是用Java开发的。</li>
+<li><strong>Java Framework层</strong>，这一层大部分用Java语言编写。它是Android平台上Java世界的基石。</li>
+<li><strong>C++ Framework/Libraries层</strong>，这一层提供动态库（也叫共享库）、Android运行时库、Dalvik虚拟机等。从编程语言上来说，这一层大部分都是用C或C++写的，所以也可以简单地把它看成是Native层。</li>
+<li><strong>Linux Kernel层</strong>，Android是基于Linux内核，其核心系统服务如安全性、内存管理、进程管理、网路协议以及驱动模型都依赖于Linux内核。</li>
 </ul>
-<p><a href="http://wiki.jikexueyuan.com/project/deep-android-v1/prepare.html" target="_blank" rel="external">http://wiki.jikexueyuan.com/project/deep-android-v1/prepare.html</a></p>
+<h1 id="四、Android架构"><a href="#四、Android架构" class="headerlink" title="四、Android架构"></a>四、Android架构</h1><p>Google提供的四层架构非常经典，如果我们要深入学习这个架构，<strong>最好就是以Android系统启动流程开始学起，然后一步一步展开，牵引学习</strong>。这样不至于我们陷入源码的大海里而没有方向。</p>
+<p>这个是之前我画的一张启动流程图：</p>
+<p><img src="/img/archives/android-boot-up.png" alt="android-boot-up.png"></p>
+<p>Java和C++通过JNI连接，C/C++通过system call直接调用linux os。</p>
+<h2 id="4-1-Loader层"><a href="#4-1-Loader层" class="headerlink" title="4.1 Loader层"></a>4.1 Loader层</h2><p><strong>1. Boot ROM: </strong><br>上电后，BootRom会被激活，引导芯片代码开始从预定义的地方（固化在ROM）开始执行，然后加载引导程序到RAM。</p>
+<p><strong>2. Boot Loader引导程序</strong><br>Boot Loader是启动Android系统之前的引导程序，引导程序是OEM厂商或者运营商加锁和限制的地方，它是针对特定的主板与芯片的。OEM厂商要么使用很受欢迎的引导程序比如redboot、uboot、ARMboot等或者开发自己的引导程序，它不是Android操作系统的一部分。<br>Boot Loader主要作用是检查RAM，初始化硬件参数等功能。</p>
+<h2 id="4-2-Kernel层"><a href="#4-2-Kernel层" class="headerlink" title="4.2 Kernel层"></a>4.2 Kernel层</h2><p>Kernel的启动流程：</p>
+<blockquote>
+<p>alps/kernel/init/main.c<br>start_kernel() ==&gt; rest_init() ==&gt; kernel_thread(kernel_init) ==&gt; kernel_init()</p>
+</blockquote>
+<p><strong>0号进程：</strong><br>swapper进程(pid=0)：又称为idle进程, 叫空闲进程，由系统自动创建, 运行在内核态。<br>系统初始化过程Kernel由无到有开创的第一个进程, 也是唯一一个没有通过fork或者kernel_thread产生的进程。<br>swapper进程用于初始化进程管理、内存管理，加载Display,Camera Driver，Binder Driver等相关工作。</p>
+<p><strong>1号进程 </strong><br>init进程(pid=1)：由0号进程通过kernel_thread创建，在内核空间完成初始化后, 加载init程序, 并最终运行在用户空间，init进程是所有用户进程的鼻祖。</p>
+<p><strong>2号进程 </strong><br>kthreadd进程(pid=2)：由0号进程通过kernel_thread创建，是Linux系统的内核进程，会创建内核工作线程kworkder，软中断线程ksoftirqd，thermal等内核守护进程。<br>kthreadd运行在内核空间, 负责所有内核线程的调度和管理 , kthreadd进程是所有内核进程的鼻祖。</p>
+<h2 id="4-3-Native层"><a href="#4-3-Native层" class="headerlink" title="4.3 Native层"></a>4.3 Native层</h2><p>Native层主要是init一号进程，并且由其孵化出来的一系列daemon进程，还有一些列native service。</p>
+<ul>
+<li>init进程会孵化出ueventd、logd、healthd、installd、adbd、lmkd等用户守护进程；</li>
+<li>init进程还启动servicemanager、bootanim、mediaserver等重要本地服务</li>
+<li>init进程孵化出Zygote进程，Zygote进程是Android系统的第一个Java进程，Zygote是所有Java进程的父进程。</li>
+</ul>
+<h2 id="4-4-Java层"><a href="#4-4-Java层" class="headerlink" title="4.4 Java层"></a>4.4 Java层</h2><ul>
+<li>Zygote是第一个Java进程，并且是所有java进程的父进程，由init进程解析init.rc文件后fork生成。</li>
+<li>System Server进程，是由Zygote进程fork而来，System Server是Zygote孵化的第一个进程。System Server负责启动和管理整个Java framework，包含ActivityManager，PackageManager，WindowManager等服务。</li>
+</ul>
+<h2 id="4-5-Application层"><a href="#4-5-Application层" class="headerlink" title="4.5 Application层"></a>4.5 Application层</h2><p>Zygote进程孵化出的第一个App进程是Launcher，Zygote进程还会创建Browser，Phone，Email等App进程，每个App至少运行在一个进程上。所有的App进程都是由Zygote进程fork生成的。</p>
+<h1 id="五、学习计划"><a href="#五、学习计划" class="headerlink" title="五、学习计划"></a>五、学习计划</h1><p>了解了大致的框架体系之后，接下来就是给自己列一个学习计划。博主不定期总结学习内容到博客上面来，与大家一起分享。博客会以Android N源码为主来分析，尽量每个知识点做到多画图，多总结，少贴大段源码，避免犯困。</p>
+<h2 id="5-1-四大组件"><a href="#5-1-四大组件" class="headerlink" title="5.1 四大组件"></a>5.1 四大组件</h2><p>Android应用的四大组件Activity，Service，Broadcast Receiver， Content Provider。</p>
+<ul>
+<li>四大组件基础知识<ul>
+<li><a href="http://maoao530.github.io/2016/08/11/android-base/">Android四大组件</a></li>
+</ul>
+</li>
+<li>Android组件 - Activity</li>
+<li>Android组件 - Service</li>
+<li>Android组件 - Broadcast Receiver</li>
+<li>Android组件 - Content Provider</li>
+</ul>
+<h2 id="5-2-消息处理机制"><a href="#5-2-消息处理机制" class="headerlink" title="5.2 消息处理机制"></a>5.2 消息处理机制</h2><ul>
+<li>Android消息处理机制 Looper、Handler、Message介绍<ul>
+<li><a href="http://maoao530.github.io/2016/12/11/android-looper-handler-message/">Android消息机制</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="5-3-IPC通信"><a href="#5-3-IPC通信" class="headerlink" title="5.3 IPC通信"></a>5.3 IPC通信</h2><ul>
+<li>Binder机制<ul>
+<li><a href="http://maoao530.github.io/2016/12/21/android-binder-01/">Binder实用指南（一） - 理解篇</a></li>
+<li><a href="http://maoao530.github.io/2016/12/25/android-binder-02/">Binder实用指南（二） - 实战篇</a></li>
+</ul>
+</li>
+<li>Socket通信</li>
+</ul>
+<h2 id="5-4-系统启动"><a href="#5-4-系统启动" class="headerlink" title="5.4 系统启动"></a>5.4 系统启动</h2><ul>
+<li>Android系统启动总结，包含如何启动<code>init进程</code>，如何启动<code>zygote进程</code>和<code>system_server进程</code>：<ul>
+<li><a href="http://maoao530.github.io/2017/01/06/android-start/">Android系统启动流程</a></li>
+</ul>
+</li>
+<li>init进程相关包含init rc语法</li>
+<li>Zygote进程相关知识</li>
+<li>system_server进程</li>
+<li>DVM的启动</li>
+</ul>
+<h2 id="5-4-系统服务"><a href="#5-4-系统服务" class="headerlink" title="5.4 系统服务"></a>5.4 系统服务</h2><ul>
+<li>Android系统服务 - ActivityManagerService<ul>
+<li>AMS启动流程</li>
+<li>AMS的Activity调度</li>
+</ul>
+</li>
+<li>Android系统服务 - PackageManagerService<ul>
+<li><a href="http://maoao530.github.io/2017/01/10/packagemanager/">PackageManagerService启动流程</a></li>
+<li><a href="http://maoao530.github.io/2017/01/18/package-install/">应用程序安装流程</a></li>
+<li>应用程序卸载流程</li>
+<li>Installd守护进程</li>
+</ul>
+</li>
+<li>Android系统服务 - WindowManagerService<ul>
+<li>Surface View原理</li>
+</ul>
+</li>
+<li>Android系统服务- SurfaceFlinger推图</li>
+<li>Input系统<ul>
+<li>InputReader介绍</li>
+<li>InputDispatcher介绍</li>
+</ul>
+</li>
+<li>Android系统服务 - PowerManagerService</li>
+<li>Android系统服务 - UserManagerService</li>
+<li>MediaServer<ul>
+<li>AudioFlinger - 处理上层AudioTrack创建的音频</li>
+<li>MediaPlayerService服务：StageFrightPlayer本地播放、NuPlayer在线播放</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-5-安全机制"><a href="#5-5-安全机制" class="headerlink" title="5.5 安全机制"></a>5.5 安全机制</h2><ul>
+<li><a href="http://maoao530.github.io/2017/01/31/android-build-sign/">Android系统build阶段签名机制</a></li>
+<li><a href="http://maoao530.github.io/2017/01/31/apk-sign/">APK签名机制</a></li>
+<li>APK逆向 - smali注入</li>
+</ul>
+<h2 id="5-6-问题分析"><a href="#5-6-问题分析" class="headerlink" title="5.6 问题分析"></a>5.6 问题分析</h2><ul>
+<li>ANR问题原理和分析</li>
+<li>Crash/Exception问题分析<ul>
+<li>Java Exception</li>
+<li>Native Exception</li>
+<li>Kernel Panic</li>
+</ul>
+</li>
+<li>LowMemoryKiller</li>
+</ul>
+<h2 id="5-7-工具篇"><a href="#5-7-工具篇" class="headerlink" title="5.7 工具篇"></a>5.7 工具篇</h2><ul>
+<li>Android.mk介绍</li>
+<li><a href="http://maoao530.github.io/2017/02/06/systrace/">理解和使用systrace</a></li>
+</ul>
+<h2 id="5-8-其它"><a href="#5-8-其它" class="headerlink" title="5.8 其它"></a>5.8 其它</h2><ul>
+<li><a href="http://maoao530.github.io/2016/12/10/cpp-ref-count/">Android智能指针</a></li>
+</ul>
+<h1 id="六、写在最后"><a href="#六、写在最后" class="headerlink" title="六、写在最后"></a>六、写在最后</h1><p>由于博主水平和经历有限，肯定还有很多知识点遗漏，这一份计划大纲会在后续的学习过程中不断补充完善和改正，博主打算整理一系列源码分析的文章，如果有理解或者表达错误的地方，还请读者海涵并且指正。</p>
+<p>可以通过给我留言或者邮件：maoao530@foxmail.com，感激。</p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;Android源码的正确打开方式。&lt;/p&gt;
+      &lt;p&gt;深入学习Android源码，知其然而知其所以然。计划整理一系列源码分析文章。&lt;/p&gt;
     
     </summary>
     
@@ -556,7 +670,7 @@ Trace.endSection();</code><br>那么此处必须选择这个应用对应的进�
     <link href="https://maoao530.github.io/2017/01/25/hexo-blog-seo/"/>
     <id>https://maoao530.github.io/2017/01/25/hexo-blog-seo/</id>
     <published>2017-01-25T13:30:58.000Z</published>
-    <updated>2017-01-31T05:56:57.181Z</updated>
+    <updated>2017-02-07T13:18:37.420Z</updated>
     
     <content type="html"><![CDATA[<p>进一步打造自己的Blog。</p>
 <a id="more"></a>
@@ -595,6 +709,9 @@ Trace.endSection();</code><br>那么此处必须选择这个应用对应的进�
 <h1 id="十一、表格样式"><a href="#十一、表格样式" class="headerlink" title="十一、表格样式"></a>十一、表格样式</h1><p>这个背景色下面表格边界不太明显，我们修改为：</p>
 <p>next/source/css/_variables/base.styl</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">// Table</div><div class="line">// --------------------------------------------------</div><div class="line">$table-width                    = 100%</div><div class="line">$table-border-color             = $grey-dark</div><div class="line">$table-font-size                = 14px</div><div class="line">$table-content-alignment        = left</div><div class="line">$table-content-vertical         = middle</div><div class="line">$table-th-font-weight           = 700</div><div class="line">$table-cell-padding             = 8px</div><div class="line">$table-cell-border-right-color  = $grey-dark</div><div class="line">$table-cell-border-bottom-color = $grey-dark</div><div class="line">$table-row-odd-bg-color         = #f9f9f9</div><div class="line">$table-row-hover-bg-color       = $whitesmoke</div></pre></td></tr></table></figure>
+<h1 id="十二、修改文章内链接文本样式"><a href="#十二、修改文章内链接文本样式" class="headerlink" title="十二、修改文章内链接文本样式"></a>十二、修改文章内链接文本样式</h1><p>将链接文本设置为蓝色，鼠标划过时文字颜色加深，并显示下划线。<br>修改文件themes\next\source\css_common\components\post\post.styl，添加如下css样式，：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">.post-body a&#123;</div><div class="line">  color: #0593d3;</div><div class="line">  border-bottom: none;</div><div class="line"></div><div class="line">  &amp;:hover &#123;</div><div class="line">    color: #0477ab;</div><div class="line">    text-decoration: underline;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>选择.post-body是为了不影响标题，选择p是为了不影响首页“阅读全文”的显示样式。</p>
 ]]></content>
     
     <summary type="html">
