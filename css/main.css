@@ -1031,6 +1031,14 @@ pre .javascript .function {
   -o-transform: rotate(30deg);
   transform: rotate(30deg);
 }
+.post-body a {
+  color: #0593d3;
+  border-bottom: none;
+}
+.post-body a:hover {
+  color: #0477ab;
+  text-decoration: underline;
+}
 .posts-expand {
   padding-top: 40px;
 }
@@ -1663,7 +1671,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #4eddff;
+  background: #6fcfee;
 }
 .links-of-blogroll {
   font-size: 13px;
