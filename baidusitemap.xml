@@ -3,6 +3,26 @@
 
 
     
+  <url>
+    <loc>https://maoao530.github.io/2017/02/21/anr-analyse/</loc>
+    <lastmod>2017-02-21T10:01:33.091Z</lastmod>
+    <data>
+        <display>
+        <title>ANR问题分析指南</title>
+        <pubTime>2017-02-21T02:41:09.000Z</pubTime>
+        
+        <tag>ANR</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android进阶" url="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
     
   <url>
     <loc>https://maoao530.github.io/2017/01/25/hexo-blog-seo/</loc>
@@ -34,9 +54,9 @@
         <title>Android源码学习指南 - 【置顶】</title>
         <pubTime>2017-02-06T13:31:21.000Z</pubTime>
         
-        <tag>source</tag>
-         
         <tag>android</tag>
+         
+        <tag>source</tag>
          
          
            
@@ -118,9 +138,9 @@
         <title>Android系统build阶段签名机制</title>
         <pubTime>2017-01-31T07:48:29.000Z</pubTime>
         
-        <tag>android</tag>
-         
         <tag>签名</tag>
+         
+        <tag>android</tag>
          
          
            

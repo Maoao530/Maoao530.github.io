@@ -1,0 +1,923 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="tAZFMfKLyroTOSdyRn-N_-NNj4LWJk_LNcOAbASRlso" />
+
+
+
+
+  <meta name="baidu-site-verification" content="KDQ5UD1bGz" />
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="ANR," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="风中老狼的博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="学会如何处理ANR问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ANR问题分析指南">
+<meta property="og:url" content="https://maoao530.github.io/2017/02/21/anr-analyse/index.html">
+<meta property="og:site_name" content="风中老狼的博客">
+<meta property="og:description" content="学会如何处理ANR问题。">
+<meta property="og:image" content="https://maoao530.github.io/img/archives/call-stack.png">
+<meta property="og:image" content="https://maoao530.github.io/img/archives/check-binder.png">
+<meta property="og:updated_time" content="2017-02-21T10:01:33.091Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ANR问题分析指南">
+<meta name="twitter:description" content="学会如何处理ANR问题。">
+<meta name="twitter:image" content="https://maoao530.github.io/img/archives/call-stack.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> ANR问题分析指南 | 风中老狼的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">风中老狼的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">不积跬步，无以至千里；不积小流，无以成江海</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                ANR问题分析指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-02-21T10:41:09+08:00" content="2017-02-21">
+              2017-02-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android进阶/" itemprop="url" rel="index">
+                    <span itemprop="name">Android进阶</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/02/21/anr-analyse/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/21/anr-analyse/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>浏览
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>学会如何处理ANR问题。</p>
+<a id="more"></a>
+<h1 id="一、ANR概览"><a href="#一、ANR概览" class="headerlink" title="一、ANR概览"></a>一、ANR概览</h1><p>ANR的全称是Application No Responding，即应用程序无响应，具体是一些特定的Message(Key Dispatch、Broadcast、Service)在应用的UI线程（主线程）没有在规定的时间内处理完，进而触发ANR异常。</p>
+<p>ANR由消息处理机制保证，Android在系统层实现了一套精密的机制来发现ANR，核心原理是消息调度和超时处理。ANR机制主体实现在系统层，所有与ANR相关的消息，都会经过系统进程<code>system_server</code>调度，具体是<code>ActivityManagerService</code>服务，然后派发到应用进程完成对消息的实际处理，同时，系统进程设计了不同的超时限制来跟踪消息的处理。 一旦应用程序处理消息不当，超时限制就起作用了，它收集一些系统状态，譬如CPU/IO使用情况、进程函数调用栈CallStack，（有些平台比如MTK，还会打印相应的Message出来供调试分析），最后报告用户有进程无响应了(ANR对话框)。</p>
+<h1 id="二、ANR类型"><a href="#二、ANR类型" class="headerlink" title="二、ANR类型"></a>二、ANR类型</h1><p>ANR一般有三种类型：</p>
+<h2 id="2-1-KeyDispatchTimeout"><a href="#2-1-KeyDispatchTimeout" class="headerlink" title="2.1 KeyDispatchTimeout"></a>2.1 KeyDispatchTimeout</h2><p>这个主要是按键或触摸事件在特定时间内无响应，一般Android平台默认超时时间是5s会报anr，不过有些平台会修改这个时间，比如MTK有些平台就是8s的超时时间。</p>
+<p>这个超时时间可以在ActivityManagerService.java查看：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// M: ANR debug mechanism (Ori: 5*1000)</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> KEY_DISPATCHING_TIMEOUT = <span class="number">8</span>*<span class="number">1000</span>;</div></pre></td></tr></table></figure>
+<p>这类超时会有ANR提示框弹出，用户可以选择<code>forceStop</code>或者继续等待。</p>
+<h2 id="2-2-BroadcastTimeout"><a href="#2-2-BroadcastTimeout" class="headerlink" title="2.2 BroadcastTimeout"></a>2.2 BroadcastTimeout</h2><p>这个主要是BroadcastRecevier在规定时间无法处理完成。前台广播超时时间是10s,后台广播超时是60s,这类超时没有提示框弹出。</p>
+<p>==&gt; AMS.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// How long we allow a receiver to run before giving up on it.</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BROADCAST_FG_TIMEOUT = <span class="number">10</span>*<span class="number">1000</span>;</div><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BROADCAST_BG_TIMEOUT = <span class="number">60</span>*<span class="number">1000</span>;</div></pre></td></tr></table></figure></p>
+<h2 id="2-3-ServiceTimeout"><a href="#2-3-ServiceTimeout" class="headerlink" title="2.3 ServiceTimeout"></a>2.3 ServiceTimeout</h2><p>Service在规定时间内无法处理完成操作，即会报出服务超时，这类ANR同样没有提示框出现。超时时间，前台Service是20s，后台Service是200s。</p>
+<p>==&gt;ActivityServices.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// How long we wait for a service to finish executing.</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SERVICE_TIMEOUT = <span class="number">20</span>*<span class="number">1000</span>;</div><div class="line"><span class="comment">// How long we wait for a service to finish executing.</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SERVICE_BACKGROUND_TIMEOUT = SERVICE_TIMEOUT * <span class="number">10</span>;</div></pre></td></tr></table></figure></p>
+<h1 id="三、ANR分析步骤"><a href="#三、ANR分析步骤" class="headerlink" title="三、ANR分析步骤"></a>三、ANR分析步骤</h1><p>ANR本质上是一个Performance问题，发生ANR的时候，如果问题可能出在APK自己身上，那么主要排查的方向是apk本身，分析看看是不是在UI线程做了耗时的操作？</p>
+<p>个人认为，有一些ANR问题是很难分析的，比如app运行的时候由于当前系统底层的一些影响，导致当前message处理失败。这类问题往往没有规律，又难以重现。对于这类ANR问题，一般需要花费大量时间去了解系统的一些其他行为，而超出了ANR本身的范畴，这类问题就相当于一个警示信号，告诉你系统哪个地方出问题了。</p>
+<h2 id="3-1-ANR时间点"><a href="#3-1-ANR时间点" class="headerlink" title="3.1 ANR时间点"></a>3.1 ANR时间点</h2><p>找到anr时间点，方便确认问题发生的时机：</p>
+<ul>
+<li><p>event log : 搜 <code>am_anr</code>关键字，比如： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">02-13 14:24:26.381   725   748 I am_anr  : [0,1542,com.ijidou.fm,13155909,Input dispatching timed out </div><div class="line">(Waiting to send key event because the focused window has not finished processing all of the input events that were previously delivered to it.  </div><div class="line">Outbound queue length: 0.  Wait queue length: 1.)</div></pre></td></tr></table></figure>
+</li>
+<li><p>main log : 直接搜<code>anr</code>或者<code>anr in</code>，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">02-17 16:13:33.117 E/ActivityManager(  187): ANR in com.dla.android (com.dla.android/com.amco.clarovideo.app.ui.activities.ContentActivity)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="3-2-CPU-Usage"><a href="#3-2-CPU-Usage" class="headerlink" title="3.2 CPU Usage"></a>3.2 CPU Usage</h2><p>在main log里面搜寻：<code>CPU usage</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">02-13 14:25:25.493   725   748 E ANRManager: ANR in com.ijidou.fm (com.ijidou.fm/.MainActivity), time=684319</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager: Reason: Input dispatching timed out (Waiting because no window has focus but there is a focused application that may eventually add a window when it finishes starting up.)</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager: Load: 10.9 / 9.65 / 5.75</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager: Android time :[2017-02-13 14:25:25.47] [694.891]</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager: CPU usage from 8237ms to 2157ms ago:</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager:   37% 252/mediaserver: 28% user + 9% kernel / faults: 186 minor</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager:   8.8% 257/mobile_log_d: 4.9% user + 3.9% kernel</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager:   5.4% 1406/com.txznet.txz: 4.1% user + 1.3% kernel / faults: 79 minor</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager:   5% 2263/com.txznet.txz:svr1: 4.2% user + 0.8% kernel / faults: 195 minor</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager:   4.1% 725/system_server: 3.4% user + 0.6% kernel / faults: 73 minor</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager:   4.1% 1496/com.ijidou.duc: 2.6% user + 1.4% kernel / faults: 181 minor</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager:   2.1% 3155/com.ijidou.carcorder: 0.6% user + 1.4% kernel</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager:   1.1% 1477/com.android.phone: 0.8% user + 0.3% kernel / faults: 185 minor</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager:   1.1% 5317/com.ijidou.fm: 0% user + 1.1% kernel</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager:   0.9% 2448/com.autonavi.amapautolite:locationservice: 0.3% user + 0.6% kernel / faults: 54 minor</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager:   0.8% 1513/com.ijidou.launcher: 0.4% user + 0.3% kernel / faults: 30 minor</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager:   0.6% 1387/com.ijidou.mirrornavi: 0.3% user + 0.3% kernel / faults: 1266 minor</div><div class="line">02-13 14:25:25.493   725   748 E ANRManager:   0.6% 3001/com.ijidou.duc:remote: 0.6% user + 0% kernel / faults: 1 minor</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">02-13 14:25:25.493   725   748 E ANRManager: 27% TOTAL: 18% user + 8% kernel + 0.7% iowait + 0.1% softirq</div></pre></td></tr></table></figure></p>
+<p>ANRManager会打印出anr前后的cpu使用情况，这个可以反映出当时系统的Performance状态：</p>
+<ul>
+<li>如果CPU使用量接近100%，说明当前设备很忙，有可能是CPU饥饿导致了ANR。</li>
+<li>如果CPU使用量很少，说明主线程被BLOCK了</li>
+<li>如果IOwait很高，说明ANR有可能是主线程在进行I/O操作造成的</li>
+</ul>
+<p>那么这个时候，我们就要看看anr发生的时候，主线程在做什么了。</p>
+<h2 id="3-3-data-anr-traces-txt"><a href="#3-3-data-anr-traces-txt" class="headerlink" title="3.3 data/anr/traces.txt"></a>3.3 data/anr/traces.txt</h2><p>App的进程发生ANR时，系统让活跃的Top进程都进行了一下dump，进程中的各种Thread就都dump到这个trace文件里了，所以trace文件中包含了每一条线程的运行时状态。不过有些平台也会自己专门收集这些信息，打包traces信息到DB文件中利用专门的工具去分析。这里不便多说。</p>
+<p>分析trace信息需要了解几点：</p>
+<ul>
+<li>traces中都是按照进程去进行的，会有pid提示。</li>
+<li>当一个线程占有一个锁的时候，会打印-locked<0xxxxxxx></0xxxxxxx></li>
+<li>当该线程正在等待别的线程释放该锁，会打印waiting to lock <0xxxxxx></0xxxxxx></li>
+<li>如果代码中有wait()调用的话，首先是locked，然后会打印waiting on <0xxxxxx></0xxxxxx></li>
+</ul>
+<h1 id="四、其他分析思路"><a href="#四、其他分析思路" class="headerlink" title="四、其他分析思路"></a>四、其他分析思路</h1><p>有时候我们log也分析了，traces也分析了，还是很难分析出ANR的原因，那么我们可能就需要尝试从其他方面分析了：</p>
+<ul>
+<li>从main log里面找anr发生时间前8s，看看app的main thread在做什么操作？是否有异常的地方，一般process的pid会等于主线程id。</li>
+<li>大范围搜寻log，看是否anr发生之前，哪里有发生crash？是否有可能引起anr。</li>
+<li>看情况抓取平台的一些辅助信息，包括但不局限于：<ul>
+<li>memory info</li>
+<li>process status</li>
+<li>cpu info</li>
+<li>Binder info</li>
+<li>ftrace</li>
+</ul>
+</li>
+</ul>
+<h1 id="五、死锁举例"><a href="#五、死锁举例" class="headerlink" title="五、死锁举例"></a>五、死锁举例</h1><p>我们来看一个死锁的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&quot;PowerManagerService&quot; prio=5 tid=24 MONITOR</div><div class="line">  | group=&quot;main&quot; sCount=1 dsCount=0 obj=0x41dd0eb0 self=0x5241b218</div><div class="line">  | sysTid=567 nice=0 sched=0/0 cgrp=apps handle=1380038664</div><div class="line">  | state=S schedstat=( 6682116007 11324451214 33313 ) utm=450 stm=219 core=1</div><div class="line">  at com.android.server.am.ActivityManagerService.broadcastIntent(ActivityManagerService.java:~13045)</div><div class="line">  - waiting to lock &lt;0x41a874a0&gt; (a com.android.server.am.ActivityManagerService) held by tid=12 (android.server.ServerThread)</div><div class="line">  at android.app.ContextImpl.sendBroadcast(ContextImpl.java:1144)</div><div class="line">  at com.android.server.power.PowerManagerService$DisplayBlankerImpl.unblankAllDisplays(PowerManagerService.java:3442)</div><div class="line">  at com.android.server.power.DisplayPowerState$PhotonicModulator$1.run(DisplayPowerState.java:456)</div><div class="line">  at android.os.Handler.handleCallback(Handler.java:800)</div><div class="line">  at android.os.Handler.dispatchMessage(Handler.java:100)</div><div class="line">  at android.os.Looper.loop(Looper.java:194)</div><div class="line">  at android.os.HandlerThread.run(HandlerThread.java:60)</div></pre></td></tr></table></figure>
+<p>tid=24线程在等待一个<0x41a874a0>的锁，而这个锁被tid=12的线程占用了，我们来看看tid=12：</0x41a874a0></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&quot;android.server.ServerThread&quot; prio=5 tid=12 MONITOR</div><div class="line">  | group=&quot;main&quot; sCount=1 dsCount=0 obj=0x41a76178 self=0x507837a8</div><div class="line">  | sysTid=545 nice=-2 sched=0/0 cgrp=apps handle=1349936616</div><div class="line">  | state=S schedstat=( 15368096286 21707846934 69485 ) utm=1226 stm=310 core=0</div><div class="line">  at com.android.server.power.PowerManagerService.isScreenOnInternal(PowerManagerService.java:~2529)</div><div class="line">  - waiting to lock &lt;0x41a7e2e8&gt; (a java.lang.Object) held by tid=85 (Binder_B)</div><div class="line">  at com.android.server.power.PowerManagerService.isScreenOn(PowerManagerService.java:2522)</div><div class="line">  at com.android.server.wm.WindowManagerService.sendScreenStatusToClientsLocked(WindowManagerService.java:7749)</div><div class="line">  at com.android.server.wm.WindowManagerService.setEventDispatching(WindowManagerService.java:7628)</div><div class="line">  at com.android.server.am.ActivityManagerService.updateEventDispatchingLocked(ActivityManagerService.java:8083)</div><div class="line">  at com.android.server.am.ActivityManagerService.wakingUp(ActivityManagerService.java:8077)</div></pre></td></tr></table></figure>
+<p>tid=12线程在等待<0x41a7e2e8>的锁，而这个锁被tid=85的线程占用了，我们来看看tid=85：</0x41a7e2e8></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&quot;Binder_B&quot; prio=5 tid=85 MONITOR</div><div class="line"> | group=&quot;main&quot; sCount=1 dsCount=0 obj=0x42744770 self=0x58329e88</div><div class="line"> | sysTid=3700 nice=-20 sched=0/0 cgrp=apps handle=1471424616</div><div class="line"> | state=S schedstat=( 1663727513 2044643318 6806 ) utm=132 stm=34 core=1</div><div class="line"> at com.android.server.power.PowerManagerService$DisplayBlankerImpl.toString(PowerManagerService.java:~3449)</div><div class="line"> - waiting to lock &lt;0x41a7e420&gt; (a com.android.server.power.PowerManagerService$DisplayBlankerImpl) held by tid=24 (PowerManagerService)</div></pre></td></tr></table></figure>
+<p>tid=85线程在等待<0x41a7e420>的锁释放，而这个锁被tid=24占用了，所以就发送了死锁。那么这种情况下我们就需要找到发生死锁的source code，进行分析并修改。</0x41a7e420></p>
+<p>值得注意的是，trace里面一般会包含时间，尽量分析跟anr时间相近的trace，避免受到其他干扰。</p>
+<h1 id="六、Binder-Timeout举例"><a href="#六、Binder-Timeout举例" class="headerlink" title="六、Binder Timeout举例"></a>六、Binder Timeout举例</h1><p>最后举一个Binder Timeout的例子：</p>
+<h2 id="6-1-分析SYS-BINDER-INFO"><a href="#6-1-分析SYS-BINDER-INFO" class="headerlink" title="6.1 分析SYS_BINDER_INFO"></a>6.1 分析SYS_BINDER_INFO</h2><p>从log看到，PID 1650的main thread 呼叫PID 141的TID 2031 发生了Timeout。<br>[1650:1650]、[141:2031]的格式是[pid:tid]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">------ BINDER TIMEOUT LOG ------</div><div class="line">2:exec 1650:1650 to 141:2031 spends 4000 ms () dex_code 22 start_at </div><div class="line">606.464 android 2013-01-18 11:36:16.891</div></pre></td></tr></table></figure>
+<h2 id="6-2-分析kernel-log"><a href="#6-2-分析kernel-log" class="headerlink" title="6.2 分析kernel log"></a>6.2 分析kernel log</h2><p>PID 1650的main thread 呼叫PID 141的TID 2031执行超过4s。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[  527.923216] (1)[50:binder_watchdog]binder: 205873 exec </div><div class="line">1650:1650 to 141:2031 over 4.006 sec () dex_code 22 start_at 606.464 android 2013-01-18 11:36:16.891</div></pre></td></tr></table></figure>
+<h2 id="6-3-分析anr的traces"><a href="#6-3-分析anr的traces" class="headerlink" title="6.3 分析anr的traces"></a>6.3 分析anr的traces</h2><p>1.看看PID 1650的main thread 呼叫PID 141的TID 2031 在做什么</p>
+<p><img src="/img/archives/call-stack.png" alt="call_stack"></p>
+<p>2.check binder call transition</p>
+<p><img src="/img/archives/check-binder.png" alt="check-binder.png"></p>
+<p><strong>结论：发现最终停留在pid=141 tid=2031的 stopOmxComponent_l 不动，那么接下来的步骤就是找到对应的source code进行分析原因。</strong></p>
+<h1 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h1><p>ANR的问题分析，说简单有时候也挺简单，说复杂有时候确实能让人分析的抓狂，有时候ANR问题只是平台表现出来的一种现象，可能是某种预警信号，深入分析就要工程师看对Android系统的了解程度了。<br>博主曾经处理过一个不规律的anr的问题，产品在烧机一段时间后，会概率性触发ANR问题，Check了很多次log发现IO比较高，但是log基本没有什么其他异常的地方，最后经过多次烧机尝试和分析，发现原因是某些平台的EMMC因为寿命的原因发生老化导致读写速率变低，从而导致IO变高，更换EMMC后问题解决。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/img/archives/weixin.jpg" alt="风中老狼 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/img/archives/zhifubao.jpg" alt="风中老狼 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ANR/" rel="tag">#ANR</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/06/android-study/" rel="next" title="Android源码学习指南 - 【置顶】">
+                <i class="fa fa-chevron-left"></i> Android源码学习指南 - 【置顶】
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/02/21/anr-analyse/"
+           data-title="ANR问题分析指南" data-url="https://maoao530.github.io/2017/02/21/anr-analyse/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="风中老狼" />
+          <p class="site-author-name" itemprop="name">风中老狼</p>
+          <p class="site-description motion-element" itemprop="description">不积跬步，无以至千里；不积小流，无以成江海</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">26</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wang-zhao-shun-43" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/maoao530" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/shun_fzll" target="_blank" title="csdn">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  csdn
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、ANR概览"><span class="nav-text">一、ANR概览</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、ANR类型"><span class="nav-text">二、ANR类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-KeyDispatchTimeout"><span class="nav-text">2.1 KeyDispatchTimeout</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-BroadcastTimeout"><span class="nav-text">2.2 BroadcastTimeout</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-ServiceTimeout"><span class="nav-text">2.3 ServiceTimeout</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、ANR分析步骤"><span class="nav-text">三、ANR分析步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-ANR时间点"><span class="nav-text">3.1 ANR时间点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-CPU-Usage"><span class="nav-text">3.2 CPU Usage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-data-anr-traces-txt"><span class="nav-text">3.3 data/anr/traces.txt</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、其他分析思路"><span class="nav-text">四、其他分析思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、死锁举例"><span class="nav-text">五、死锁举例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、Binder-Timeout举例"><span class="nav-text">六、Binder Timeout举例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1-分析SYS-BINDER-INFO"><span class="nav-text">6.1 分析SYS_BINDER_INFO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-2-分析kernel-log"><span class="nav-text">6.2 分析kernel log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-分析anr的traces"><span class="nav-text">6.3 分析anr的traces</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#七、总结"><span class="nav-text">七、总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">风中老狼</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i>访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i>总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span>次</span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"maoao-530"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+
+</body>
+</html>
