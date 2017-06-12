@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://maoao530.github.io/"/>
-  <updated>2017-06-12T14:33:27.668Z</updated>
+  <updated>2017-06-12T14:38:23.530Z</updated>
   <id>https://maoao530.github.io/</id>
   
   <author>
@@ -20,9 +20,10 @@
     <link href="https://maoao530.github.io/2017/06/12/life-20170612/"/>
     <id>https://maoao530.github.io/2017/06/12/life-20170612/</id>
     <published>2017-06-12T13:25:08.000Z</published>
-    <updated>2017-06-12T14:33:27.668Z</updated>
+    <updated>2017-06-12T14:38:23.530Z</updated>
     
     <content type="html"><![CDATA[<p>不知不觉毕业两年了….</p>
+<a id="more"></a>
 <h1 id="一、写在前面"><a href="#一、写在前面" class="headerlink" title="一、写在前面"></a>一、写在前面</h1><p>是的，不知不觉叔已经毕业两年了，这两年发生了很多的事情，有踌躇满志的激情，也有浑浑噩噩的迷茫，当年毕业的理想和骄傲，现在早已被生活的现实磨平了棱角。一直以来狼叔都很想写一篇文章来祭奠毕业两年来的一些琐琐碎碎，嗯，碎碎念。</p>
 <h1 id="二、生活"><a href="#二、生活" class="headerlink" title="二、生活"></a>二、生活</h1><p>加入MTK以来，最大的幸运是遇见了我的宝宝，话说命运这个东西真的很奇怪，虽然说一路走来磕磕碰碰，但是还是想对某宝宝说一声谢谢，谢谢包容我的臭毛病和低智商。<br>好吧，矫情了~</p>
 <h1 id="三、工作"><a href="#三、工作" class="headerlink" title="三、工作"></a>三、工作</h1><p>从刚毕业一开始加入MTK的低落迷茫，到现在心态的转变，虽然偶尔还是会抱怨，但是总体心态上还是积极向上的。真的，两年来发现自己在某些方面真的成长了很多，尤其是情绪控制和面对挫折的心态，都有很大的改善，真的谢谢mtk和老大的培养。</p>
@@ -37,7 +38,6 @@
     <summary type="html">
     
       &lt;p&gt;不知不觉毕业两年了….&lt;/p&gt;
-&lt;h1 id=&quot;一、写在前面&quot;&gt;&lt;a href=&quot;#一、写在前面&quot; class=&quot;headerlink&quot; title=&quot;一、写在前面&quot;&gt;&lt;/a&gt;一、写在前面&lt;/h1&gt;&lt;p&gt;是的，不知不觉叔已经毕业两年了，这两年发生了很多的事情，有踌躇满志的激
     
     </summary>
     
@@ -145,7 +145,7 @@
     <link href="https://maoao530.github.io/2017/02/06/android-study/"/>
     <id>https://maoao530.github.io/2017/02/06/android-study/</id>
     <published>2017-02-06T13:31:21.000Z</published>
-    <updated>2017-02-07T13:18:11.446Z</updated>
+    <updated>2017-06-12T14:34:47.770Z</updated>
     
     <content type="html"><![CDATA[<p>深入学习Android源码，知其然而知其所以然。计划整理一系列源码分析文章。</p>
 <a id="more"></a>
@@ -710,9 +710,9 @@ Trace.endSection();</code><br>那么此处必须选择这个应用对应的进�
       <category term="Android进阶" scheme="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
     
     
-      <category term="签名" scheme="https://maoao530.github.io/tags/%E7%AD%BE%E5%90%8D/"/>
-    
       <category term="apk" scheme="https://maoao530.github.io/tags/apk/"/>
+    
+      <category term="签名" scheme="https://maoao530.github.io/tags/%E7%AD%BE%E5%90%8D/"/>
     
   </entry>
   

@@ -5,7 +5,7 @@
     
   <url>
     <loc>https://maoao530.github.io/2017/06/12/life-20170612/</loc>
-    <lastmod>2017-06-12T14:33:27.668Z</lastmod>
+    <lastmod>2017-06-12T14:38:23.530Z</lastmod>
     <data>
         <display>
         <title>毕业两年的一些感悟</title>
@@ -15,6 +15,28 @@
            
              
               <breadCrumb title="生活" url="https://maoao530.github.io/categories/%E7%94%9F%E6%B4%BB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://maoao530.github.io/2017/02/06/android-study/</loc>
+    <lastmod>2017-06-12T14:34:47.770Z</lastmod>
+    <data>
+        <display>
+        <title>Android源码学习指南 - 【置顶】</title>
+        <pubTime>2017-02-06T13:31:21.000Z</pubTime>
+        
+        <tag>android</tag>
+         
+        <tag>source</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android进阶" url="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
           
         </display>
     </data>
@@ -65,28 +87,6 @@
 
     
   <url>
-    <loc>https://maoao530.github.io/2017/02/06/android-study/</loc>
-    <lastmod>2017-02-07T13:18:11.446Z</lastmod>
-    <data>
-        <display>
-        <title>Android源码学习指南 - 【置顶】</title>
-        <pubTime>2017-02-06T13:31:21.000Z</pubTime>
-        
-        <tag>android</tag>
-         
-        <tag>source</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android进阶" url="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://maoao530.github.io/2017/02/06/systrace/</loc>
     <lastmod>2017-02-06T13:25:40.030Z</lastmod>
     <data>
@@ -114,9 +114,9 @@
         <title>APK签名机制</title>
         <pubTime>2017-01-31T10:50:34.000Z</pubTime>
         
-        <tag>签名</tag>
-         
         <tag>apk</tag>
+         
+        <tag>签名</tag>
          
          
            
