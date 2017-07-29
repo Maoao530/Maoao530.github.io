@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://maoao530.github.io/"/>
-  <updated>2017-06-12T14:38:23.530Z</updated>
+  <updated>2017-07-29T10:01:07.753Z</updated>
   <id>https://maoao530.github.io/</id>
   
   <author>
@@ -14,6 +14,107 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>camera-base-intro</title>
+    <link href="https://maoao530.github.io/2017/07/29/camera-base-intro/"/>
+    <id>https://maoao530.github.io/2017/07/29/camera-base-intro/</id>
+    <published>2017-07-29T08:32:05.000Z</published>
+    <updated>2017-07-29T10:01:07.753Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文章开始介绍Camera Tuning相关的一些名词。</p>
+<a id="more"></a>
+<h1 id="一、手机模组"><a href="#一、手机模组" class="headerlink" title="一、手机模组"></a>一、手机模组</h1><p>摄像头模组，全称CameraCompact Module，以下简写为CCM。CCM 包含四大件： 镜头(lens)、传感器（sensor）、软板（FPC）、图像处理芯片（DSP）。决定一个摄像头好坏的重要部件是：镜头（lens）、图像处理芯片 （DSP）、传感器（sensor）。CCM的关键技术为：光学设计技术、非球面镜制作技术、光学镀膜技术。</p>
+<p>工作原理：物体通过镜头（lens）聚集的光,通过CMOS或CCD集成电路，把光信号转换成电信号，再经过内部图像处理器（ISP）转换成数字图像信号输出到数字信号处理器（DSP）加工处理，转换成标准的GRB、YUV等格式图像信号。</p>
+<p><img src="/img/archives/mozu.jpg" alt="mozu"></p>
+<ul>
+<li>Lens：镜头接收光信号并且回去光信号的装置，汇聚光纤并且减小像差，使得成像清晰</li>
+<li>Sensor：传感器目前广泛使用的有两种：一种是广泛使用的CCD（电荷藕合）元件；另一种是CMOS（互补金属氧化物导体）器件。</li>
+<li>DSP：图像处理芯片，它的作用是将感光芯片获得的数据及时快速地传递中央处理器并刷新感光芯片，因此DSP芯片的好坏，直接影响画面品质（比如色彩饱和度，清晰度等）。</li>
+<li>FPC： 柔性电路板(柔性PCB): 简称”软板”, 又称”柔性线路板”,连接芯片和手机。起到电信号传输作用。</li>
+</ul>
+<h1 id="二、Camera-3A"><a href="#二、Camera-3A" class="headerlink" title="二、Camera 3A"></a>二、Camera 3A</h1><h2 id="2-1-AWB"><a href="#2-1-AWB" class="headerlink" title="2.1 AWB"></a>2.1 AWB</h2><p>AWB（Auto White Balance）即自动白平衡。严格上来说，白色是反射到人眼里面的R、G、B比例相同，并且有一定亮度的视觉反应。白色物体被放在不同的色温光源下，所呈现的颜色会不同，但是因为人眼有自动白平衡的功能，会自动校正回来。所以要求我们Camera也要进行AWB矫正，要求在不同色温环境下，照白色的物体，屏幕中的图像应也是白色的。</p>
+<h2 id="2-2-AE"><a href="#2-2-AE" class="headerlink" title="2.2 AE"></a>2.2 AE</h2><p>AE（Automatic Exposure）即自动曝光。自动曝光的目的是在不同的照明条件和场景中实现欣赏亮度级别或所谓的目标亮度级别，从而捕获的视频或图像既不太暗也不太亮。为了达到这个目的，要调整镜头孔径，传感器曝光时间，传感器模拟增益和传感器/ ISP数字增益。这个过程称为自动曝光。</p>
+<h2 id="2-3-AF"><a href="#2-3-AF" class="headerlink" title="2.3 AF"></a>2.3 AF</h2><p>AF（Auto Focus）自动聚焦。聚焦就是前后移动镜头，直至将尽可能清晰亮丽的物体图像投射到胶片上。镜头必须与胶片保持一定的距离才能形成清晰的图像，具体取决于物体与相机的距离。自动对焦（Auto Focus）是利用物体光反射的原理，将反射的光被相机上的传感器CCD接受，通过计算机处理，带动电动对焦装置进行对焦的方式叫自动对焦。它多分为二类：一是主动式，另一个则是被动式。</p>
+<h1 id="三、专业术语"><a href="#三、专业术语" class="headerlink" title="三、专业术语"></a>三、专业术语</h1><h2 id="3-1-Shutter（快门）"><a href="#3-1-Shutter（快门）" class="headerlink" title="3.1 Shutter（快门）"></a>3.1 Shutter（快门）</h2><p>快门，原指传统相机上控制感光片有效曝光时间的一种装置，手机相机上是指曝光时间的长短。</p>
+<h2 id="3-2-Aperture（光圈）"><a href="#3-2-Aperture（光圈）" class="headerlink" title="3.2 Aperture（光圈）"></a>3.2 Aperture（光圈）</h2><p>光圈表示光通过的有效孔的直径。通常是一个用来控制光线透过镜头，进入机身内感光面的光亮的装置，它在镜头内。它的大小决定着通过镜头进入感光元件的光线的多少。<br>光圈大小用f值表示，光圈F值=镜头的焦距/镜头光圈的直径。</p>
+<p><img src="/img/archives/guangquan.png" alt="guangquan"></p>
+<h2 id="3-3-ISO（感光度）"><a href="#3-3-ISO（感光度）" class="headerlink" title="3.3 ISO（感光度）"></a>3.3 ISO（感光度）</h2><p>原本是传统摄影用来衡量底片感光度的单位，数值越高，感光度越强，但噪声越明显，数码相机也沿用了此标准。ISO数值每增加一倍，感光度也增加一倍；SV为衡量ISO的单位，ISO100时，SV=5。</p>
+<h2 id="3-4-Focal-Length（焦距）"><a href="#3-4-Focal-Length（焦距）" class="headerlink" title="3.4 Focal Length（焦距）"></a>3.4 Focal Length（焦距）</h2><p>焦距由于摄影机镜头的光学透镜（lens）而形成。摄影机或放映机的金属筒容纳了一组两边或一边有弧度（凸或凹）的透镜，组成一个综合镜头。从物体不同部分射出的光线，通过镜头之后，聚焦在底片的一个点上，使影像具有清晰的轮廓与真实的质感，这个点就叫焦点（focus）。所谓焦距（focal length），正是从镜头之镜片中间点到光线能清晰聚焦的那一点之间的距离。<br>较常见的有：8mm，15mm，24mm，28mm，35mm，50mm，85mm，105mm，135mm，200mm，400mm，600mm，1200mm等，还有长达2500mm超长焦望远镜头。</p>
+<p><img src="/img/archives/FocalLength.png" alt="FocalLength"></p>
+<h2 id="3-5-Saturation（饱和度）"><a href="#3-5-Saturation（饱和度）" class="headerlink" title="3.5 Saturation（饱和度）"></a>3.5 Saturation（饱和度）</h2><p>色彩有各种不同的表示方式，常见的有RGB、Lab、HSV等色彩域（Color Domain），饱和度（Saturation）为HSV Domain的一个维度。</p>
+<p>H：Hue，色相，色彩的色调，色彩在标准色环上的位置，以角度表示<br>S：Saturation，饱和度，色彩的纯度，以%表示。0%（灰色），100%（完全饱和）<br>V：Luminance，明度，色彩的亮度，以%表示。0%（黑色），100%（白色</p>
+<p><img src="/img/archives/Saturation.png" alt="Saturation"></p>
+<h2 id="3-6-Sharpness（锐度）"><a href="#3-6-Sharpness（锐度）" class="headerlink" title="3.6 Sharpness（锐度）"></a>3.6 Sharpness（锐度）</h2><p>Sharpness是指影像的锐利度，影像中高频成分越多，影像就越锐利。锐度主要由镜头决定，镜头品质好，成像越锐利；镜头品质差，成像越模糊。<br>Sharpness可以由后端影像处理来加强，但是会有Side Effect：</p>
+<ul>
+<li>Over Shoot：为了加强锐度，导致影像在Edge出现白边；</li>
+<li>Noise Enhance：为了加强锐度，导致影像的Noise被当成Edge放大。</li>
+</ul>
+<p><img src="/img/archives/Sharpness.png" alt="Sharpness"></p>
+<h2 id="3-7-Contrast（对比度）"><a href="#3-7-Contrast（对比度）" class="headerlink" title="3.7 Contrast（对比度）"></a>3.7 Contrast（对比度）</h2><p>Contrast为对比度，代表影像中亮（白）和暗（黑）的差异。所谓高对比就是白的地方够亮，黑的地方够黑。一般对比度低有以下两种情况：</p>
+<p>整体过亮：过曝、Gamma拉得太高<br>整体过暗：曝光不足、Gamma拉得太低</p>
+<p><img src="/img/archives/Contrast1.png" alt="Contrast1"><br><img src="/img/archives/Contrast2.png" alt="Contrast2"></p>
+<h2 id="3-8-Shading（渐晕效应）"><a href="#3-8-Shading（渐晕效应）" class="headerlink" title="3.8 Shading（渐晕效应）"></a>3.8 Shading（渐晕效应）</h2><p>Shading是在图像边缘观测到亮度逐渐减小的现象。<br>镜头边沿的成像光线和镜头光轴有一个较大的夹角，沿着视场边缘光线的光圈减小。通光路径变长，边角光线成像的位移就较大，使得镜头边缘的光线是随着视角的变大，成像亮度急剧的下降，呈现出画面角落的影像发暗。</p>
+<p><img src="/img/archives/Shading.png" alt="Shading"></p>
+<h2 id="3-9-Flare（眩光）"><a href="#3-9-Flare（眩光）" class="headerlink" title="3.9 Flare（眩光）"></a>3.9 Flare（眩光）</h2><p>镜头的表面反射或镜筒、反光镜组的内面所引起的反射光，到达底面后造成画面整体或一部分产生了雾蒙，降低了图像的锐度。镜片的镀膜及内面防反射处理的加强，可以大幅度的减少光斑，但被拍摄物体的状况不相同，不可能完全消除。</p>
+<p><img src="/img/archives/Flare.png" alt="Flare"></p>
+<h2 id="3-10-Defect-Pixel（坏点）"><a href="#3-10-Defect-Pixel（坏点）" class="headerlink" title="3.10 Defect Pixel（坏点）"></a>3.10 Defect Pixel（坏点）</h2><p>坏点一般指在Sensor制造过程中因为单个像素的电路异常而不能正常表现感光亮度。其表现形式为全黑情况下成像中单个的白色和彩色的点或者全白情况下成像中的黑点。<br>如果坏点无法被校正的话，会影响到正常拍照的图片。</p>
+<h2 id="3-11-Flicker（频闪）"><a href="#3-11-Flicker（频闪）" class="headerlink" title="3.11 Flicker（频闪）"></a>3.11 Flicker（频闪）</h2><p>Flicker是由频率干扰引起，交流电光源都有光强的波动，在中国交流电频率是50Hz，光强的波动就是100Hz，周期为10ms。如果Camera曝光时间不是10ms的整数倍，那么在不同的感光面接收到的光能量一定不一样，体现在图像上就是明暗条纹。</p>
+<p><img src="/img/archives/Flicker.png" alt="Flicker"></p>
+<h2 id="3-12-Moire（摩尔纹）"><a href="#3-12-Moire（摩尔纹）" class="headerlink" title="3.12 Moire（摩尔纹）"></a>3.12 Moire（摩尔纹）</h2><p>摩尔纹是数码相机等设备上的感光元件出现的高频干扰，会使图片出现彩色的高频率条纹；</p>
+<p>摩尔纹是差拍原理的一种表现，空间频率略有差异的条纹叠加，由于条纹间隔的差异、重合位置会逐渐偏移，也会形成差拍；<br>消除摩尔纹，应该使镜头分辨率远小于感光元件的空间频率或者感光件像素密度能够大大提高、远远超过镜头的分辨率。</p>
+<p><img src="/img/archives/Moire.png" alt="Moire"></p>
+<h2 id="3-13-False-Color（错误色）"><a href="#3-13-False-Color（错误色）" class="headerlink" title="3.13 False Color（错误色）"></a>3.13 False Color（错误色）</h2><p>False color的形成除了摩尔效应之外，感光器的三原色RGB色块排列也是其产生的原因。<br>在颜色取样的同时，因为空间差而没有取样到颜色，数码相机中的影像处理引擎仍会按照bayer pattern色块的顺序排列（RGB），试图为每一个像素去分配应有的颜色。这种情况在大量色块均匀的分布时是正确的，但当遇到突出部或者细微构造时，这样的颜色换算往往会出现错误和产生False Color。</p>
+<p><img src="/img/archives/FalseColor.png" alt="FalseColor"></p>
+<h2 id="3-14-Purple-Fringe（紫边）"><a href="#3-14-Purple-Fringe（紫边）" class="headerlink" title="3.14 Purple Fringe（紫边）"></a>3.14 Purple Fringe（紫边）</h2><p>紫边，目前产生的原因有好几种说法。比较广为接受的就是镜头色散和颜色插值运算的问题导致。（固有镜片会对不同的波长产生色散，蓝B、红R两色混合误差而产生）。这个问题发生在拍摄高反差的景物时，在明暗交界的边缘部分会出现异常的紫色。</p>
+<p><img src="/img/archives/PurpleFringe.png" alt="PurpleFringe"></p>
+<h2 id="3-15-Image-File-Format-RGB-YUV-Bayer"><a href="#3-15-Image-File-Format-RGB-YUV-Bayer" class="headerlink" title="3.15 Image File Format-RGB/YUV/Bayer"></a>3.15 Image File Format-RGB/YUV/Bayer</h2><p>RGB：根据三基色原理，大部分光F都可以用不同分量的R、G、B三个相加混合而成。F=r[R]+g[G]+b[B]，其中r、g、b分别为三基色参与混合的系数。调整三者的值可以混合出黑色光和白色光之间的各种颜色的光。<br>YUV：现代彩色影像系统中，采用彩色的sensor进行摄像，将所得的彩色影像信号进行插值分色，分别放大校正后得到RGB。再经过矩阵变换电路得到亮度信号Y和两个色差信号R-Y（即U）、B-Y（即V）。这种色彩的表示方式就是YUV色彩空间。根据YUV的采样格式可以分为YUV444、YUV4222、YUV420。<br>Bayer Pattern：Sensor获取彩色图像的方法是在Sensor表面覆盖只含红、绿、蓝3色的马赛克滤镜。对齐输出信号通过一定的处理算法实现彩色，所以这种感光器件的排列方式被称为Bayer Pattern。因为只记录了单个的感光信息，通常也称为raw image。</p>
+<p><img src="/img/archives/Bayer.png" alt="Bayer"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//RGB转换YUV公式如下：</div><div class="line">Y = 0.299R + 0.587G + 0.114B</div><div class="line">U = -0.147R - 0.289G + 0.436B</div><div class="line">V = 0.615R - 0.515G - 0.100B</div><div class="line">//YUV转换RGB公式如下：</div><div class="line">R = Y + 1.14V</div><div class="line">G = Y - 0.39U - 0.58V</div><div class="line">B = Y + 2.03U</div></pre></td></tr></table></figure>
+<h2 id="3-16-Resolution（解像力-amp-分辨率）"><a href="#3-16-Resolution（解像力-amp-分辨率）" class="headerlink" title="3.16 Resolution（解像力&amp;分辨率）"></a>3.16 Resolution（解像力&amp;分辨率）</h2><p>分辨率指成像平面上1毫米间距内能分辨开的黑白相间的线条对数，单位为“线对/毫米”（lp/mm、line-pairs/mm）。受限于光学、材料和其它种种因素，每一个镜头、每一台数码相机都有其分辨能力的极限。<br>评判分辨率方法：</p>
+<p>MTF：引进反差对比的概念来检定镜头解像力。<br>目测ISO12233：达到多少TV lines。</p>
+<p><img src="/img/archives/Resolution.png" alt="Resolution"></p>
+<h2 id="3-17-Color-Error（色差）"><a href="#3-17-Color-Error（色差）" class="headerlink" title="3.17 Color Error（色差）"></a>3.17 Color Error（色差）</h2><p><img src="/img/archives/ColorError.png" alt="ColorError"></p>
+<h2 id="3-18-Black-Level（暗级）"><a href="#3-18-Black-Level（暗级）" class="headerlink" title="3.18 Black Level（暗级）"></a>3.18 Black Level（暗级）</h2><p>由于电子感光元件受热而产生电子的扰动，形成暗电流。此暗电流让电子感光元件在没有外在光源的情况下，仍然会累积信号，导致拍摄黑色的影像结果不够黑、整体呈现雾状或产生偏色。<br>可以通过sensor本身将output Raw减去对应的Black Level值或通过ISP将Input Raw减去对应的Black Level值来进行校准。</p>
+<p><img src="/img/archives/BlackLevel.png" alt="Black Level"></p>
+<h2 id="3-19-Gamma-Curve（Gamma曲线）"><a href="#3-19-Gamma-Curve（Gamma曲线）" class="headerlink" title="3.19 Gamma Curve（Gamma曲线）"></a>3.19 Gamma Curve（Gamma曲线）</h2><p>数码感光元件对亮部和暗部的敏感度相同，呈线性曝光；人眼对暗部的敏感度较高，呈非线性。Gamma用来提高暗部来补偿感光元件和人眼之间这种亮度的差异。<br>Gamma拉得越高，亮度越亮，但会导致噪声越多。</p>
+<p><img src="/img/archives/GammaCurve.png" alt="GammaCurve"></p>
+<h2 id="3-20-Image-Noise（图像噪声）"><a href="#3-20-Image-Noise（图像噪声）" class="headerlink" title="3.20 Image Noise（图像噪声）"></a>3.20 Image Noise（图像噪声）</h2><p>（一）随机噪声</p>
+<ul>
+<li>暗电流（高热激发的电子）散粒噪声</li>
+<li>MOSFET复位噪声（KTC噪声或者电容噪声）</li>
+<li>放大器噪声</li>
+<li>光散粒（光的粒子波动性产生的）噪声</li>
+<li>电源噪声</li>
+<li>量化噪声</li>
+</ul>
+<p>（二）固定图像噪声（FPN）</p>
+<p>均匀光照条件下单个像素输出的信号变化。<br>由于CMOS每个感光二极管旁都搭配了一个ADC放大器，如果以百万像素计，那么就需要百万个以上的ADC放大器。每个像素结构中的光电二极管的尺寸、掺杂浓度、生成过程中的沾污以及MOS场效应管的参数的偏差等都会造成像素输出信号的变化。表现为：</p>
+<ul>
+<li>转移劣化（低照度黑点和彩色的固定直线）</li>
+<li>光电二极管的观光度不均匀（亮白点、亮点、黑点与亮斑纹）</li>
+</ul>
+<h2 id="3-21-Latitude（宽容度）"><a href="#3-21-Latitude（宽容度）" class="headerlink" title="3.21 Latitude（宽容度）"></a>3.21 Latitude（宽容度）</h2><p>宽容度是指感光材料按比例正确记录景物亮度范围的能力。被摄景物表面由最亮部分至最暗部分的差别，可以用明暗间的比例数字来表示。假设：景物最亮部分比最暗部分要明亮50倍，那么它们之间的比例数字是1:50，这就是景物的明暗差别。感光片所具有的正确表现被摄景物明暗差别的能力，即为感光材料的宽容度，通常也称为曝光宽容度。<br>黑白胶片的宽容度是1:128左右，彩色负片的宽容度在1:32～64左右， 彩色反转片的宽容度仅为1:16～32左右，相纸的宽容度大约在1:30左右。<br>在摄影曝光中，使用宽容度较大的感光胶片去拍摄亮度差较小的景物，即使曝光量稍微多一些或少一些，对底片密度的影响不大。从实用的角度来讲，感光胶片的宽容度越大，对曝光控制越有利。<br>曝光与感光胶片宽容度之间的关系，大致存在以下三种情况：<br>（一）宽容度等于景物亮度范围<br>当感光胶片宽容度等于景物亮度明暗比例数时，感光胶片所能记录的亮度范围正好与景物由最亮到最暗的间距相同，在曝光上没有其他可选择的余地。如曝光稍有出入，即会使明亮部分或阴暗部分的层次受到损害。<br>（二）宽容度大于景物亮度范围<br>当感光胶片宽容度大于景物亮度明暗比例数时，感光胶片所能记录的这度范围超过景物由最亮到最暗的间距，在曝光上留有很大的选择余地，通常是在可容许的范围内，选用最低曝光量作为曝光标准，这样所获得的底片密度达到最低曝光量的标准，印放照片或拷贝正片均可获得最佳的影像效果。在胶片宽容度大于景物亮度范围的情况下，摄影曝光量的控制即使略有出入，也不会影响到景物明暗层次的再现。<br>（三）宽容度小于景物亮度范围<br>当感光胶片宽容度小于景物亮度明暗比例数时，感光胶片所能记录的亮度范围远不及景物由最亮到最暗的间距范围，在曝光上很难控制，要想全部记录下景物的明暗比例是不可能的。一般来说，这时应按被摄主体的不同情况，选择曝光的侧重点，以被摄景物主要部位的亮度来作为曝光的基准，兼顾到其他部分的层次。很显然，在这种情况下的曝光，势必要损失相当一部分的亮度范围的层次，其关键在于恰当地确定曝光侧重点，所损失的只是次要部位的一些层次。</p>
+<p><img src="/img/archives/Latitude.png" alt="Latitude"></p>
+<p>人眼的感光宽容度比胶片要高很多，而胶片的感光宽容度要比数码相机CCD高出很多！了解这个概念之后，我们就不难了解，为什么在逆光的条件下，人眼能看清背光的建筑物以及耀眼的天空云彩。而一旦拍摄出来，要么就是云彩颜色绚烂而建筑物变成了黑糊糊的剪影，要么就是建筑物色彩细节清楚而原本美丽的云彩却成了白色的一片。<br>再看人眼的结构，有瞳孔可以控制通光量，有杆状感光细胞和椎状感光细胞以适应不同的光强，可见即使人眼有着很高的感光宽容度，依然有亮度调节系统，以适应光强变化。</p>
+<h2 id="3-22-图像质量"><a href="#3-22-图像质量" class="headerlink" title="3.22 图像质量"></a>3.22 图像质量</h2><p>图像质量指人们对一幅图像视觉感受的评价，它包括主观评价和客观评价。</p>
+<p>（一）主观评价<br>主观评价通常认为图像质量指被测图像（即目标图像）相对于标准图像（即原图像）在人眼视觉系统中产生误差的程度。换一句话说就是相对于原图像，人眼认为目标图像几乎没有降质或损伤，则说目标图像的质量高，否则说图像质量差。另一种定义指在没有原图像的情况下，人眼能清晰地分辨图像中的事物，对图像中前景和背景、物体的轮廓、纹理等等能较好地区分，则说图像质量好，否则说图像质量差。<br>（二）客观评价<br>客观评价是指将测试数据化，由机器算法计算得出结果。</p>
+<p><img src="/img/archives/ImageQuality.png" alt="ImageQuality"></p>
+<p>在国际上，Imatest和DxO Analyzer是比较有名的影像质量客观评测软件系统。Imatest和DxO Analyzer有异曲同工之处，都是把影响影像质量的各个因素拆分开来，分别对各个因素进行测试，由软件分析得出结论，可以非常直观看到各个方面的表现。<br>Imatest(<a href="http://www.imatest.com" target="_blank" rel="external">http://www.imatest.com</a> )是美国Imatest公司旗下的影像质量评测软件系统，测试项目有镜头分辨率测试（SFR－MTF）、色差、色彩还原度、色彩空间等等。<br>DxO Analyzer(<a href="http://www.dxo.com" target="_blank" rel="external">http://www.dxo.com</a> )是法国DxO公司旗下的影像质量评测软件系统，测试项目与imatest大同小异。DxO系统不仅可以测试镜头、sensor/ISP/video，甚至是多阵列的摄像头。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文章开始介绍Camera Tuning相关的一些名词。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Camera" scheme="https://maoao530.github.io/categories/Camera/"/>
+    
+    
+      <category term="Camera" scheme="https://maoao530.github.io/tags/Camera/"/>
+    
+  </entry>
   
   <entry>
     <title>毕业两年的一些感悟</title>
@@ -141,11 +242,11 @@
   </entry>
   
   <entry>
-    <title>Android源码学习指南 - 【置顶】</title>
+    <title>Android源码学习指南</title>
     <link href="https://maoao530.github.io/2017/02/06/android-study/"/>
     <id>https://maoao530.github.io/2017/02/06/android-study/</id>
     <published>2017-02-06T13:31:21.000Z</published>
-    <updated>2017-06-12T14:34:47.770Z</updated>
+    <updated>2017-07-29T08:24:26.277Z</updated>
     
     <content type="html"><![CDATA[<p>深入学习Android源码，知其然而知其所以然。计划整理一系列源码分析文章。</p>
 <a id="more"></a>
@@ -710,9 +811,9 @@ Trace.endSection();</code><br>那么此处必须选择这个应用对应的进�
       <category term="Android进阶" scheme="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
     
     
-      <category term="apk" scheme="https://maoao530.github.io/tags/apk/"/>
-    
       <category term="签名" scheme="https://maoao530.github.io/tags/%E7%AD%BE%E5%90%8D/"/>
+    
+      <category term="apk" scheme="https://maoao530.github.io/tags/apk/"/>
     
   </entry>
   
@@ -2258,60 +2359,6 @@ Trace.endSection();</code><br>那么此处必须选择这个应用对应的进�
     
     
       <category term="Git" scheme="https://maoao530.github.io/tags/Git/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>python中的@classmethod和@staticmethod</title>
-    <link href="https://maoao530.github.io/2016/05/17/python-classmethod-staticmethod/"/>
-    <id>https://maoao530.github.io/2016/05/17/python-classmethod-staticmethod/</id>
-    <published>2016-05-17T15:58:59.000Z</published>
-    <updated>2017-01-31T07:13:33.435Z</updated>
-    
-    <content type="html"><![CDATA[<p>花两分钟了解什么是实例方法，类方法，静态方法。</p>
-<a id="more"></a>
-<h1 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h1><p>python中类方法和静态方法是用装饰器<code>@classmethod</code>和<code>@staticmethod</code>来定义的。</p>
-<p><a href="https://maoao530.github.io/2016/05/17/python-decorator/">点我学习什么是装饰器</a></p>
-<p>我们先来看一个简单的实例：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(self,x)</span>:</span></div><div class="line">        <span class="keyword">print</span> (<span class="string">"executing foo(%s,%s)"</span>%(self,x))</div><div class="line"></div><div class="line"><span class="meta">    @classmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">class_foo</span><span class="params">(cls,x)</span>:</span></div><div class="line">        <span class="keyword">print</span> (<span class="string">"executing class_foo(%s,%s)"</span>%(cls,x))</div><div class="line"></div><div class="line"><span class="meta">    @staticmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">static_foo</span><span class="params">(x)</span>:</span></div><div class="line">        <span class="keyword">print</span> (<span class="string">"executing static_foo(%s)"</span>%x)</div></pre></td></tr></table></figure>
-<p>我们定义了一个<code>class A</code>，类A里面分别定义了普通方法foo，<code>@classmethod</code>修饰的类方法class_foo，还有<code>@staticmethod</code>修饰的静态方法static_foo，那么他们之间有什么区别呢？<br>我们不妨来验证一下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">a=A()</div><div class="line">print(a.foo)</div><div class="line">print(a.class_foo)</div><div class="line">print(a.static_foo)</div><div class="line"></div><div class="line"><span class="comment"># 输出结果</span></div><div class="line"><span class="comment"># &lt;bound method A.foo of &lt;__main__.A object at 0x0121B950&gt;&gt;</span></div><div class="line"><span class="comment"># &lt;bound method A.class_foo of &lt;class '__main__.A'&gt;&gt;</span></div><div class="line"><span class="comment"># &lt;function A.static_foo at 0x01222078&gt;</span></div></pre></td></tr></table></figure>
-<p>我们从输出结果可以看到：</p>
-<ul>
-<li>foo是绑定在实例a上的，参数self便是实例a本身</li>
-<li>class_foo是绑定在class A上的，参数cls指向class A本身</li>
-<li>static_foo不绑定在a或者A上，所以没有额外的参数</li>
-</ul>
-<h1 id="二、使用"><a href="#二、使用" class="headerlink" title="二、使用"></a>二、使用</h1><p>那么使用上有什么区别呢？<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">a = A()</div><div class="line">a.foo(<span class="number">1</span>)</div><div class="line">a.class_foo(<span class="number">1</span>)</div><div class="line">a.static_foo(<span class="number">1</span>)</div><div class="line"></div><div class="line"><span class="comment"># A.foo(2) #error</span></div><div class="line">A.class_foo(<span class="number">2</span>)</div><div class="line">A.static_foo(<span class="number">2</span>)</div><div class="line"></div><div class="line"><span class="comment"># 输出结果</span></div><div class="line"><span class="comment"># executing foo(&lt;__main__.A object at 0x0121B950&gt;,1)</span></div><div class="line"><span class="comment"># executing class_foo(&lt;class '__main__.A'&gt;,1)</span></div><div class="line"><span class="comment"># executing static_foo(1)</span></div><div class="line"><span class="comment"># executing class_foo(&lt;class '__main__.A'&gt;,2)</span></div><div class="line"><span class="comment"># executing static_foo(2)</span></div></pre></td></tr></table></figure></p>
-<p>从上面的代码我们可以看到，使用上的区别：</p>
-<ul>
-<li>foo是绑定在实例a上的，只能通过实例去调用</li>
-<li>class_foo绑定在类A上，可以通过实例a或者类A去调用</li>
-<li>static_foo不绑定任何参数，也可以通过实例a或者类A去调用</li>
-</ul>
-<h1 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h1><p>类和实例都是对象，所以它们可以有方法：</p>
-<ul>
-<li>实例的方法就叫实例方法。</li>
-<li>类的方法就叫类方法。</li>
-<li>静态方法就是写在类里的普通方法,必须用类来调用，比如说有一些跟类有关系的功能，但是运行的时候又不需要实例和类参与的函数，这个时候就可以用@staticmethod，因为如果写一堆全局函数，可能后续会变得难以维护。</li>
-</ul>
-<p>References：</p>
-<ul>
-<li><a href="https://taizilongxu.gitbooks.io/stackoverflow-about-python/content/14/README.html" target="_blank" rel="external">装饰器@staticmethod和@classmethod有什么区别?</a></li>
-<li><a href="http://www.wklken.me/posts/2013/12/22/difference-between-staticmethod-and-classmethod-in-python.html" target="_blank" rel="external">[翻译]PYTHON中STATICMETHOD和CLASSMETHOD的差异</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;花两分钟了解什么是实例方法，类方法，静态方法。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Python基础" scheme="https://maoao530.github.io/categories/Python%E5%9F%BA%E7%A1%80/"/>
-    
-    
-      <category term="Python" scheme="https://maoao530.github.io/tags/Python/"/>
     
   </entry>
   

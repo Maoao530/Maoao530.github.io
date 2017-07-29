@@ -4,6 +4,48 @@
 
     
   <url>
+    <loc>https://maoao530.github.io/2017/07/29/camera-base-intro/</loc>
+    <lastmod>2017-07-29T10:01:07.753Z</lastmod>
+    <data>
+        <display>
+        <title>camera-base-intro</title>
+        <pubTime>2017-07-29T08:32:05.000Z</pubTime>
+        
+        <tag>Camera</tag>
+         
+         
+           
+             
+              <breadCrumb title="Camera" url="https://maoao530.github.io/categories/Camera/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://maoao530.github.io/2017/02/06/android-study/</loc>
+    <lastmod>2017-07-29T08:24:26.277Z</lastmod>
+    <data>
+        <display>
+        <title>Android源码学习指南</title>
+        <pubTime>2017-02-06T13:31:21.000Z</pubTime>
+        
+        <tag>android</tag>
+         
+        <tag>source</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android进阶" url="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://maoao530.github.io/2017/06/12/life-20170612/</loc>
     <lastmod>2017-06-12T14:38:23.530Z</lastmod>
     <data>
@@ -15,28 +57,6 @@
            
              
               <breadCrumb title="生活" url="https://maoao530.github.io/categories/%E7%94%9F%E6%B4%BB/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://maoao530.github.io/2017/02/06/android-study/</loc>
-    <lastmod>2017-06-12T14:34:47.770Z</lastmod>
-    <data>
-        <display>
-        <title>Android源码学习指南 - 【置顶】</title>
-        <pubTime>2017-02-06T13:31:21.000Z</pubTime>
-        
-        <tag>android</tag>
-         
-        <tag>source</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android进阶" url="https://maoao530.github.io/categories/Android%E8%BF%9B%E9%98%B6/"/>
           
         </display>
     </data>
@@ -114,9 +134,9 @@
         <title>APK签名机制</title>
         <pubTime>2017-01-31T10:50:34.000Z</pubTime>
         
-        <tag>apk</tag>
-         
         <tag>签名</tag>
+         
+        <tag>apk</tag>
          
          
            
